@@ -1,0 +1,45 @@
+import { lazy, Suspense } from 'react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { AppShell } from './components/AppShell'
+import { SkeletonList } from './components/ui'
+import ComparePage from './routes/ComparePage'
+import GapsPage from './routes/GapsPage'
+import Landing from './routes/Landing'
+import MarketPage from './routes/MarketPage'
+import MissionPage from './routes/MissionPage'
+import Onboard from './routes/Onboard'
+import PassportPage from './routes/PassportPage'
+import RoadmapPage from './routes/RoadmapPage'
+
+const TwinPage = lazy(() => import('./routes/TwinPage'))
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/app" element={<AppShell />}>
+          <Route index element={<Navigate to="onboard" replace />} />
+          <Route path="onboard" element={<Onboard />} />
+          <Route path="mission" element={<MissionPage />} />
+          <Route path="passport" element={<PassportPage />} />
+          <Route path="gaps" element={<GapsPage />} />
+          <Route path="roadmap" element={<RoadmapPage />} />
+          <Route path="compare" element={<ComparePage />} />
+          <Route path="desk" element={<MarketPage />} />
+          <Route path="discover" element={<Navigate to="/app/desk?tab=opportunities" replace />} />
+          <Route path="radar" element={<Navigate to="/app/desk?tab=regulation" replace />} />
+          <Route
+            path="twin"
+            element={
+              <Suspense fallback={<SkeletonList rows={2} />}>
+                <TwinPage />
+              </Suspense>
+            }
+          />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  )
+}
