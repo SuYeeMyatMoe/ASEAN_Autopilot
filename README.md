@@ -6,6 +6,7 @@ Upload a pitch deck, pick a target market, and get a sourced, step-by-step plan 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+- **Live app:** https://asean-autopilot.vercel.app
 - **Source code:** https://github.com/SuYeeMyatMoe/ASEAN_Autopilot
 - **Licence:** [MIT](LICENSE)
 - **Demo corridor:** Malaysia to Indonesia (healthtech), with Singapore for comparison
@@ -132,7 +133,7 @@ Set these in `backend/.env` locally, or in the Vercel project settings when depl
 |---|---|---|
 | `GEMINI_API_KEY` | No | Google AI Studio key. Without it every feature uses rule-based demo output, labelled "Demo data". |
 | `GEMMA_MODEL` | No | Gemma 4 model id. Default `gemma-4-26b-a4b-it` (mixture-of-experts, ~4B active parameters: much faster than the dense 31B with close quality). Blank auto-selects, still preferring the MoE model; the other Gemma 4 model is the automatic backup. |
-| `GEMMA_BUDGET_MS` | No | Time budget for one Gemma answer, all attempts included. Default `40000`, well under the 300 s function limit, so a slow model returns the rule-based result instead of a 504. |
+| `GEMMA_BUDGET_MS` | No | Time budget for one Gemma answer, all attempts included. Default `40000`, well under the function's 300 s ceiling, so a slow model returns the rule-based result instead of a 504. |
 | `GEMINI_SCAN_MODEL` | No | Gemini model that scans uploaded files. Default `gemini-2.5-flash`, with `gemini-flash-latest` as backup. Set it to blank to skip scanning and let Gemma 4 read the files directly. |
 | `DEMO_MODE` | No | `true` forces demo responses even when a key is set. |
 | `DATABASE_URL` | No | Supabase Postgres transaction pooler URL (port 6543). Blank uses a local SQLite file. Create the tables with [`backend/sql/schema.sql`](backend/sql/schema.sql) in the Supabase SQL Editor. |
@@ -184,7 +185,7 @@ npm run build
 
 1. **Supabase:** create a project and copy the **Transaction pooler** connection string (Project Settings > Database, port 6543). Tables are created automatically on the first request.
 2. **Vercel:** import the repository with the project root at the repository root. `vercel.json` builds `frontend/` and serves `api/index.py` as the FastAPI function. Set `GEMINI_API_KEY`, `DATABASE_URL`, and optionally `GEMMA_MODEL`, `GEMINI_SCAN_MODEL` and `CORS_ORIGINS`.
-3. Uploads are capped at 4 MB to stay under Vercel's request body limit. `vercel.json` turns on Fluid compute and sets the function `maxDuration` to 300 seconds (the Hobby maximum with Fluid compute), so passport generation is not cut off with a 504.
+3. Uploads are capped at 4 MB to stay under Vercel's request body limit. The function `maxDuration` is 300 seconds, the maximum for a Vercel Hobby project on Fluid compute, which leaves room for a cold start plus the Gemma time budget.
 
 Without `DATABASE_URL` on Vercel, the API falls back to SQLite in `/tmp`, which is separate for each function instance and wiped on every deploy. The browser keeps a copy of its founder profile, mission and latest passport and re-sends them with the retried request (`X-AMC-Restore` header, gzip) when a request returns 404, so whichever instance serves the retry restores them first and pages keep working. If the browser has no copy either, the page offers Start over. `POST /api/restore` does the same as a separate call; but saved milestones and referral requests are lost. Set `DATABASE_URL` for real persistence; the sidebar shows "Temporary storage" until you do, and `/api/health` reports `persistent`.
 
