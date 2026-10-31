@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     gemma_thinking: bool = False
     # Gemma 4 thinks before answering and thinking tokens count against this budget.
     gemma_max_output_tokens: int = 8192
+    # Gemini model that scans uploaded files into text before Gemma reasons over them.
+    # Empty = no scanning; Gemma reads the files directly.
+    gemini_scan_model: str = "gemini-2.5-flash"
+    gemini_scan_timeout_ms: int = 30_000
     # Force canned demo responses even when a key is present.
     demo_mode: bool = False
     # Supabase Postgres (transaction pooler, port 6543) in production.
