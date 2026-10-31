@@ -8,7 +8,10 @@ BACKEND_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=BACKEND_DIR / ".env", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=[BACKEND_DIR / ".env", BACKEND_DIR.parent / ".env"],
+        extra="ignore",
+    )
 
     gemini_api_key: str = ""
     # Leave blank to auto-select the best available Gemma 4 model for the key.
@@ -23,7 +26,7 @@ class Settings(BaseSettings):
     # Supabase Postgres (transaction pooler, port 6543) in production.
     # Empty = local SQLite file for development.
     database_url: str = ""
-    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
+    cors_origins: str = "*"
 
     @property
     def resolved_database_url(self) -> str:
