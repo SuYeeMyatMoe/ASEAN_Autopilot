@@ -7,7 +7,7 @@ from app.llm import prompts, rules
 from app.llm.gemma import get_gemma
 from app.retrieval import rank
 from app.schemas import CompareIn, CompareLLM, DiscoverIn, DiscoverLLM
-from app.services import cite, get_founder, get_mission
+from app.services import cite, founder_materials, get_founder, get_mission
 
 router = APIRouter(tags=["discover"])
 
@@ -30,12 +30,14 @@ def discover(body: DiscoverIn, session: Session = Depends(get_session)):
     founder = get_founder(session, mission.founder_id)
     dna = founder.dna
     pool = _pool(mission.target, body.kinds)
-    query = " ".join([mission.objective, dna.get("industry", ""), dna.get("sector", ""), " ".join(dna.get("business_activities", []))])
+    query = " ".join(
+        [mission.objective, dna.get("industry", ""), dna.get("sector", ""), " ".join(dna.get("business_activities", [])), dna.get("materials_summary", "")]
+    )
     ranked = rank(query, pool)
     candidates = [i for i, _ in ranked[:14]]
 
     result, meta = get_gemma().generate_json(
-        prompts.discover(dna, mission.objective, candidates),
+        prompts.discover(dna, mission.objective, candidates, founder_materials(founder, 1500)),
         DiscoverLLM,
         fallback=lambda: rules.discover(query, ranked),
     )

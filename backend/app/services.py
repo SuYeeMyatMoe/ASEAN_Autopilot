@@ -28,6 +28,17 @@ def latest_passport(session: Session, mission_id: str) -> Passport | None:
     ).first()
 
 
+MATERIALS_LIMIT = 3000
+
+
+def founder_materials(founder: Founder, limit: int = MATERIALS_LIMIT) -> str:
+    """What the founder's uploaded files said: Gemma's summary plus the raw extracted text."""
+    summary = founder.dna.get("materials_summary", "")
+    excerpt = (founder.meta or {}).get("source_excerpt", "")
+    parts = [p for p in (summary, excerpt and f"Extracted text: {excerpt}") if p]
+    return "\n".join(parts)[:limit]
+
+
 def enforce_grounding(result: PassportLLM, retrieved: list[dict]) -> tuple[PassportLLM, list[str]]:
     """Drop items citing records Gemma was not given; add back any record it skipped."""
     allowed = {r["id"] for r in retrieved}

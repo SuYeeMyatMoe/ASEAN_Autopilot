@@ -19,7 +19,7 @@ from app.ingest.documents import ingest
 from app.llm.gemma import get_gemma
 from app.models import Milestone, ReferralRequest
 from app.retrieval import rank
-from app.services import cite, get_founder, get_mission, latest_passport
+from app.services import cite, founder_materials, get_founder, get_mission, latest_passport
 
 router = APIRouter(tags=["companion"])
 
@@ -105,6 +105,7 @@ def _context(session: Session, mission_id: str | None, founder_id: str | None) -
             k: d.get(k)
             for k in ("company_name", "origin_country", "industry", "sector", "stage", "business_activities", "data_handling", "expansion_objectives")
         }
+        ctx["founder"]["from_uploaded_files"] = founder_materials(f, 1200)
     if mission:
         ctx["mission"] = {"origin": mission.origin, "target": mission.target, "objective": mission.objective}
         p = latest_passport(session, mission.id)

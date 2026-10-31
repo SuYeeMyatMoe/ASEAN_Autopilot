@@ -67,6 +67,7 @@ def founder_dna(text: str) -> FounderDNA:
         ip_assets=["Trademark registered in origin country"] if "trademark" in low else [],
         expansion_objectives=[g.strip()[:1].upper() + g.strip()[1:] for g in re.findall(r"Goal: ([^.]+)\.", t)],
         target_countries=targets,
+        materials_summary=" ".join(t.split())[:900],
         follow_up_questions=[
             "What local structure do you intend to use in the target market (subsidiary, distributor, partner)?",
             "What is the intended clinical or business use of the product, in one sentence?",
@@ -118,6 +119,26 @@ _NEXT_ACTION = {
 }
 
 
+def _personal_why(category: str, dna: dict) -> str | None:
+    """Tie the generic reason to what the founder's own files said, when we know enough."""
+    company = dna.get("company_name") or "Your company"
+    product = next(iter(dna.get("products") or dna.get("business_activities") or []), "")
+    data = " and ".join(d[:1].lower() + d[1:] for d in (dna.get("data_handling") or [])[:2])
+    if category == "data_protection" and data:
+        extra = " Some of it is sensitive, which carries stricter duties." if dna.get("processes_sensitive_data") else ""
+        via = f"Through {product}, you" if product else "You"
+        return f"{via} handle {data}, so personal data rules apply once you serve users here.{extra}"
+    if category == "business_licensing" and product:
+        return f"You plan to offer {product} to users in this market."
+    if category == "company_registration":
+        return f"{company} has no entity in this market yet; running {product or 'your product'} locally, pilots or hiring usually need one."
+    if category == "employment" and dna.get("hiring_plans"):
+        return f"{dna['hiring_plans'].rstrip('.')}, which brings local employment and permit duties."
+    if category == "intellectual_property" and dna.get("ip_assets"):
+        return f"{dna['ip_assets'][0].rstrip('.')} does not protect you here; IP rights are territorial."
+    return None
+
+
 def passport(dna: dict, objective: str, records: list[dict]) -> PassportLLM:
     items = []
     sensitive = dna.get("processes_sensitive_data")
@@ -141,9 +162,12 @@ def passport(dna: dict, objective: str, records: list[dict]) -> PassportLLM:
             PassportItemLLM(
                 record_id=r["id"],
                 why_it_applies=(
-                    "You process sensitive health data, which carries stricter obligations than ordinary personal data."
-                    if r["category"] == "data_protection" and sensitive
-                    else _WHY.get(r["category"], "This source may apply to your planned activities.")
+                    _personal_why(r["category"], dna)
+                    or (
+                        "You process sensitive health data, which carries stricter obligations than ordinary personal data."
+                        if r["category"] == "data_protection" and sensitive
+                        else _WHY.get(r["category"], "This source may apply to your planned activities.")
+                    )
                 ),
                 status=status,
                 evidence_available=evidence,

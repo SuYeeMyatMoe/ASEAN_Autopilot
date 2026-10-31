@@ -11,7 +11,7 @@ from app.llm.gemma import get_gemma
 from app.models import Passport
 from app.retrieval import rank
 from app.schemas import PassportLLM
-from app.services import enforce_grounding, get_founder, get_mission, hydrate_items, latest_passport
+from app.services import enforce_grounding, founder_materials, get_founder, get_mission, hydrate_items, latest_passport
 
 router = APIRouter(tags=["passport"])
 
@@ -42,15 +42,26 @@ def generate_passport(mission_id: str, session: Session = Depends(get_session)):
         raise HTTPException(
             404, f"{catalog.COUNTRIES.get(mission.target, {}).get('name', mission.target)} is not covered yet. Verified records exist for Indonesia, Malaysia and Singapore."
         )
-    query = " ".join([mission.objective, " ".join(founder.dna.get("business_activities", [])), " ".join(founder.dna.get("data_handling", []))])
+    query = " ".join(
+        [
+            mission.objective,
+            " ".join(founder.dna.get("business_activities", [])),
+            " ".join(founder.dna.get("data_handling", [])),
+            founder.dna.get("materials_summary", ""),
+        ]
+    )
     records = [r for r, _ in rank(query, pool, MAX_RECORDS)]
 
     result, meta = get_gemma().generate_json(
-        prompts.passport(founder.dna, mission.objective, mission.target, records),
+        prompts.passport(founder.dna, mission.objective, mission.target, records, founder_materials(founder)),
         PassportLLM,
         fallback=lambda: rules.passport(founder.dna, mission.objective, records),
     )
     result, notes = enforce_grounding(result, records)
+    if not result.summary.strip():
+        country = catalog.COUNTRIES.get(mission.target, {}).get("name", mission.target)
+        applicable = sum(1 for i in result.items if i.applies)
+        result.summary = f"{applicable} requirements to check for entering {country}, matched to your profile and uploaded files."
     meta.notes.extend(notes)
     p = Passport(mission_id=mission.id, payload=result.model_dump(), meta=meta.as_dict())
     session.add(p)

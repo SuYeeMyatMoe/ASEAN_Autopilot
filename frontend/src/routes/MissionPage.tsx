@@ -1,8 +1,8 @@
-import { ArrowRight, Fingerprint, Flag, Plus } from '@phosphor-icons/react'
+import { ArrowRight, FileText, Fingerprint, Flag, Plus } from '@phosphor-icons/react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { api, COUNTRY_NAMES, COVERED } from '../lib/api'
+import { api, COUNTRY_NAMES, COVERED, type FounderResponse } from '../lib/api'
 import { useSession } from '../lib/session'
 import { PASSPORT_STAGES, WorkingStatus } from '../components/WorkingStatus'
 import { Button, ButtonLink, EmptyState, ErrorState, Field, PageHeader, SkeletonList, STATUS_ORDER, StatusBadge, cx, inputClass } from '../components/ui'
@@ -32,11 +32,13 @@ export default function MissionPage() {
         title="Mission"
         body="Pick a target market and describe what you want to do there. The Launch Passport, roadmap and matches are built from this."
       />
+      <UploadSummary f={founder.data} />
       <MissionForm
         key={founder.data.founder_id}
         origin={founder.data.dna.origin_country}
-        defaultObjective={founder.data.dna.expansion_objectives.join('. ')}
-        defaultTarget={founder.data.dna.target_countries.find((c) => COVERED.includes(c) && c !== founder.data.dna.origin_country) ?? 'ID'}
+        defaultObjective={objectiveFromUpload(founder.data)}
+        defaultTarget={defaultTarget(founder.data)}
+        questions={founder.data.dna.follow_up_questions}
         onCreated={setMissionId}
       />
       {missionId && <Tracker missionId={missionId} />}
@@ -60,7 +62,67 @@ export default function MissionPage() {
   )
 }
 
-function MissionForm({ origin, defaultObjective, defaultTarget, onCreated }: { origin: string; defaultObjective: string; defaultTarget: string; onCreated: (id: string) => void }) {
+/** Goal text pre-filled from what the uploaded files said. */
+function objectiveFromUpload(f: FounderResponse): string {
+  const d = f.dna
+  const goals = d.expansion_objectives.map((g) => g.trim().replace(/[.\s]+$/, '')).filter(Boolean).map((g) => g[0].toUpperCase() + g.slice(1))
+  if (goals.length) return goals.join('. ') + '.'
+  const what = d.products[0] || d.business_activities[0]
+  return what ? `Bring ${what} to a new ASEAN market, find pilot customers and the right local partners.` : ''
+}
+
+/** First covered market the files mention, else the first covered market that isn't home. */
+function defaultTarget(f: FounderResponse): string {
+  const home = f.dna.origin_country
+  return f.dna.target_countries.find((c) => COVERED.includes(c) && c !== home) ?? COVERED.find((c) => c !== home) ?? 'ID'
+}
+
+function UploadSummary({ f }: { f: FounderResponse }) {
+  const d = f.dna
+  const files = (f.meta.files ?? []).filter((n) => n !== 'sample profile')
+  const facts = [d.industry, d.stage, d.origin_country && `Based in ${COUNTRY_NAMES[d.origin_country] ?? d.origin_country}`, d.team_size && `${d.team_size} people`].filter(Boolean)
+  return (
+    <section className="card grid gap-3 p-5 md:p-6" aria-labelledby="upload-summary">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 id="upload-summary" className="font-semibold tracking-tight">
+          From your upload: {d.company_name || 'your startup'}
+        </h2>
+        <ButtonLink to="/app/onboard" variant="ghost" className="px-3 py-1.5 text-xs">
+          Change files
+        </ButtonLink>
+      </div>
+      {facts.length > 0 && <p className="text-sm text-muted">{facts.join(' · ')}</p>}
+      {d.materials_summary && <p className="max-w-[80ch] text-sm leading-relaxed">{d.materials_summary}</p>}
+      {files.length > 0 && (
+        <ul className="flex flex-wrap gap-2">
+          {files.map((n) => (
+            <li key={n} className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1 text-xs">
+              <FileText size={12} aria-hidden />
+              {n}
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className="text-xs text-muted">Everything below, and every later step, uses this profile and the text from your files.</p>
+    </section>
+  )
+}
+
+function MissionForm({
+  origin,
+  defaultObjective,
+  defaultTarget,
+  questions,
+  onCreated,
+}: {
+  origin: string
+  defaultObjective: string
+  defaultTarget: string
+  questions: string[]
+  onCreated: (id: string) => void
+}) {
+  const objectiveRef = useRef<HTMLTextAreaElement>(null)
+  const [answered, setAnswered] = useState<string[]>([])
   const { founderId } = useSession()
   const navigate = useNavigate()
   const qc = useQueryClient()
@@ -119,8 +181,44 @@ function MissionForm({ origin, defaultObjective, defaultTarget, onCreated }: { o
       </fieldset>
 
       <Field label="What do you want to achieve there?" htmlFor="objective" error={objectiveError} help="Include the activities, partners and hires you have in mind, plus anything from the open questions.">
-        <textarea id="objective" rows={4} value={objective} onBlur={() => setTouched(true)} onChange={(e) => setObjective(e.target.value)} className={inputClass} />
+        <textarea id="objective" ref={objectiveRef} rows={5} value={objective} onBlur={() => setTouched(true)} onChange={(e) => setObjective(e.target.value)} className={inputClass} />
       </Field>
+
+      {questions.length > 0 && (
+        <div className="grid gap-2">
+          <p className="text-sm font-medium">Open questions from your upload</p>
+          <p className="text-xs text-muted">Add an answer to your goal so the passport can assess more requirements.</p>
+          <ul className="grid gap-2">
+            {questions.map((q) => {
+              const done = answered.includes(q)
+              return (
+                <li key={q} className="flex items-start gap-3 rounded-xl bg-surface-2 px-3 py-2.5 text-sm">
+                  <span className="flex-1">{q}</span>
+                  <button
+                    type="button"
+                    disabled={done}
+                    onClick={() => {
+                      setAnswered((a) => [...a, q])
+                      setObjective((o) => `${o.trim()}
+${q.replace(/\?$/, '')}: `)
+                      requestAnimationFrame(() => {
+                        const el = objectiveRef.current
+                        if (!el) return
+                        el.focus()
+                        el.setSelectionRange(el.value.length, el.value.length)
+                      })
+                    }}
+                    className="inline-flex shrink-0 items-center gap-1 rounded-full border border-line bg-surface px-3 py-1 text-xs hover:border-brand disabled:opacity-50"
+                  >
+                    <Plus size={12} aria-hidden />
+                    {done ? 'Added' : 'Answer'}
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      )}
 
       {create.isError && <ErrorState error={create.error} />}
 

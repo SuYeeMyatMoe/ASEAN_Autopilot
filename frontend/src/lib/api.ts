@@ -30,6 +30,7 @@ export interface FounderDNA {
   expansion_objectives: string[]
   target_countries: string[]
   follow_up_questions: string[]
+  materials_summary?: string
 }
 
 export interface Mission {

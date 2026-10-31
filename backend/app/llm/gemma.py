@@ -14,6 +14,7 @@ import json
 import logging
 import re
 import time
+import typing
 from dataclasses import dataclass, field
 from typing import Callable, TypeVar
 
@@ -65,6 +66,18 @@ def extract_json(text: str) -> object:
     if end <= start:
         raise ValueError("unterminated JSON in model output")
     return json.loads(cleaned[start : end + 1])
+
+
+def coerce_to_schema(data: object, schema: type[BaseModel]) -> object:
+    """Gemma sometimes returns just the main list (e.g. the passport items) without the wrapping
+    object. Wrap a bare list into the schema's first list-of-objects field so it still validates."""
+    if not isinstance(data, list):
+        return data
+    for name, f in schema.model_fields.items():
+        args = typing.get_args(f.annotation)
+        if typing.get_origin(f.annotation) is list and args and isinstance(args[0], type) and issubclass(args[0], BaseModel):
+            return {name: data}
+    return data
 
 
 def _model_rank(name: str) -> tuple[int, float]:
@@ -153,14 +166,16 @@ class Gemma:
         parts: list = [types.Part.from_bytes(data=img.data, mime_type=img.mime_type) for img in images or []]
         parts.append(prompt)
         last_exc: Exception | None = None
-        order = self._model_order()
-        # The hosted endpoint has transient 500s: give the last model in line a second chance.
-        attempts = [(m, 1) for m in order] + [(order[-1], 2)]
+        # The hosted endpoint often fails instantly with a 500/503 and then succeeds a moment
+        # later, so retry the same model once for those. Timeouts (and 504s) mean the model is
+        # overloaded: switch to the next model straight away and skip this one for 5 minutes.
+        attempts = [(m, n) for m in self._model_order() for n in (1, 2)]
+        skip: set[str] = set()
         for model, attempt in attempts:
+            if model in skip:
+                continue
             if attempt == 2:
-                if not isinstance(last_exc, errors.ServerError):
-                    break
-                time.sleep(1.0)
+                time.sleep(0.6)
             minimal = not self.settings.gemma_thinking
             want_json = json_mode
             while True:
@@ -186,10 +201,13 @@ class Gemma:
                         continue
                     raise
                 except (errors.ServerError, httpx.TimeoutException) as exc:
-                    log.warning("Gemma model %s failed: %s", model, str(exc)[:160])
-                    self._unhealthy_until[model] = time.monotonic() + 300
+                    log.warning("Gemma model %s failed (attempt %d): %s", model, attempt, str(exc)[:160])
                     last_exc = exc
-                    break  # try the next model
+                    transient = isinstance(exc, errors.ServerError) and getattr(exc, "code", None) in (500, 503)
+                    if attempt == 2 or not transient:
+                        self._unhealthy_until[model] = time.monotonic() + 300
+                        skip.add(model)
+                    break
                 text = resp.text or ""
                 if not text.strip():
                     raise GemmaError("Gemma returned an empty response")
@@ -219,15 +237,15 @@ class Gemma:
             return fallback(), GenMeta(source="fallback", notes=[f"Gemma call failed: {exc}"[:300]])
 
         try:
-            return schema.model_validate(extract_json(raw)), GenMeta(source="gemma", model=self.last_model)
+            return schema.model_validate(coerce_to_schema(extract_json(raw), schema)), GenMeta(source="gemma", model=self.last_model)
         except (ValueError, ValidationError) as first_err:
             repair = (
                 "The JSON below does not match the schema. Fix it and return ONLY the corrected JSON.\n"
-                f"Error: {str(first_err)[:800]}\n\nSchema:\n{json.dumps(schema.model_json_schema())}\n\nJSON:\n{raw[:6000]}"
+                f"Error: {str(first_err)[:800]}\n\nSchema:\n{json.dumps(schema.model_json_schema())}\n\nJSON:\n{raw[:20000]}"
             )
             try:
                 fixed = self.generate(repair, temperature=0.0, fast=True, json_mode=True)
-                return schema.model_validate(extract_json(fixed)), GenMeta(
+                return schema.model_validate(coerce_to_schema(extract_json(fixed), schema)), GenMeta(
                     source="gemma", model=self.last_model, notes=["Output repaired once."]
                 )
             except Exception as exc:
