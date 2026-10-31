@@ -113,8 +113,14 @@ def radar_diff(body: RadarDiffIn, session: Session = Depends(get_session)):
     old, new = item["versions"][-2], item["versions"][-1]
     diff, meta = get_gemma().generate_json(prompts.radar_diff(record, old, new), RadarDiffLLM, fallback=lambda: rules.radar_diff(old, new))
 
+    # Only the requesting founder's missions: other founders' plans are private.
     affected = []
-    for m in session.exec(select(Mission).where(Mission.target == item["country"])).all():
+    missions = (
+        session.exec(select(Mission).where(Mission.target == item["country"], Mission.founder_id == body.founder_id)).all()
+        if body.founder_id
+        else []
+    )
+    for m in missions:
         p = latest_passport(session, m.id)
         if p and any(i["record_id"] == item["record_id"] for i in p.payload["items"]):
             affected.append({"mission_id": m.id, "objective": m.objective, "target": m.target})

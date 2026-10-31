@@ -121,12 +121,12 @@ function Satellites({ target, sats, color, lineColor, animate, labels }: { targe
   useFrame((_, dt) => {
     if (group.current && animate) group.current.rotation.y += dt * 0.05
   })
-  const radius = 1.9
+  const radius = 1.25
   return (
     <group ref={group} position={target}>
       {sats.map((s, i) => {
         const a = (i / sats.length) * Math.PI * 2
-        const p: [number, number, number] = [Math.cos(a) * radius, 0.9 + (i % 3) * 0.25, Math.sin(a) * radius]
+        const p: [number, number, number] = [Math.cos(a) * radius, 0.7 + (i % 3) * 0.2, Math.sin(a) * radius]
         return (
           <group key={s.id}>
             <QuadraticBezierLine start={[0, 0.3, 0]} end={p} mid={[p[0] / 2, p[1] + 0.4, p[2] / 2]} color={lineColor} lineWidth={1} transparent opacity={0.7} />
@@ -180,7 +180,7 @@ export default function TwinScene({
       {origin && target && (
         <>
           <Arc from={project(origin.lat, origin.lon)} to={project(target.lat, target.lon)} color={c.accent} height={2.2} width={3} animate={animate} />
-          <Satellites target={project(target.lat, target.lon)} sats={satellites} color={c.accent} lineColor={c.muted} animate={animate} labels={labels} />
+          <Satellites target={project(target.lat, target.lon)} sats={satellites} color={c.accent} lineColor={c.muted} animate={animate} labels={false} />
         </>
       )}
       {!m &&

@@ -147,6 +147,7 @@ class ReferralStatusIn(BaseModel):
 
 class RadarDiffIn(BaseModel):
     radar_id: str
+    founder_id: str | None = None
 
 
 class AssistantIn(BaseModel):

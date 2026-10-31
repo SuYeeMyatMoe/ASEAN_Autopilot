@@ -55,8 +55,8 @@ export default function TwinPage() {
       />
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_340px]">
-        <div className="card relative h-[420px] overflow-hidden md:h-[600px]">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="card relative h-[420px] min-w-0 overflow-hidden md:h-[600px]">
           {q.isPending ? (
             <Skeleton className="absolute inset-0 rounded-none" />
           ) : !webgl ? (
@@ -79,9 +79,9 @@ export default function TwinPage() {
           <p className="pointer-events-none absolute bottom-3 left-4 text-xs text-muted">Drag to orbit. Scroll to zoom. Select a hub for details.</p>
         </div>
 
-        <aside className="grid content-start gap-4">
+        <aside className="grid min-w-0 grid-cols-1 content-start gap-4">
           {node && (
-            <div className="card grid gap-3 p-5">
+            <div className="card grid grid-cols-1 gap-3 p-5">
               <div className="flex items-center justify-between gap-2">
                 <h2 className="text-lg font-semibold tracking-tight">{node.label}</h2>
                 <span className="text-xs text-muted">{node.covered ? 'Sources available' : 'Coming soon'}</span>
@@ -103,18 +103,18 @@ export default function TwinPage() {
             </div>
           )}
           {mission ? (
-            <div className="card grid gap-4 p-5">
+            <div className="card grid grid-cols-1 gap-4 p-5">
               <h2 className="font-semibold tracking-tight">
                 {COUNTRY_NAMES[mission.origin]} to {COUNTRY_NAMES[mission.target]}
               </h2>
-              <ol className="relative grid gap-4 border-l-2 border-line pl-5">
+              <ol className="relative grid grid-cols-1 gap-4 border-l-2 border-line pl-5">
                 {mission.legs.map((leg) => (
-                  <li key={leg.stage} className="relative grid gap-1.5">
+                  <li key={leg.stage} className="relative grid grid-cols-1 gap-1.5">
                     <span className="absolute -left-[27px] top-1 size-3 rounded-full border-2 border-bg bg-accent" aria-hidden />
                     <p className="text-sm font-medium">
                       {leg.stage} <span className="font-mono text-xs text-muted">{leg.items.length}</span>
                     </p>
-                    <ul className="grid gap-1">
+                    <ul className="grid grid-cols-1 gap-1">
                       {leg.items.slice(0, 4).map((it) => (
                         <li key={it.id} className="flex items-center justify-between gap-2 text-xs">
                           <span className="min-w-0 truncate">{it.label}</span>

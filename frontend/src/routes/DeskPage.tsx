@@ -252,7 +252,7 @@ function Requests({ missionId }: { missionId: string }) {
                 id={`st-${r.id}`}
                 value={r.status}
                 onChange={(e) => update.mutate({ id: r.id, status: e.target.value })}
-                className={inputClass + ' w-auto'}
+                className={inputClass.replace('w-full', 'w-full sm:w-64')}
               >
                 {STATUSES.map(([v, l]) => (
                   <option key={v} value={v}>{l}</option>

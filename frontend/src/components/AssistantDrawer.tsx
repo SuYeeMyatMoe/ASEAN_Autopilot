@@ -93,7 +93,7 @@ export function AssistantDrawer({ open, onClose }: { open: boolean; onClose: () 
                     ) : (
                       <p className="text-xs text-muted">No source record supports this answer. Treat it as unverified.</p>
                     )}
-                    <MetaChip meta={a.meta} />
+                    <div><MetaChip meta={a.meta} /></div>
                   </div>
                 </div>
               ))}

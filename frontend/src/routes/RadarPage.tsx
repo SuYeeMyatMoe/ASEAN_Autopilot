@@ -37,8 +37,8 @@ export default function RadarPage() {
 }
 
 function RadarCard({ item }: { item: RadarItem }) {
-  const { missionId } = useSession()
-  const diff = useMutation({ mutationFn: () => api.radarDiff(item.id) })
+  const { missionId, founderId } = useSession()
+  const diff = useMutation({ mutationFn: () => api.radarDiff(item.id, founderId) })
   const latest = item.versions[item.versions.length - 1]
   return (
     <article className="card grid gap-5 p-5 md:p-6">
@@ -80,7 +80,7 @@ function RadarCard({ item }: { item: RadarItem }) {
         <div className="grid gap-5 border-t border-line pt-5 md:grid-cols-2">
           <div className="grid content-start gap-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-on-accent capitalize">{diff.data.diff.stage_change}</span>
+              <span className="inline-block rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-on-accent first-letter:uppercase">{diff.data.diff.stage_change}</span>
               <MetaChip meta={diff.data.meta} />
             </div>
             <p className="text-sm leading-relaxed">{diff.data.diff.summary}</p>
@@ -96,16 +96,16 @@ function RadarCard({ item }: { item: RadarItem }) {
               {diff.data.affected_missions.length ? (
                 <ul className="grid gap-1.5 text-sm">
                   {diff.data.affected_missions.map((m) => (
-                    <li key={m.mission_id}>
-                      <Link to="/app/passport" className="underline underline-offset-4">
-                        {m.objective.slice(0, 70)}
+                    <li key={m.mission_id} className="flex min-w-0 items-baseline">
+                      <Link to="/app/passport" className="truncate underline underline-offset-4">
+                        {m.objective}
                       </Link>
-                      {m.mission_id === missionId && <span className="ml-2 text-xs text-muted">(your active mission)</span>}
+                      {m.mission_id === missionId && <span className="ml-2 shrink-0 text-xs text-muted">Active</span>}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-muted">No saved passport cites this source yet.</p>
+                <p className="text-sm text-muted">None of your saved passports cite this source yet.</p>
               )}
             </div>
           </div>

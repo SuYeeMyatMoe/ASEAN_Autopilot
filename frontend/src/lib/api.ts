@@ -307,7 +307,8 @@ export const api = {
   requests: (missionId: string) => request<{ requests: ReferralRequest[] }>(`/referrals/requests/${missionId}`),
   updateRequest: (id: string, status: string) => request<ReferralRequest>(`/referrals/requests/${id}`, json({ status }, 'PATCH')),
   radar: () => request<{ items: RadarItem[] }>('/radar'),
-  radarDiff: (radarId: string) => request<RadarDiff>('/radar/diff', json({ radar_id: radarId })),
+  radarDiff: (radarId: string, founderId?: string | null) =>
+    request<RadarDiff>('/radar/diff', json({ radar_id: radarId, founder_id: founderId ?? null })),
   ask: (question: string, missionId?: string | null) =>
     request<AssistantAnswer>('/assistant', json({ question, mission_id: missionId ?? null })),
   milestones: (missionId: string) => request<{ milestones: Milestone[] }>(`/milestones/${missionId}`),

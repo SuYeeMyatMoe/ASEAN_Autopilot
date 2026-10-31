@@ -192,7 +192,17 @@ def compare(countries: list[str], records: list[dict]) -> CompareLLM:
 def consult_pack(dna: dict, objective: str, question: str, records: list[dict], referrals: list[dict]) -> ConsultPackLLM:
     return ConsultPackLLM(
         issue_summary=question,
-        founder_profile=f"{dna.get('company_name') or 'The startup'} is a {dna.get('stage', '').lower() or ''} {dna.get('industry') or 'technology'} company from {dna.get('origin_country') or 'an ASEAN country'}.".replace("  ", " "),
+        founder_profile=" ".join(
+            filter(
+                None,
+                [
+                    f"{dna.get('company_name') or 'The startup'} is a",
+                    (dna.get("stage") or "").lower(),
+                    (dna.get("industry") or "technology").lower(),
+                    f"company based in {catalog.COUNTRIES.get(dna.get('origin_country', ''), {}).get('name', 'ASEAN')}.",
+                ],
+            )
+        ),
         business_activities=dna.get("business_activities", []),
         relevant_record_ids=[r["id"] for r in records[:4]],
         questions_to_ask=[
@@ -212,7 +222,7 @@ def consult_pack(dna: dict, objective: str, question: str, records: list[dict], 
 def radar_diff(old: dict, new: dict) -> RadarDiffLLM:
     return RadarDiffLLM(
         summary=new["text"].split(". ")[0] + ".",
-        what_changed=[s.strip() + "." for s in new["text"].split(". ")[1:3] if s.strip()],
+        what_changed=[s.strip().rstrip(".") + "." for s in new["text"].split(". ")[1:3] if s.strip()],
         stage_change=f"{old['stage']} to {new['stage']}",
         review_tasks=["Re-check data protection items in your passport", "Confirm obligations with data protection counsel"],
     )

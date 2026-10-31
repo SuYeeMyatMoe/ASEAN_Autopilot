@@ -54,7 +54,7 @@ export default function ComparePage() {
       {d && (
         <>
           <div className="card overflow-x-auto">
-            <table className="w-full min-w-[720px] border-collapse text-sm">
+            <table className="w-full min-w-[720px] table-fixed border-collapse text-sm">
               <caption className="sr-only">Requirement comparison by area and market</caption>
               <thead>
                 <tr className="border-b border-line">

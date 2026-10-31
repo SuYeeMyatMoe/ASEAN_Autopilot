@@ -7,10 +7,10 @@ import { EmptyState, ErrorState, MetaChip, PageHeader, SkeletonList, cx } from '
 import { api, COUNTRY_NAMES, type EcoItem, type Mission } from '../lib/api'
 
 const KINDS = [
-  { id: 'programme', label: 'Programmes', icon: RocketLaunch },
-  { id: 'funding', label: 'Funding', icon: Coins },
-  { id: 'partner', label: 'Partners', icon: Buildings },
-  { id: 'talent', label: 'Talent', icon: GraduationCap },
+  { id: 'programme', label: 'Programmes', one: 'Programme', icon: RocketLaunch },
+  { id: 'funding', label: 'Funding', one: 'Funding', icon: Coins },
+  { id: 'partner', label: 'Partners', one: 'Partner', icon: Buildings },
+  { id: 'talent', label: 'Talent', one: 'Talent', icon: GraduationCap },
 ] as const
 
 export default function DiscoverPage() {
@@ -88,7 +88,7 @@ function ResultCard({ r, index, missionId, wide }: { r: EcoItem; index: number; 
         <div className="flex flex-wrap items-center gap-2 text-xs">
           <span className={cx('inline-flex items-center gap-1.5 rounded-full px-2.5 py-1', wide ? 'bg-surface-2 text-ink md:bg-white/10 md:text-on-brand' : 'bg-surface-2')}>
             <Icon size={14} aria-hidden />
-            {kind.label.slice(0, -1)}
+            {kind.one}
           </span>
           <span className="font-mono">{COUNTRY_NAMES[r.country] ?? r.country}</span>
           {r.sample && <span className={cx('rounded-full border px-2 py-0.5', wide ? 'border-line md:border-white/25' : 'border-line')}>Illustrative</span>}

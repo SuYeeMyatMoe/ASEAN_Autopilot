@@ -31,7 +31,7 @@ function Roadmap({ mission }: { mission: Mission }) {
     <div className="grid gap-8">
       <PageHeader
         title="Market-entry roadmap"
-        body="Steps ordered by their dependencies in the official sources. Steps in the same column can run at the same time."
+        body="Steps ordered by their dependencies in the official sources. Steps in the same stage can run at the same time."
       />
       <ol className="relative grid gap-8 before:absolute before:bottom-4 before:left-4 before:top-4 before:w-px before:bg-line md:gap-10">
         {q.data.stages.map((stage, i) => (
@@ -52,7 +52,7 @@ function Roadmap({ mission }: { mission: Mission }) {
             <div className="grid gap-3 pl-11 sm:grid-cols-2 md:pl-0 xl:grid-cols-3">
             {stage.steps.map((s) => (
               <div key={s.record_id} className="card grid content-start gap-3 p-4">
-                <StatusBadge status={s.status} />
+                <div><StatusBadge status={s.status} /></div>
                 <p className="font-medium leading-snug">{s.title}</p>
                 <p className="text-sm text-muted">{s.next_action}</p>
                 <p className="text-xs text-muted">{s.authority}</p>

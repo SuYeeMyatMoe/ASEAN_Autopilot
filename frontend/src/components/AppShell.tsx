@@ -94,7 +94,7 @@ export function AppShell() {
   const m = mission.data?.mission
 
   return (
-    <div className="min-h-[100dvh] bg-bg lg:grid lg:grid-cols-[260px_1fr]">
+    <div className="min-h-[100dvh] bg-bg lg:grid lg:grid-cols-[260px_minmax(0,1fr)]">
       {/* Sidebar (desktop) */}
       <aside className="sticky top-0 hidden h-[100dvh] flex-col gap-8 overflow-y-auto bg-brand px-4 py-6 text-on-brand lg:flex">
         <Link to="/" className="px-3">

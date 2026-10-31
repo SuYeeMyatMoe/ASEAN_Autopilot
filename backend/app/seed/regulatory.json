@@ -88,7 +88,13 @@
       "izin edar",
       "software as a medical device",
       "AI diagnosis",
-      "health product approval"
+      "health product approval",
+      "licence",
+      "licences",
+      "license",
+      "approval",
+      "healthtech",
+      "healthcare"
     ],
     "verification_status": "seeded_unreviewed",
     "last_verified": null,
@@ -120,7 +126,13 @@
       "hospital",
       "interoperability",
       "SATUSEHAT",
-      "pilot"
+      "pilot",
+      "licence",
+      "licences",
+      "license",
+      "approval",
+      "healthtech",
+      "healthcare"
     ],
     "verification_status": "seeded_unreviewed",
     "last_verified": null,
@@ -152,7 +164,11 @@
       "app registration",
       "SaaS",
       "platform",
-      "electronic system"
+      "electronic system",
+      "licence",
+      "licences",
+      "license",
+      "permit"
     ],
     "verification_status": "seeded_unreviewed",
     "last_verified": null,
@@ -390,7 +406,8 @@
       "cross-border transfer",
       "breach",
       "DPO",
-      "privacy"
+      "privacy",
+      "patient"
     ],
     "verification_status": "seeded_unreviewed",
     "last_verified": null,
@@ -514,7 +531,13 @@
       "medical device",
       "software as a medical device",
       "registration",
-      "MDA"
+      "MDA",
+      "licence",
+      "licences",
+      "license",
+      "approval",
+      "healthtech",
+      "healthcare"
     ],
     "verification_status": "seeded_unreviewed",
     "last_verified": null,
@@ -668,7 +691,8 @@
       "breach notification",
       "DPO",
       "cross-border transfer",
-      "health data"
+      "health data",
+      "patient"
     ],
     "verification_status": "seeded_unreviewed",
     "last_verified": null,
@@ -759,7 +783,13 @@
       "software as a medical device",
       "AI",
       "HSA",
-      "registration"
+      "registration",
+      "licence",
+      "licences",
+      "license",
+      "approval",
+      "healthtech",
+      "healthcare"
     ],
     "verification_status": "seeded_unreviewed",
     "last_verified": null,
@@ -913,7 +943,8 @@
       "breach notification",
       "transfer limitation",
       "AI",
-      "healthcare"
+      "healthcare",
+      "patient"
     ],
     "verification_status": "seeded_unreviewed",
     "last_verified": null,
@@ -968,7 +999,8 @@
       "cross-border transfer",
       "contract clauses",
       "data flows",
-      "ASEAN"
+      "ASEAN",
+      "patient"
     ],
     "verification_status": "seeded_unreviewed",
     "last_verified": null,

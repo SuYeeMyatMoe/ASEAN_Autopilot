@@ -5,7 +5,11 @@ import re
 from rank_bm25 import BM25Okapi
 
 _TOKEN = re.compile(r"[a-z0-9]+")
-_STOP = {"the", "a", "an", "and", "or", "of", "to", "in", "for", "on", "with", "is", "are", "be", "by", "my", "our", "we", "i"}
+_STOP = {
+    "the", "a", "an", "and", "or", "of", "to", "in", "for", "on", "with", "is", "are", "be", "by", "my", "our", "we", "i",
+    "what", "which", "who", "when", "where", "how", "should", "check", "before", "after", "do", "does", "need", "can",
+    "about", "it", "this", "that", "if", "any", "there", "me", "you", "your", "will", "would", "might", "may", "into",
+}
 
 
 def tokenize(text: str) -> list[str]:
