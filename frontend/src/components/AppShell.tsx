@@ -22,6 +22,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { api, COUNTRY_NAMES } from '../lib/api'
 import { useSession, useTheme } from '../lib/session'
 import { CompanionPanel } from './CompanionPanel'
+import { FlowNav } from './FlowNav'
 import { Logo } from './Logo'
 import { cx } from './ui'
 
@@ -128,13 +129,6 @@ export function AppShell() {
             <span className="hidden text-sm text-muted md:block">No active mission</span>
           )}
           <div className="ml-auto flex items-center gap-2">
-            <button
-              onClick={() => setAskOpen(true)}
-              className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-sm font-medium text-on-brand transition hover:bg-brand-deep active:scale-[0.98]"
-            >
-              <Waveform size={18} weight="bold" aria-hidden />
-              Companion
-            </button>
             <button onClick={toggle} className="rounded-full p-2 hover:bg-surface-2" aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
@@ -149,6 +143,7 @@ export function AppShell() {
           className="mx-auto w-full max-w-[1200px] px-4 py-8 md:px-8 md:py-10"
         >
           <Outlet />
+          <FlowNav />
         </motion.main>
       </div>
 

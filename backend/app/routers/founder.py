@@ -49,7 +49,12 @@ async def extract_founder(
             "or add a short description of your startup in the text box.",
         )
     meta.notes.extend(doc.warnings)
-    founder = Founder(company_name=dna.company_name, dna=dna.model_dump(), meta={**meta.as_dict(), "files": doc.filenames})
+    founder = Founder(
+        company_name=dna.company_name,
+        dna=dna.model_dump(),
+        # Keep what the files actually said so later steps (passport, discover, companion) can use it.
+        meta={**meta.as_dict(), "files": doc.filenames, "image_count": len(doc.images), "source_excerpt": text[:6000]},
+    )
     session.add(founder)
     session.commit()
     session.refresh(founder)
@@ -63,7 +68,11 @@ def sample_founder(session: Session = Depends(get_session)):
 
     text = catalog.ecosystem()["sample_founder_text"]
     dna, meta = get_gemma().generate_json(prompts.founder_dna(text, 0), FounderDNA, fallback=lambda: rules.founder_dna(text))
-    founder = Founder(company_name=dna.company_name, dna=dna.model_dump(), meta={**meta.as_dict(), "files": ["sample profile"]})
+    founder = Founder(
+        company_name=dna.company_name,
+        dna=dna.model_dump(),
+        meta={**meta.as_dict(), "files": ["sample profile"], "image_count": 0, "source_excerpt": text},
+    )
     session.add(founder)
     session.commit()
     session.refresh(founder)

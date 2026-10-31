@@ -111,3 +111,14 @@ def test_demo_journey_end_to_end():
         assert c.post("/api/mission", json={"founder_id": f["founder_id"], "target": "VN", "objective": "x"}).status_code == 200
         vn = c.get(f"/api/founder/{f['founder_id']}").json()["missions"][-1]
         assert c.post(f"/api/passport/{vn['id']}").status_code == 404
+
+
+def test_bare_list_is_wrapped_into_schema():
+    from app.llm.gemma import coerce_to_schema
+    from app.schemas import DiscoverLLM
+
+    items = [{"record_id": "ID-A-01", "why_it_applies": "w", "status": "action_required", "next_action": "n"}]
+    assert PassportLLM.model_validate(coerce_to_schema(items, PassportLLM)).items[0].record_id == "ID-A-01"
+    picks = [{"id": "OPP-01", "fit": "high", "reason": "r"}]
+    assert DiscoverLLM.model_validate(coerce_to_schema(picks, DiscoverLLM)).picks[0].id == "OPP-01"
+    assert coerce_to_schema({"a": 1}, PassportLLM) == {"a": 1}

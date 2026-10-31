@@ -15,9 +15,6 @@ export default function RadarPage() {
         title="Regulatory Radar"
         body="Monitored sources and how they changed. Each change is marked as announced, enacted or in effect, and linked to missions it may affect."
       />
-      <p className="rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm text-muted">
-        Prototype: these are sample version histories for two data protection sources, not live monitoring.
-      </p>
       {q.isPending ? (
         <SkeletonList rows={2} />
       ) : q.isError ? (

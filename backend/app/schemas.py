@@ -33,6 +33,10 @@ class FounderDNA(BaseModel):
     expansion_objectives: list[str] = []
     target_countries: list[str] = []
     follow_up_questions: list[str] = Field([], description="Questions whose answers are missing from the material")
+    materials_summary: str = Field(
+        "",
+        description="Faithful summary of everything relevant in the uploaded materials (product, customers, traction, data, partners, plans, numbers), under 200 words. Only facts stated in the materials.",
+    )
 
 
 # ---------- Passport (Gemma output) ----------
@@ -47,7 +51,7 @@ class PassportItemLLM(BaseModel):
 
 
 class PassportLLM(BaseModel):
-    summary: str
+    summary: str = ""
     items: list[PassportItemLLM]
     missing_information: list[str] = []
     recommended_next_actions: list[str] = []

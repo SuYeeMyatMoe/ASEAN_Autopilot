@@ -32,7 +32,11 @@ def founder_dna(text: str, n_images: int) -> str:
     )
 
 
-def passport(dna: dict, objective: str, target: str, records: list[dict]) -> str:
+def _materials(materials: str) -> str:
+    return f"\n\nFROM THE FOUNDER'S UPLOADED FILES:\n{materials}" if materials else ""
+
+
+def passport(dna: dict, objective: str, target: str, records: list[dict], materials: str = "") -> str:
     return (
         f"{GUARDRAIL}\n\n"
         f"Build a personalised Country Launch Passport for entering {target}.\n"
@@ -46,18 +50,18 @@ def passport(dna: dict, objective: str, target: str, records: list[dict]) -> str
         "- source_verification_pending: the record is too general to rely on for this case\n"
         "List evidence_available (facts from the profile) and missing (what is not yet known). "
         "next_action is one concrete step starting with a verb.\n\n"
-        f"FOUNDER DNA:\n{json.dumps(dna, ensure_ascii=False)}\n\nOBJECTIVE:\n{objective}\n\n"
+        f"FOUNDER DNA:\n{json.dumps(dna, ensure_ascii=False)}{_materials(materials)}\n\nOBJECTIVE:\n{objective}\n\n"
         f"SOURCE RECORDS:\n{_records_block(records)}"
     )
 
 
-def discover(dna: dict, objective: str, candidates: list[dict]) -> str:
+def discover(dna: dict, objective: str, candidates: list[dict], materials: str = "") -> str:
     slim = [{k: c.get(k) for k in ("id", "kind", "name", "country", "summary", "industries", "capabilities", "stage")} for c in candidates]
     return (
         "Rank these ecosystem resources (programmes, funding, partners, talent) for the startup's mission. "
         "Return the most useful ones only (max 8), each with fit and a one-sentence reason that names a concrete link "
         "between the resource and the startup. Use only the ids given.\n\n"
-        f"FOUNDER DNA:\n{json.dumps(dna, ensure_ascii=False)}\n\nMISSION:\n{objective}\n\nCANDIDATES:\n{json.dumps(slim, ensure_ascii=False)}"
+        f"FOUNDER DNA:\n{json.dumps(dna, ensure_ascii=False)}{_materials(materials)}\n\nMISSION:\n{objective}\n\nCANDIDATES:\n{json.dumps(slim, ensure_ascii=False)}"
     )
 
 
@@ -73,13 +77,13 @@ def compare(dna: dict, countries: list[str], areas: dict, records: list[dict]) -
     )
 
 
-def consult_pack(dna: dict, objective: str, question: str, records: list[dict], referrals: list[dict]) -> str:
+def consult_pack(dna: dict, objective: str, question: str, records: list[dict], referrals: list[dict], materials: str = "") -> str:
     return (
         f"{GUARDRAIL}\n\n"
         "Prepare a consultation preparation package the founder will review before sending to an authority or adviser. "
         "Write in a neutral, factual tone. questions_to_ask: 4 to 7 specific questions. "
         "relevant_record_ids and suggested_referral_ids must come from the lists given.\n\n"
-        f"FOUNDER QUESTION:\n{question}\n\nFOUNDER DNA:\n{json.dumps(dna, ensure_ascii=False)}\n\nMISSION:\n{objective}\n\n"
+        f"FOUNDER QUESTION:\n{question}\n\nFOUNDER DNA:\n{json.dumps(dna, ensure_ascii=False)}{_materials(materials)}\n\nMISSION:\n{objective}\n\n"
         f"SOURCE RECORDS:\n{_records_block(records)}\n\nREFERRAL CHANNELS:\n{json.dumps(referrals, ensure_ascii=False)}"
     )
 

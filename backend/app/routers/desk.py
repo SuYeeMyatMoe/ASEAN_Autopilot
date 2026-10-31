@@ -19,7 +19,7 @@ from app.schemas import (
     RadarDiffLLM,
     ReferralStatusIn,
 )
-from app.services import cite, get_founder, get_mission, latest_passport
+from app.services import cite, founder_materials, get_founder, get_mission, latest_passport
 
 router = APIRouter(tags=["desk"])
 
@@ -48,7 +48,7 @@ def consult_pack(body: ConsultIn, session: Session = Depends(get_session)):
         referrals.sort(key=lambda r: r["id"] != body.referral_id)
 
     pack, meta = get_gemma().generate_json(
-        prompts.consult_pack(founder.dna, mission.objective, body.question, records, referrals),
+        prompts.consult_pack(founder.dna, mission.objective, body.question, records, referrals, founder_materials(founder, 2000)),
         ConsultPackLLM,
         fallback=lambda: rules.consult_pack(founder.dna, mission.objective, body.question, records, referrals),
     )
