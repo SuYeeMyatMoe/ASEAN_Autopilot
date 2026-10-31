@@ -1,0 +1,107 @@
+- generic [ref=f1e3]:
+  - complementary [ref=f1e4]:
+    - link "ASEAN Mission Control" [ref=f1e5] [cursor=pointer]:
+      - /url: /
+    - navigation "App" [ref=f1e10]:
+      - generic [ref=f1e11]:
+        - paragraph [ref=f1e12]: Understand
+        - link "Founder DNA" [ref=f1e13] [cursor=pointer]:
+          - /url: /app/onboard
+        - link "Mission" [ref=f1e16] [cursor=pointer]:
+          - /url: /app/mission
+      - generic [ref=f1e19]:
+        - paragraph [ref=f1e20]: Borderless Launchpad
+        - link "Launch Passport" [ref=f1e21] [cursor=pointer]:
+          - /url: /app/passport
+        - link "Gap check" [ref=f1e24] [cursor=pointer]:
+          - /url: /app/gaps
+        - link "Roadmap" [ref=f1e27] [cursor=pointer]:
+          - /url: /app/roadmap
+        - link "Compare markets" [ref=f1e30] [cursor=pointer]:
+          - /url: /app/compare
+      - generic [ref=f1e33]:
+        - paragraph [ref=f1e34]: Ecosystem
+        - link "Discover" [ref=f1e35] [cursor=pointer]:
+          - /url: /app/discover
+        - link "Market Access Desk" [ref=f1e38] [cursor=pointer]:
+          - /url: /app/desk
+        - link "Regulatory Radar" [ref=f1e41] [cursor=pointer]:
+          - /url: /app/radar
+        - link "Ecosystem Twin" [ref=f1e44] [cursor=pointer]:
+          - /url: /app/twin
+    - generic [ref=f1e47]: Demo mode, no API key
+  - generic [ref=f1e49]:
+    - banner [ref=f1e50]:
+      - generic [ref=f1e51]: No active mission
+      - generic [ref=f1e52]:
+        - button "Ask" [ref=f1e53]
+        - button "Switch to dark mode" [ref=f1e56]
+    - main [ref=f1e59]:
+      - generic [ref=f1e60]:
+        - generic [ref=f1e62]:
+          - heading "Founder DNA" [level=1] [ref=f1e63]
+          - paragraph [ref=f1e64]: Upload your pitch deck, company profile or product screenshots. Gemma 4 reads them and builds the profile every other module uses.
+        - generic [ref=f1e65]:
+          - region [ref=f1e66]:
+            - heading "Your materials" [level=2] [ref=f1e67]
+            - generic [ref=f1e68]:
+              - generic [ref=f1e71]:
+                - paragraph [ref=f1e72]: Drop files here
+                - paragraph [ref=f1e73]: PDF, PPTX, PNG, JPG or text. Up to 4 MB in total.
+              - button "Choose files" [ref=f1e74]
+              - button "Choose files to upload" [ref=f1e75]
+            - generic [ref=f1e76]:
+              - generic [ref=f1e77]: Anything the files don't say
+              - textbox "Anything the files don't say" [ref=f1e78]
+              - paragraph [ref=f1e79]: "For example: ownership, where you host data, who you plan to hire."
+            - generic [ref=f1e80]:
+              - button "Build my profile" [disabled] [ref=f1e81]
+              - button "Use the sample startup" [ref=f1e84]
+          - generic [ref=f1e96]:
+            - generic [ref=f1e97]:
+              - generic [ref=f1e98]:
+                - heading "Nadi Health Sdn Bhd" [level=2] [ref=f1e99]
+                - paragraph [ref=f1e100]: Nadi Triage
+              - generic "No GEMINI_API_KEY set; deterministic demo output." [ref=f1e101]: Demo data
+            - generic [ref=f1e104]:
+              - generic [ref=f1e105]:
+                - term [ref=f1e106]: Industry
+                - definition [ref=f1e107]: Healthcare technology
+              - generic [ref=f1e108]:
+                - term [ref=f1e109]: Stage
+                - definition [ref=f1e110]: Seed
+              - generic [ref=f1e111]:
+                - term [ref=f1e112]: Based in
+                - definition [ref=f1e113]: Malaysia
+              - generic [ref=f1e114]:
+                - term [ref=f1e115]: Business model
+                - definition [ref=f1e116]: SaaS
+              - generic [ref=f1e117]:
+                - term [ref=f1e118]: Team
+                - definition [ref=f1e119]: 11 people
+              - generic [ref=f1e120]:
+                - term [ref=f1e121]: Sensitive data
+                - definition [ref=f1e122]: "Yes"
+            - generic [ref=f1e123]:
+              - paragraph [ref=f1e124]: What you do
+              - list [ref=f1e125]:
+                - listitem [ref=f1e126]: Nadi Triage, an AI assistant that reads patient intake forms and vital signs to prioritise emergency department queues and flag sepsis risk for clinicians
+            - generic [ref=f1e127]:
+              - paragraph [ref=f1e128]: Data you handle
+              - list [ref=f1e129]:
+                - listitem [ref=f1e130]: Sensitive personal data (health or financial)
+                - listitem [ref=f1e131]: Personal data of end users
+            - generic [ref=f1e132]:
+              - paragraph [ref=f1e133]: Expansion goals
+              - list [ref=f1e134]:
+                - listitem [ref=f1e135]: establish a presence in Indonesia, run a pilot with private hospitals in Jakarta, and hire local ML engineers
+            - generic [ref=f1e136]:
+              - paragraph [ref=f1e137]: Still needed for an accurate passport
+              - list [ref=f1e140]:
+                - listitem [ref=f1e141]: What local structure do you intend to use in the target market (subsidiary, distributor, partner)?
+                - listitem [ref=f1e142]: What is the intended clinical or business use of the product, in one sentence?
+                - listitem [ref=f1e143]: Where will personal data be stored and processed?
+                - listitem [ref=f1e144]: Who owns the company today, and what share will foreign shareholders hold locally?
+              - paragraph [ref=f1e145]: Answer these in your mission description on the next step.
+            - paragraph [ref=f1e146]: No GEMINI_API_KEY set; deterministic demo output.
+            - button "Set your mission" [ref=f1e147]

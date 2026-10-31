@@ -1,0 +1,40 @@
+- generic [ref=f2e3]:
+  - complementary [ref=f2e4]:
+    - link "ASEAN Mission Control" [ref=f2e5] [cursor=pointer]:
+      - /url: /
+    - navigation "App" [ref=f2e10]:
+      - generic [ref=f2e11]:
+        - paragraph [ref=f2e12]: Understand
+        - link "Founder DNA" [ref=f2e13] [cursor=pointer]:
+          - /url: /app/onboard
+        - link "Mission" [ref=f2e16] [cursor=pointer]:
+          - /url: /app/mission
+      - generic [ref=f2e19]:
+        - paragraph [ref=f2e20]: Borderless Launchpad
+        - link "Launch Passport" [ref=f2e21] [cursor=pointer]:
+          - /url: /app/passport
+        - link "Gap check" [ref=f2e24] [cursor=pointer]:
+          - /url: /app/gaps
+        - link "Roadmap" [ref=f2e27] [cursor=pointer]:
+          - /url: /app/roadmap
+        - link "Compare markets" [ref=f2e30] [cursor=pointer]:
+          - /url: /app/compare
+      - generic [ref=f2e33]:
+        - paragraph [ref=f2e34]: Ecosystem
+        - link "Discover" [ref=f2e35] [cursor=pointer]:
+          - /url: /app/discover
+        - link "Market Access Desk" [ref=f2e38] [cursor=pointer]:
+          - /url: /app/desk
+        - link "Regulatory Radar" [ref=f2e41] [cursor=pointer]:
+          - /url: /app/radar
+        - link "Ecosystem Twin" [ref=f2e44] [cursor=pointer]:
+          - /url: /app/twin
+    - generic [ref=f2e47]: Connecting
+  - generic [ref=f2e49]:
+    - banner [ref=f2e50]:
+      - generic [ref=f2e51]: No active mission
+      - generic [ref=f2e52]:
+        - button "Ask" [ref=f2e53]
+        - button "Switch to dark mode" [ref=f2e56]
+    - main [ref=f2e59]:
+      - status "Loading" [ref=f2e60]

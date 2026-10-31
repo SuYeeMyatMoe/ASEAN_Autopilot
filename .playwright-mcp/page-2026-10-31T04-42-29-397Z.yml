@@ -1,0 +1,150 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "ASEAN Mission Control home" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: ASEAN Mission Control
+      - navigation "Main" [ref=e11]:
+        - link "Modules" [ref=e12] [cursor=pointer]:
+          - /url: "#modules"
+        - link "How it works" [ref=e13] [cursor=pointer]:
+          - /url: "#how"
+        - link "Sources" [ref=e14] [cursor=pointer]:
+          - /url: "#sources"
+      - generic [ref=e15]:
+        - button "Switch to dark mode" [ref=e16]
+        - link "Start your passport" [ref=e19] [cursor=pointer]:
+          - /url: /app/onboard
+  - generic [ref=e20]:
+    - generic [ref=e21]:
+      - heading "Your next ASEAN market, mapped step by step." [level=1] [ref=e22]
+      - paragraph [ref=e23]: Gemma 4 reads your pitch deck, checks it against official sources, and plans your launch into a new ASEAN market.
+      - generic [ref=e24]:
+        - link "Start your passport" [ref=e25] [cursor=pointer]:
+          - /url: /app/onboard
+        - link "Explore the Twin" [ref=e28] [cursor=pointer]:
+          - /url: /app/twin
+    - generic [ref=e31]:
+      - paragraph [ref=e32]: Malaysia to Indonesia, healthtech
+      - paragraph [ref=e33]: Medical device and health software marketing authorisation
+      - generic [ref=e34]:
+        - generic "A qualified local expert should confirm this." [ref=e35]: Professional review
+        - generic "Add details so this can be assessed." [ref=e38]: Information missing
+      - paragraph [ref=e41]: "Source: Ministry of Health (Kemenkes)"
+  - generic [ref=e43]:
+    - heading "Finding the opportunity is the easy part." [level=2] [ref=e45]
+    - generic [ref=e46]:
+      - paragraph [ref=e47]: "A founder spots a hospital pilot in Jakarta. Then come the questions: which entity, which licence, which tax registration, can patient data leave the country, who signs the work permit."
+      - paragraph [ref=e48]: The answers sit across a dozen agency websites. Mission Control connects the opportunity with the requirements and people needed to pursue it.
+  - generic [ref=e49]:
+    - heading "Eight modules, one connected mission." [level=2] [ref=e51]
+    - generic [ref=e52]:
+      - generic [ref=e53]:
+        - heading "Borderless Launchpad" [level=3] [ref=e57]
+        - generic [ref=e58]:
+          - paragraph [ref=e59]: A Country Launch Passport covering establishment, foreign investment, licences, tax, incentives, hiring, IP and data protection. Every item names its source and the authority responsible.
+          - generic [ref=e60]:
+            - generic "Your materials already cover this." [ref=e62]: Information available
+            - generic "A task or document is needed." [ref=e66]: Action required
+            - generic "A qualified local expert should confirm this." [ref=e70]: Professional review
+            - generic "Add details so this can be assessed." [ref=e74]: Information missing
+      - generic [ref=e77]:
+        - heading "Founder DNA" [level=3] [ref=e81]
+        - paragraph [ref=e83]: Gemma 4 reads decks, screenshots and PDFs to learn what you actually do and what data you touch.
+      - generic [ref=e84]:
+        - heading "Dependency roadmap" [level=3] [ref=e88]
+        - paragraph [ref=e90]: Steps ordered by what each requirement waits on, with parallel lanes where work can overlap.
+      - generic [ref=e91]:
+        - heading "Discover and Serendipity" [level=3] [ref=e95]
+        - paragraph [ref=e97]: Programmes, funding, partners and talent ranked for your mission, each with the reason it fits.
+      - generic [ref=e98]:
+        - heading "Market Access Desk" [level=3] [ref=e102]
+        - paragraph [ref=e104]: The right agency or adviser for each question, plus a consultation pack you review before sharing.
+      - generic [ref=e105]:
+        - heading "Compare markets" [level=3] [ref=e109]
+        - paragraph [ref=e111]: Differences, unknowns and trade-offs side by side. No made-up rankings.
+      - generic [ref=e112]:
+        - heading "Regulatory Radar" [level=3] [ref=e116]
+        - paragraph [ref=e118]: Source changes tracked from announced to enacted to effective, flagged against your missions.
+      - generic [ref=e119]:
+        - heading "Ecosystem Twin" [level=3] [ref=e123]
+        - paragraph [ref=e125]: A 3D map of ASEAN hubs. Mission Mode traces your route through authorities and partners.
+  - generic [ref=e127]:
+    - heading "From pitch deck to first consultation." [level=2] [ref=e129]
+    - list [ref=e130]:
+      - listitem [ref=e132]:
+        - paragraph [ref=e133]: Upload
+        - paragraph [ref=e134]: Drop in your deck, product screenshots or company profile. Gemma 4 builds your Founder DNA and asks what it could not find.
+      - listitem [ref=e136]:
+        - paragraph [ref=e137]: Set the mission
+        - paragraph [ref=e138]: "Choose a target market and describe the goal: a hospital pilot, a regional office, local hires."
+      - listitem [ref=e140]:
+        - paragraph [ref=e141]: Read your passport
+        - paragraph [ref=e142]: Requirements matched to your activities, each with a status, a next step and the official source behind it.
+      - listitem [ref=e144]:
+        - paragraph [ref=e145]: Act on it
+        - paragraph [ref=e146]: Follow the roadmap, shortlist partners and funding, and take a prepared package to the right authority or adviser.
+  - generic [ref=e148]:
+    - generic [ref=e149]:
+      - heading "Grounded in official sources, not model memory." [level=2] [ref=e150]
+      - paragraph [ref=e151]: Gemma 4 only sees requirement records retrieved from national authorities. Answers that cite anything else are dropped. Every record shows when it was last reviewed.
+      - paragraph [ref=e152]: Mission Control gives guidance, not legal, tax or immigration advice, and points you to the people who can.
+    - generic [ref=e153]:
+      - link "OSS and BKPM Indonesia" [ref=e154] [cursor=pointer]:
+        - /url: https://oss.go.id
+        - generic [ref=e155]:
+          - generic [ref=e156]: OSS and BKPM
+          - generic [ref=e157]: Indonesia
+      - link "Ministry of Health Indonesia" [ref=e160] [cursor=pointer]:
+        - /url: https://www.kemkes.go.id
+        - generic [ref=e161]:
+          - generic [ref=e162]: Ministry of Health
+          - generic [ref=e163]: Indonesia
+      - link "DJKI Indonesia" [ref=e166] [cursor=pointer]:
+        - /url: https://www.dgip.go.id
+        - generic [ref=e167]:
+          - generic [ref=e168]: DJKI
+          - generic [ref=e169]: Indonesia
+      - link "SSM Malaysia" [ref=e172] [cursor=pointer]:
+        - /url: https://www.ssm.com.my
+        - generic [ref=e173]:
+          - generic [ref=e174]: SSM
+          - generic [ref=e175]: Malaysia
+      - link "MIDA Malaysia" [ref=e178] [cursor=pointer]:
+        - /url: https://www.mida.gov.my
+        - generic [ref=e179]:
+          - generic [ref=e180]: MIDA
+          - generic [ref=e181]: Malaysia
+      - link "JPDP Malaysia" [ref=e184] [cursor=pointer]:
+        - /url: https://www.pdp.gov.my
+        - generic [ref=e185]:
+          - generic [ref=e186]: JPDP
+          - generic [ref=e187]: Malaysia
+      - link "ACRA Singapore" [ref=e190] [cursor=pointer]:
+        - /url: https://www.acra.gov.sg
+        - generic [ref=e191]:
+          - generic [ref=e192]: ACRA
+          - generic [ref=e193]: Singapore
+      - link "HSA Singapore" [ref=e196] [cursor=pointer]:
+        - /url: https://www.hsa.gov.sg
+        - generic [ref=e197]:
+          - generic [ref=e198]: HSA
+          - generic [ref=e199]: Singapore
+      - link "PDPC Singapore" [ref=e202] [cursor=pointer]:
+        - /url: https://www.pdpc.gov.sg
+        - generic [ref=e203]:
+          - generic [ref=e204]: PDPC
+          - generic [ref=e205]: Singapore
+      - link "ASEAN IP Portal ASEAN" [ref=e208] [cursor=pointer]:
+        - /url: https://www.aseanip.org
+        - generic [ref=e209]:
+          - generic [ref=e210]: ASEAN IP Portal
+          - generic [ref=e211]: ASEAN
+  - generic [ref=e215]:
+    - heading "Try it with the sample healthtech startup in two minutes." [level=2] [ref=e216]
+    - link "Start your passport" [ref=e218] [cursor=pointer]:
+      - /url: /app/onboard
+  - contentinfo [ref=e221]:
+    - generic [ref=e222]:
+      - generic [ref=e223]: ASEAN Mission Control
+      - paragraph [ref=e227]: Built with Gemma 4 for the ASEAN startup ecosystem.

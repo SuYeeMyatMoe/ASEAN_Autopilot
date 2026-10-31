@@ -1,0 +1,977 @@
+[
+  {
+    "id": "ID-A-01",
+    "country": "ID",
+    "area": "A",
+    "category": "company_registration",
+    "sector": "all",
+    "title": "Foreign-owned limited liability company (PT PMA) via OSS",
+    "summary": "Foreign-owned businesses generally operate in Indonesia through a PT PMA registered on the Online Single Submission (OSS) risk-based licensing system, which issues the Business Identification Number (NIB). Confirm whether a PT PMA, representative office or partner-led model fits the planned activities.",
+    "applicable_company_types": [
+      "PT PMA",
+      "Representative office (KPPA)"
+    ],
+    "foreign_ownership_notes": "Structure options depend on the KBLI business classification and the investment positive list.",
+    "authority": "Ministry of Investment / BKPM",
+    "source_url": "https://oss.go.id",
+    "instrument": "Government Regulation 5/2021 on Risk-Based Business Licensing",
+    "publication_date": "2021-02-02",
+    "effective_date": "2021-02-02",
+    "depends_on": [
+      "ID-B-01"
+    ],
+    "keywords": [
+      "incorporation",
+      "PT PMA",
+      "NIB",
+      "OSS",
+      "subsidiary",
+      "KBLI"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ID-B-01",
+    "country": "ID",
+    "area": "B",
+    "category": "foreign_investment",
+    "sector": "all",
+    "title": "Business field classification and foreign ownership limits",
+    "summary": "Foreign equity limits are set per business field (KBLI code) under the investment positive list. The startup must map each planned activity to a KBLI code before choosing a structure. Minimum investment and paid-up capital thresholds for PT PMA are set by BKPM regulation and have changed over time, so check the current figures.",
+    "applicable_company_types": [
+      "PT PMA"
+    ],
+    "foreign_ownership_notes": "Some health services fields carry ownership conditions; software and data processing fields are generally more open. Verify per KBLI code.",
+    "authority": "Ministry of Investment / BKPM",
+    "source_url": "https://www.bkpm.go.id",
+    "instrument": "Presidential Regulation 10/2021 as amended by 49/2021 (Investment Business Fields)",
+    "publication_date": "2021-02-02",
+    "effective_date": "2021-03-04",
+    "depends_on": [],
+    "keywords": [
+      "foreign ownership",
+      "positive list",
+      "KBLI",
+      "minimum investment",
+      "paid-up capital",
+      "equity"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ID-C-01",
+    "country": "ID",
+    "area": "C",
+    "category": "healthcare_licensing",
+    "sector": "healthcare",
+    "title": "Medical device and health software marketing authorisation",
+    "summary": "Products classed as medical devices, which can include some diagnostic or clinical decision software, need a distribution permit (izin edar) from the Ministry of Health before sale or deployment. Whether an AI health application is a medical device depends on its intended use, so this needs professional review.",
+    "applicable_company_types": [
+      "PT PMA",
+      "Local distributor"
+    ],
+    "foreign_ownership_notes": "Permits are typically held by a locally registered entity or appointed distributor.",
+    "authority": "Ministry of Health (Kemenkes)",
+    "source_url": "https://regalkes.kemkes.go.id",
+    "instrument": "Law 17/2023 on Health and Ministry of Health medical device regulations",
+    "publication_date": "2023-08-08",
+    "effective_date": "2023-08-08",
+    "depends_on": [
+      "ID-A-01"
+    ],
+    "keywords": [
+      "medical device",
+      "izin edar",
+      "software as a medical device",
+      "AI diagnosis",
+      "health product approval"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ID-C-02",
+    "country": "ID",
+    "area": "C",
+    "category": "healthcare_licensing",
+    "sector": "healthcare",
+    "title": "Health data platform integration for healthcare facilities",
+    "summary": "Healthcare facilities in Indonesia are being required to integrate electronic medical records with the national SATUSEHAT platform. Startups selling into hospitals should check whether their product must interoperate with SATUSEHAT and what technical onboarding applies.",
+    "applicable_company_types": [
+      "PT PMA",
+      "Technology vendor"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Ministry of Health (Kemenkes)",
+    "source_url": "https://satusehat.kemkes.go.id",
+    "instrument": "Minister of Health Regulation 24/2022 on Medical Records",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [
+      "ID-C-01"
+    ],
+    "keywords": [
+      "electronic medical records",
+      "hospital",
+      "interoperability",
+      "SATUSEHAT",
+      "pilot"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ID-C-03",
+    "country": "ID",
+    "area": "C",
+    "category": "business_licensing",
+    "sector": "all",
+    "title": "Electronic System Operator (PSE) registration",
+    "summary": "Private operators of electronic systems that serve users in Indonesia, including apps and SaaS platforms, are expected to register as an Electronic System Operator with the ministry responsible for digital affairs.",
+    "applicable_company_types": [
+      "PT PMA",
+      "Foreign platform"
+    ],
+    "foreign_ownership_notes": "Foreign operators serving Indonesian users may also be in scope.",
+    "authority": "Ministry of Communication and Digital Affairs (Komdigi)",
+    "source_url": "https://www.komdigi.go.id",
+    "instrument": "Government Regulation 71/2019 on Electronic Systems and Transactions",
+    "publication_date": "2019-10-10",
+    "effective_date": "2019-10-10",
+    "depends_on": [
+      "ID-A-01"
+    ],
+    "keywords": [
+      "PSE",
+      "app registration",
+      "SaaS",
+      "platform",
+      "electronic system"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ID-D-01",
+    "country": "ID",
+    "area": "D",
+    "category": "taxation",
+    "sector": "all",
+    "title": "Tax registration, corporate income tax and VAT",
+    "summary": "A local entity registers for a Taxpayer Identification Number (NPWP), files corporate income tax and, above the VAT threshold, registers as a VAT-able entrepreneur. Cross-border service fees and royalties to the parent may attract withholding tax, subject to the Malaysia-Indonesia tax treaty.",
+    "applicable_company_types": [
+      "PT PMA"
+    ],
+    "foreign_ownership_notes": "Transfer pricing documentation applies to related-party transactions.",
+    "authority": "Directorate General of Taxes (DJP)",
+    "source_url": "https://www.pajak.go.id",
+    "instrument": "Law 7/2021 on Harmonisation of Tax Regulations",
+    "publication_date": "2021-10-29",
+    "effective_date": "2022-01-01",
+    "depends_on": [
+      "ID-A-01"
+    ],
+    "keywords": [
+      "NPWP",
+      "corporate tax",
+      "VAT",
+      "PPN",
+      "withholding",
+      "transfer pricing",
+      "tax treaty"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ID-E-01",
+    "country": "ID",
+    "area": "E",
+    "category": "incentives",
+    "sector": "all",
+    "title": "Investment incentives: tax holiday, tax allowance and R&D super deduction",
+    "summary": "Indonesia offers fiscal incentives for qualifying investments, including tax holidays for pioneer industries, tax allowances, and an additional deduction for qualifying research and development. Eligibility depends on business field, investment size and location.",
+    "applicable_company_types": [
+      "PT PMA"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Ministry of Investment / BKPM and Ministry of Finance",
+    "source_url": "https://www.bkpm.go.id",
+    "instrument": "Ministry of Finance Regulation 153/2020 (R&D super deduction) and related incentive regulations",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [
+      "ID-B-01"
+    ],
+    "keywords": [
+      "tax holiday",
+      "R&D",
+      "super deduction",
+      "incentive",
+      "subsidy",
+      "grant"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ID-F-01",
+    "country": "ID",
+    "area": "F",
+    "category": "employment",
+    "sector": "all",
+    "title": "Foreign worker utilisation plan (RPTKA)",
+    "summary": "Employers hiring foreign staff need an approved Foreign Worker Utilisation Plan (RPTKA) from the Ministry of Manpower, pay the foreign worker levy, and generally assign Indonesian counterparts for knowledge transfer. Certain positions are closed to foreigners.",
+    "applicable_company_types": [
+      "PT PMA"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Ministry of Manpower (Kemnaker)",
+    "source_url": "https://tka-online.kemnaker.go.id",
+    "instrument": "Government Regulation 34/2021 on Utilisation of Foreign Workers",
+    "publication_date": "2021-02-02",
+    "effective_date": "2021-02-02",
+    "depends_on": [
+      "ID-A-01"
+    ],
+    "keywords": [
+      "foreign workers",
+      "RPTKA",
+      "hiring",
+      "work permit",
+      "expatriate",
+      "intra-company transfer",
+      "employees",
+      "employee",
+      "recruit",
+      "recruiting",
+      "recruitment",
+      "staff"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ID-F-02",
+    "country": "ID",
+    "area": "F",
+    "category": "immigration",
+    "sector": "all",
+    "title": "Work and stay permits (KITAS) and business visit visas",
+    "summary": "Foreign founders and staff working in Indonesia need the appropriate visa and limited stay permit (KITAS), applied for online after RPTKA approval. Short business visits for meetings use a separate visit visa category that does not permit work.",
+    "applicable_company_types": [
+      "PT PMA"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Directorate General of Immigration",
+    "source_url": "https://evisa.imigrasi.go.id",
+    "instrument": "Law 6/2011 on Immigration (as amended)",
+    "publication_date": "2011-05-05",
+    "effective_date": "2011-05-05",
+    "depends_on": [
+      "ID-F-01"
+    ],
+    "keywords": [
+      "visa",
+      "KITAS",
+      "relocation",
+      "business visit",
+      "founder relocation",
+      "immigration",
+      "employees",
+      "relocate",
+      "travel",
+      "recruiting"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ID-F-03",
+    "country": "ID",
+    "area": "F",
+    "category": "employment",
+    "sector": "all",
+    "title": "Local employment and social security registration",
+    "summary": "Employing local staff requires employment agreements compliant with Indonesian manpower law, registration with BPJS Ketenagakerjaan (employment social security) and BPJS Kesehatan (health insurance), and payroll income tax withholding.",
+    "applicable_company_types": [
+      "PT PMA"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Ministry of Manpower (Kemnaker)",
+    "source_url": "https://kemnaker.go.id",
+    "instrument": "Law 6/2023 (Job Creation) amending Law 13/2003 on Manpower",
+    "publication_date": "2023-03-31",
+    "effective_date": "2023-03-31",
+    "depends_on": [
+      "ID-A-01",
+      "ID-D-01"
+    ],
+    "keywords": [
+      "local hiring",
+      "BPJS",
+      "payroll",
+      "employment contract",
+      "talent",
+      "employees",
+      "employee",
+      "recruit",
+      "recruiting",
+      "recruitment",
+      "staff"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ID-G-01",
+    "country": "ID",
+    "area": "G",
+    "category": "intellectual_property",
+    "sector": "all",
+    "title": "Trademark and patent protection in Indonesia",
+    "summary": "Indonesia is a first-to-file trademark jurisdiction, so register the brand with DJKI before launch. Software is mainly protected by copyright; patentability of software-implemented inventions is limited and needs specialist advice. Indonesia is a Madrid Protocol member.",
+    "applicable_company_types": [
+      "Any"
+    ],
+    "foreign_ownership_notes": "Foreign applicants file through a registered IP consultant.",
+    "authority": "Directorate General of Intellectual Property (DJKI)",
+    "source_url": "https://www.dgip.go.id",
+    "instrument": "Law 20/2016 on Trademarks; Law 13/2016 on Patents (as amended)",
+    "publication_date": "2016-11-25",
+    "effective_date": "2016-11-25",
+    "depends_on": [],
+    "keywords": [
+      "trademark",
+      "patent",
+      "copyright",
+      "brand",
+      "Madrid Protocol",
+      "IP"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ID-H-01",
+    "country": "ID",
+    "area": "H",
+    "category": "data_protection",
+    "sector": "all",
+    "title": "Personal Data Protection Law (UU PDP)",
+    "summary": "The PDP Law sets lawful bases for processing, data subject rights, breach notification within 3x24 hours, and conditions for cross-border transfer. Health data is specific (sensitive) personal data with stricter obligations, which may require a data protection impact assessment and a data protection officer.",
+    "applicable_company_types": [
+      "Any controller or processor"
+    ],
+    "foreign_ownership_notes": "Applies to processing outside Indonesia that affects Indonesian data subjects.",
+    "authority": "Ministry of Communication and Digital Affairs (Komdigi)",
+    "source_url": "https://www.komdigi.go.id",
+    "instrument": "Law 27/2022 on Personal Data Protection",
+    "publication_date": "2022-10-17",
+    "effective_date": "2024-10-17",
+    "depends_on": [],
+    "keywords": [
+      "personal data",
+      "health data",
+      "consent",
+      "cross-border transfer",
+      "breach",
+      "DPO",
+      "privacy"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ID-I-01",
+    "country": "ID",
+    "area": "I",
+    "category": "operations",
+    "sector": "healthcare",
+    "title": "Hospital procurement and pilot agreements",
+    "summary": "Pilots with public hospitals may follow government procurement rules (including the e-catalogue), while private hospitals contract directly. Confirm the contracting entity, data sharing terms and whether the pilot needs ethics committee approval.",
+    "applicable_company_types": [
+      "PT PMA",
+      "Local partner"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "National Public Procurement Agency (LKPP)",
+    "source_url": "https://www.lkpp.go.id",
+    "instrument": "Presidential Regulation 16/2018 on Government Procurement (as amended)",
+    "publication_date": "2018-03-22",
+    "effective_date": "2018-03-22",
+    "depends_on": [
+      "ID-A-01",
+      "ID-C-01",
+      "ID-H-01"
+    ],
+    "keywords": [
+      "hospital",
+      "procurement",
+      "pilot",
+      "POC",
+      "contract",
+      "e-catalogue"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "MY-A-01",
+    "country": "MY",
+    "area": "A",
+    "category": "company_registration",
+    "sector": "all",
+    "title": "Company incorporation with SSM",
+    "summary": "Malaysian companies are incorporated with the Companies Commission of Malaysia (SSM) under the Companies Act 2016 through the MyCoID portal. Foreign companies can incorporate a local Sdn Bhd or register a branch.",
+    "applicable_company_types": [
+      "Sdn Bhd",
+      "Foreign company branch"
+    ],
+    "foreign_ownership_notes": "Most sectors allow 100% foreign ownership; some services sectors carry equity conditions.",
+    "authority": "Companies Commission of Malaysia (SSM)",
+    "source_url": "https://www.ssm.com.my",
+    "instrument": "Companies Act 2016",
+    "publication_date": "2016-09-15",
+    "effective_date": "2017-01-31",
+    "depends_on": [],
+    "keywords": [
+      "incorporation",
+      "Sdn Bhd",
+      "SSM",
+      "registration",
+      "branch"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "MY-B-01",
+    "country": "MY",
+    "area": "B",
+    "category": "foreign_investment",
+    "sector": "all",
+    "title": "Investment promotion and sector equity guidance",
+    "summary": "MIDA is the first point of contact for foreign investment in Malaysia, including manufacturing and selected services sectors, and advises on equity policy and approvals.",
+    "applicable_company_types": [
+      "Sdn Bhd"
+    ],
+    "foreign_ownership_notes": "Equity conditions vary by sector and licensing ministry.",
+    "authority": "Malaysian Investment Development Authority (MIDA)",
+    "source_url": "https://www.mida.gov.my",
+    "instrument": "MIDA investment guidelines",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [],
+    "keywords": [
+      "foreign investment",
+      "MIDA",
+      "equity",
+      "investment promotion"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "MY-C-01",
+    "country": "MY",
+    "area": "C",
+    "category": "healthcare_licensing",
+    "sector": "healthcare",
+    "title": "Medical device registration with the Medical Device Authority",
+    "summary": "Medical devices, which can include standalone medical software, must be registered with the Medical Device Authority before being placed on the Malaysian market, and establishments dealing in them need a licence.",
+    "applicable_company_types": [
+      "Sdn Bhd",
+      "Authorised representative"
+    ],
+    "foreign_ownership_notes": "Foreign manufacturers appoint a local authorised representative.",
+    "authority": "Medical Device Authority (MDA)",
+    "source_url": "https://portal.mda.gov.my",
+    "instrument": "Medical Device Act 2012 (Act 737)",
+    "publication_date": "2012-02-09",
+    "effective_date": "2013-07-01",
+    "depends_on": [
+      "MY-A-01"
+    ],
+    "keywords": [
+      "medical device",
+      "software as a medical device",
+      "registration",
+      "MDA"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "MY-D-01",
+    "country": "MY",
+    "area": "D",
+    "category": "taxation",
+    "sector": "all",
+    "title": "Income tax registration and Sales and Service Tax",
+    "summary": "Companies register with the Inland Revenue Board (LHDN) for income tax. Digital and taxable services above the threshold may require Service Tax registration with the Royal Malaysian Customs Department.",
+    "applicable_company_types": [
+      "Sdn Bhd"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Inland Revenue Board of Malaysia (LHDN)",
+    "source_url": "https://www.hasil.gov.my",
+    "instrument": "Income Tax Act 1967; Service Tax Act 2018",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [
+      "MY-A-01"
+    ],
+    "keywords": [
+      "income tax",
+      "SST",
+      "service tax",
+      "LHDN",
+      "e-invoicing"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "MY-E-01",
+    "country": "MY",
+    "area": "E",
+    "category": "incentives",
+    "sector": "all",
+    "title": "Export and internationalisation support for Malaysian companies",
+    "summary": "Malaysian companies expanding abroad can investigate MATRADE export assistance and MDEC programmes supporting digital companies going regional. Eligibility and open calls change, so confirm with the provider.",
+    "applicable_company_types": [
+      "Sdn Bhd"
+    ],
+    "foreign_ownership_notes": "Most schemes require Malaysian ownership thresholds.",
+    "authority": "MATRADE and MDEC",
+    "source_url": "https://www.matrade.gov.my",
+    "instrument": "Programme guidelines",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [],
+    "keywords": [
+      "export grant",
+      "internationalisation",
+      "MDEC",
+      "MATRADE",
+      "funding"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "MY-F-01",
+    "country": "MY",
+    "area": "F",
+    "category": "immigration",
+    "sector": "all",
+    "title": "Employment Pass for foreign professionals",
+    "summary": "Foreign professionals working in Malaysia need an Employment Pass, applied for by the employer through the Expatriate Services Division after the company is registered on the portal. The Malaysia Tech Entrepreneur Programme offers a separate route for tech founders.",
+    "applicable_company_types": [
+      "Sdn Bhd"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Immigration Department of Malaysia (Expatriate Services Division)",
+    "source_url": "https://esd.imi.gov.my",
+    "instrument": "Immigration Act 1959/63",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [
+      "MY-A-01"
+    ],
+    "keywords": [
+      "employment pass",
+      "expatriate",
+      "work permit",
+      "MTEP",
+      "founder visa",
+      "employees",
+      "relocate",
+      "travel",
+      "recruiting"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "MY-G-01",
+    "country": "MY",
+    "area": "G",
+    "category": "intellectual_property",
+    "sector": "all",
+    "title": "Trademark, patent and design registration with MyIPO",
+    "summary": "Trademarks, patents and industrial designs are registered with the Intellectual Property Corporation of Malaysia. Malaysia is a Madrid Protocol member, which helps extend a Malaysian filing to Indonesia and Singapore.",
+    "applicable_company_types": [
+      "Any"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Intellectual Property Corporation of Malaysia (MyIPO)",
+    "source_url": "https://www.myipo.gov.my",
+    "instrument": "Trademarks Act 2019; Patents Act 1983",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [],
+    "keywords": [
+      "trademark",
+      "patent",
+      "Madrid Protocol",
+      "IP",
+      "industrial design"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "MY-H-01",
+    "country": "MY",
+    "area": "H",
+    "category": "data_protection",
+    "sector": "all",
+    "title": "Personal Data Protection Act 2010 (as amended 2024)",
+    "summary": "The PDPA governs commercial processing of personal data, including health data as sensitive personal data. The 2024 amendments introduced breach notification, data portability, data protection officer appointment and revised cross-border transfer rules. The amendments commenced in phases during 2025.",
+    "applicable_company_types": [
+      "Any data user or processor"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Personal Data Protection Commissioner (JPDP)",
+    "source_url": "https://www.pdp.gov.my",
+    "instrument": "Personal Data Protection Act 2010; Personal Data Protection (Amendment) Act 2024",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [],
+    "keywords": [
+      "personal data",
+      "PDPA",
+      "breach notification",
+      "DPO",
+      "cross-border transfer",
+      "health data"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "SG-A-01",
+    "country": "SG",
+    "area": "A",
+    "category": "company_registration",
+    "sector": "all",
+    "title": "Company incorporation with ACRA via BizFile",
+    "summary": "Companies are incorporated online through ACRA's BizFile portal. A private limited company needs at least one locally resident director and a local registered address, which affects foreign-founder structures.",
+    "applicable_company_types": [
+      "Pte Ltd",
+      "Branch",
+      "Representative office"
+    ],
+    "foreign_ownership_notes": "Most sectors allow full foreign ownership. Local resident director requirement applies.",
+    "authority": "Accounting and Corporate Regulatory Authority (ACRA)",
+    "source_url": "https://www.acra.gov.sg",
+    "instrument": "Companies Act 1967",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [],
+    "keywords": [
+      "incorporation",
+      "Pte Ltd",
+      "resident director",
+      "BizFile",
+      "ACRA"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "SG-B-01",
+    "country": "SG",
+    "area": "B",
+    "category": "foreign_investment",
+    "sector": "all",
+    "title": "Investment facilitation through EDB",
+    "summary": "The Economic Development Board supports companies setting up regional operations in Singapore. Foreign ownership is generally unrestricted outside specific regulated sectors, but sector regulators may impose conditions.",
+    "applicable_company_types": [
+      "Pte Ltd"
+    ],
+    "foreign_ownership_notes": "Check sector regulators for regulated activities.",
+    "authority": "Economic Development Board (EDB)",
+    "source_url": "https://www.edb.gov.sg",
+    "instrument": "EDB programme guidance",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [],
+    "keywords": [
+      "foreign investment",
+      "EDB",
+      "regional HQ",
+      "investment"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "SG-C-01",
+    "country": "SG",
+    "area": "C",
+    "category": "healthcare_licensing",
+    "sector": "healthcare",
+    "title": "Software and AI medical device regulation by HSA",
+    "summary": "Software intended for medical purposes, including AI-based clinical tools, may be regulated as a medical device by the Health Sciences Authority and require product registration and a dealer's licence. HSA publishes specific guidance for software and AI medical devices.",
+    "applicable_company_types": [
+      "Pte Ltd",
+      "Registrant"
+    ],
+    "foreign_ownership_notes": "A local registrant holds the product registration.",
+    "authority": "Health Sciences Authority (HSA)",
+    "source_url": "https://www.hsa.gov.sg",
+    "instrument": "Health Products Act 2007 and HSA software medical device guidelines",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [
+      "SG-A-01"
+    ],
+    "keywords": [
+      "medical device",
+      "software as a medical device",
+      "AI",
+      "HSA",
+      "registration"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "SG-D-01",
+    "country": "SG",
+    "area": "D",
+    "category": "taxation",
+    "sector": "all",
+    "title": "Corporate income tax and GST registration",
+    "summary": "Companies file corporate income tax with IRAS and must register for GST once taxable supplies exceed the registration threshold. Start-up tax exemptions may apply to qualifying new companies.",
+    "applicable_company_types": [
+      "Pte Ltd"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Inland Revenue Authority of Singapore (IRAS)",
+    "source_url": "https://www.iras.gov.sg",
+    "instrument": "Income Tax Act 1947; Goods and Services Tax Act 1993",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [
+      "SG-A-01"
+    ],
+    "keywords": [
+      "corporate tax",
+      "GST",
+      "start-up exemption",
+      "IRAS"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "SG-E-01",
+    "country": "SG",
+    "area": "E",
+    "category": "incentives",
+    "sector": "all",
+    "title": "Startup SG and Enterprise Singapore support",
+    "summary": "Startup SG brings together government schemes for founders, including co-investment and accelerator support, while Enterprise Singapore runs grants for innovation and capability building. Eligibility often requires local incorporation and local shareholding.",
+    "applicable_company_types": [
+      "Pte Ltd"
+    ],
+    "foreign_ownership_notes": "Many schemes require minimum local shareholding.",
+    "authority": "Enterprise Singapore",
+    "source_url": "https://www.startupsg.gov.sg",
+    "instrument": "Programme guidelines",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [
+      "SG-A-01"
+    ],
+    "keywords": [
+      "grant",
+      "Startup SG",
+      "co-investment",
+      "accelerator",
+      "Enterprise Singapore"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "SG-F-01",
+    "country": "SG",
+    "area": "F",
+    "category": "immigration",
+    "sector": "all",
+    "title": "Employment Pass, EntrePass and the COMPASS framework",
+    "summary": "Foreign professionals need an Employment Pass, assessed under the points-based COMPASS framework. Founders may consider EntrePass. Employers must also meet fair hiring expectations for local candidates.",
+    "applicable_company_types": [
+      "Pte Ltd"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Ministry of Manpower (MOM)",
+    "source_url": "https://www.mom.gov.sg",
+    "instrument": "Employment of Foreign Manpower Act 1990",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [
+      "SG-A-01"
+    ],
+    "keywords": [
+      "Employment Pass",
+      "EntrePass",
+      "COMPASS",
+      "work pass",
+      "hiring",
+      "employees",
+      "relocate",
+      "travel",
+      "recruiting"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "SG-G-01",
+    "country": "SG",
+    "area": "G",
+    "category": "intellectual_property",
+    "sector": "all",
+    "title": "IP registration with IPOS",
+    "summary": "Trademarks, patents and registered designs are filed with the Intellectual Property Office of Singapore, which also offers accelerated patent programmes and IP advisory support for startups.",
+    "applicable_company_types": [
+      "Any"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Intellectual Property Office of Singapore (IPOS)",
+    "source_url": "https://www.ipos.gov.sg",
+    "instrument": "Trade Marks Act 1998; Patents Act 1994",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [],
+    "keywords": [
+      "trademark",
+      "patent",
+      "IPOS",
+      "IP"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "SG-H-01",
+    "country": "SG",
+    "area": "H",
+    "category": "data_protection",
+    "sector": "all",
+    "title": "Personal Data Protection Act 2012",
+    "summary": "The PDPA covers consent, purpose limitation, mandatory breach notification and transfer limitation for overseas transfers. PDPC publishes advisory guidelines for the healthcare sector and for AI recommendation and decision systems.",
+    "applicable_company_types": [
+      "Any organisation"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "Personal Data Protection Commission (PDPC)",
+    "source_url": "https://www.pdpc.gov.sg",
+    "instrument": "Personal Data Protection Act 2012",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [],
+    "keywords": [
+      "PDPA",
+      "personal data",
+      "breach notification",
+      "transfer limitation",
+      "AI",
+      "healthcare"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ASEAN-G-01",
+    "country": "ASEAN",
+    "area": "G",
+    "category": "intellectual_property",
+    "sector": "all",
+    "title": "ASEAN IP Portal for regional IP searches",
+    "summary": "The ASEAN IP Portal links the national IP offices of ASEAN member states and is a starting point for searching trademarks, patents and industrial designs across the region before filing nationally.",
+    "applicable_company_types": [
+      "Any"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "ASEAN Working Group on IP Cooperation",
+    "source_url": "https://www.aseanip.org",
+    "instrument": "ASEAN IP Rights Action Plan",
+    "publication_date": null,
+    "effective_date": null,
+    "depends_on": [],
+    "keywords": [
+      "regional IP search",
+      "trademark search",
+      "ASEAN"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  },
+  {
+    "id": "ASEAN-H-01",
+    "country": "ASEAN",
+    "area": "H",
+    "category": "data_protection",
+    "sector": "all",
+    "title": "ASEAN Model Contractual Clauses for cross-border data flows",
+    "summary": "The ASEAN Model Contractual Clauses are voluntary template terms for transferring personal data between ASEAN countries. They can support, but do not replace, national transfer requirements.",
+    "applicable_company_types": [
+      "Any"
+    ],
+    "foreign_ownership_notes": "",
+    "authority": "ASEAN Digital Ministers",
+    "source_url": "https://asean.org",
+    "instrument": "ASEAN Model Contractual Clauses for Cross Border Data Flows (2021)",
+    "publication_date": "2021-01-22",
+    "effective_date": null,
+    "depends_on": [],
+    "keywords": [
+      "cross-border transfer",
+      "contract clauses",
+      "data flows",
+      "ASEAN"
+    ],
+    "verification_status": "seeded_unreviewed",
+    "last_verified": null,
+    "reviewer_notes": "Seeded from the official source homepage for the hackathon prototype. Needs professional review before reliance."
+  }
+]

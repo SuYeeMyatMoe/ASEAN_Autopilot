@@ -1,0 +1,202 @@
+- generic [ref=f1e3]:
+  - complementary [ref=f1e4]:
+    - link "ASEAN Mission Control" [ref=f1e5] [cursor=pointer]:
+      - /url: /
+    - navigation "App" [ref=f1e10]:
+      - generic [ref=f1e11]:
+        - paragraph [ref=f1e12]: Understand
+        - link "Founder DNA" [ref=f1e13] [cursor=pointer]:
+          - /url: /app/onboard
+        - link "Mission" [ref=f1e16] [cursor=pointer]:
+          - /url: /app/mission
+      - generic [ref=f1e19]:
+        - paragraph [ref=f1e20]: Borderless Launchpad
+        - link "Launch Passport" [ref=f1e21] [cursor=pointer]:
+          - /url: /app/passport
+        - link "Gap check" [ref=f1e24] [cursor=pointer]:
+          - /url: /app/gaps
+        - link "Roadmap" [ref=f1e27] [cursor=pointer]:
+          - /url: /app/roadmap
+        - link "Compare markets" [ref=f1e30] [cursor=pointer]:
+          - /url: /app/compare
+      - generic [ref=f1e33]:
+        - paragraph [ref=f1e34]: Ecosystem
+        - link "Discover" [ref=f1e35] [cursor=pointer]:
+          - /url: /app/discover
+        - link "Market Access Desk" [ref=f1e38] [cursor=pointer]:
+          - /url: /app/desk
+        - link "Regulatory Radar" [ref=f1e41] [cursor=pointer]:
+          - /url: /app/radar
+        - link "Ecosystem Twin" [ref=f1e44] [cursor=pointer]:
+          - /url: /app/twin
+    - generic [ref=f1e47]: Demo mode, no API key
+  - generic [ref=f1e49]:
+    - banner [ref=f1e50]:
+      - link "Malaysia to Indonesia establish a presence in Indonesia, run a pilot with private hospitals in Jakarta, and hire local ML engineers" [ref=f1e205] [cursor=pointer]:
+        - /url: /app/mission
+        - generic [ref=f1e208]: Malaysia to Indonesia
+        - generic [ref=f1e209]: establish a presence in Indonesia, run a pilot with private hospitals in Jakarta, and hire local ML engineers
+      - generic [ref=f1e52]:
+        - button "Ask" [ref=f1e53]
+        - button "Switch to dark mode" [ref=f1e56]
+    - main [ref=f1e210]:
+      - generic [ref=f1e211]:
+        - generic [ref=f1e212]:
+          - generic [ref=f1e213]:
+            - heading "Country Launch Passport" [level=1] [ref=f1e214]
+            - paragraph [ref=f1e215]: Requirements that may apply to your expansion, matched to your profile and linked to the official source.
+          - button "Regenerate" [ref=f1e217]
+        - generic [ref=f1e220]:
+          - generic [ref=f1e221]:
+            - generic [ref=f1e222]:
+              - generic [ref=f1e223]: Passport cb99bf97e24e
+              - generic "No GEMINI_API_KEY set; deterministic demo output." [ref=f1e224]: Demo data
+            - generic [ref=f1e227]:
+              - paragraph [ref=f1e228]: Nadi Health Sdn Bhd
+              - heading "Malaysia to Indonesia" [level=2] [ref=f1e229]
+              - paragraph [ref=f1e230]: Rule-based passport built from the source records. Connect Gemma 4 for a personalised analysis.
+            - paragraph [ref=f1e231]: Issued 10/31/2026
+          - generic [ref=f1e232]:
+            - generic [ref=f1e233]:
+              - generic "Add details so this can be assessed." [ref=f1e234]: Information missing
+              - generic [ref=f1e237]: "1"
+            - generic [ref=f1e238]:
+              - generic "A qualified local expert should confirm this." [ref=f1e239]: Professional review
+              - generic [ref=f1e242]: "5"
+            - generic [ref=f1e243]:
+              - generic "A task or document is needed." [ref=f1e244]: Action required
+              - generic [ref=f1e247]: "9"
+            - generic [ref=f1e248]:
+              - generic "No reliable current source confirmed yet." [ref=f1e249]: Source pending
+              - generic [ref=f1e252]: "0"
+            - generic [ref=f1e253]:
+              - generic "Your materials already cover this." [ref=f1e254]: Information available
+              - generic [ref=f1e257]: "0"
+        - tablist "Requirement areas" [ref=f1e258]:
+          - tab "All areas" [selected] [ref=f1e259]
+          - tab "ACompany registration and establishment" [ref=f1e260]
+          - tab "BForeign investment and ownership" [ref=f1e261]
+          - tab "CLicences and sector regulation" [ref=f1e262]
+          - tab "DTaxation and commercial" [ref=f1e263]
+          - tab "ESubsidies and incentives" [ref=f1e264]
+          - tab "FVisa, immigration and talent" [ref=f1e265]
+          - tab "GIntellectual property" [ref=f1e266]
+          - tab "HData protection and privacy" [ref=f1e267]
+          - tab "IOperational compliance" [ref=f1e268]
+        - tabpanel [ref=f1e269]:
+          - article [ref=f1e270]:
+            - button [expanded] [ref=f1e271]:
+              - generic [ref=f1e272]:
+                - generic "Add details so this can be assessed." [ref=f1e274]: Information missing
+                - heading "Foreign-owned limited liability company (PT PMA) via OSS" [level=3] [ref=f1e277]
+                - paragraph [ref=f1e278]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches company registration in this market.
+            - generic [ref=f1e282]:
+              - generic [ref=f1e283]:
+                - paragraph [ref=f1e284]: Next step
+                - paragraph [ref=f1e285]: Decide the intended local operating structure and confirm it with a corporate lawyer.
+              - generic [ref=f1e286]:
+                - generic [ref=f1e287]:
+                  - paragraph [ref=f1e288]: What you already have
+                  - list [ref=f1e289]:
+                    - listitem [ref=f1e290]: Registered company in origin country
+                - generic [ref=f1e291]:
+                  - paragraph [ref=f1e292]: Still to find out
+                  - list [ref=f1e293]:
+                    - listitem [ref=f1e294]: Intended local business structure
+              - generic [ref=f1e295]:
+                - paragraph [ref=f1e296]: What the source says
+                - paragraph [ref=f1e297]: Foreign-owned businesses generally operate in Indonesia through a PT PMA registered on the Online Single Submission (OSS) risk-based licensing system, which issues the Business Identification Number (NIB). Confirm whether a PT PMA, representative office or partner-led model fits the planned activities.
+                - paragraph [ref=f1e298]: Government Regulation 5/2021 on Risk-Based Business Licensing
+              - generic [ref=f1e299]:
+                - link "Ministry of Investment / BKPM (opens official source)" [ref=f1e300] [cursor=pointer]:
+                  - /url: https://oss.go.id
+                  - text: Ministry of Investment / BKPM
+                  - generic [ref=f1e303]: (opens official source)
+                - generic [ref=f1e304]: Seeded source, not yet reviewed
+                - generic [ref=f1e307]: ID-A-01
+          - article [ref=f1e308]:
+            - button [ref=f1e309]:
+              - generic [ref=f1e310]:
+                - generic "A qualified local expert should confirm this." [ref=f1e312]: Professional review
+                - heading "Personal Data Protection Law (UU PDP)" [level=3] [ref=f1e315]
+                - paragraph [ref=f1e316]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches data protection in this market.
+          - article [ref=f1e319]:
+            - button [ref=f1e320]:
+              - generic [ref=f1e321]:
+                - generic "A qualified local expert should confirm this." [ref=f1e323]: Professional review
+                - heading "ASEAN Model Contractual Clauses for cross-border data flows" [level=3] [ref=f1e326]
+                - paragraph [ref=f1e327]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches data protection in this market.
+          - article [ref=f1e330]:
+            - button [ref=f1e331]:
+              - generic [ref=f1e332]:
+                - generic "A qualified local expert should confirm this." [ref=f1e334]: Professional review
+                - heading "Health data platform integration for healthcare facilities" [level=3] [ref=f1e337]
+                - paragraph [ref=f1e338]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches healthcare licensing in this market.
+          - article [ref=f1e341]:
+            - button [ref=f1e342]:
+              - generic [ref=f1e343]:
+                - generic "A qualified local expert should confirm this." [ref=f1e345]: Professional review
+                - heading "Medical device and health software marketing authorisation" [level=3] [ref=f1e348]
+                - paragraph [ref=f1e349]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches healthcare licensing in this market.
+          - article [ref=f1e352]:
+            - button [ref=f1e353]:
+              - generic [ref=f1e354]:
+                - generic "A qualified local expert should confirm this." [ref=f1e356]: Professional review
+                - heading "Business field classification and foreign ownership limits" [level=3] [ref=f1e359]
+                - paragraph [ref=f1e360]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches foreign investment in this market.
+          - article [ref=f1e363]:
+            - button [ref=f1e364]:
+              - generic [ref=f1e365]:
+                - generic "A task or document is needed." [ref=f1e367]: Action required
+                - heading "Hospital procurement and pilot agreements" [level=3] [ref=f1e370]
+                - paragraph [ref=f1e371]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches operations in this market.
+          - article [ref=f1e374]:
+            - button [ref=f1e375]:
+              - generic [ref=f1e376]:
+                - generic "A task or document is needed." [ref=f1e378]: Action required
+                - heading "Electronic System Operator (PSE) registration" [level=3] [ref=f1e381]
+                - paragraph [ref=f1e382]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches business licensing in this market.
+          - article [ref=f1e385]:
+            - button [ref=f1e386]:
+              - generic [ref=f1e387]:
+                - generic "A task or document is needed." [ref=f1e389]: Action required
+                - heading "Local employment and social security registration" [level=3] [ref=f1e392]
+                - paragraph [ref=f1e393]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches employment in this market.
+          - article [ref=f1e396]:
+            - button [ref=f1e397]:
+              - generic [ref=f1e398]:
+                - generic "A task or document is needed." [ref=f1e400]: Action required
+                - heading "Work and stay permits (KITAS) and business visit visas" [level=3] [ref=f1e403]
+                - paragraph [ref=f1e404]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches immigration in this market.
+          - article [ref=f1e407]:
+            - button [ref=f1e408]:
+              - generic [ref=f1e409]:
+                - generic "A task or document is needed." [ref=f1e411]: Action required
+                - heading "Tax registration, corporate income tax and VAT" [level=3] [ref=f1e414]
+                - paragraph [ref=f1e415]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches taxation in this market.
+          - article [ref=f1e418]:
+            - button [ref=f1e419]:
+              - generic [ref=f1e420]:
+                - generic "A task or document is needed." [ref=f1e422]: Action required
+                - heading "Trademark and patent protection in Indonesia" [level=3] [ref=f1e425]
+                - paragraph [ref=f1e426]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches intellectual property in this market.
+          - article [ref=f1e429]:
+            - button [ref=f1e430]:
+              - generic [ref=f1e431]:
+                - generic "A task or document is needed." [ref=f1e433]: Action required
+                - 'heading "Investment incentives: tax holiday, tax allowance and R&D super deduction" [level=3] [ref=f1e436]'
+                - paragraph [ref=f1e437]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches incentives in this market.
+          - article [ref=f1e440]:
+            - button [ref=f1e441]:
+              - generic [ref=f1e442]:
+                - generic "A task or document is needed." [ref=f1e444]: Action required
+                - heading "Foreign worker utilisation plan (RPTKA)" [level=3] [ref=f1e447]
+                - paragraph [ref=f1e448]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches employment in this market.
+          - article [ref=f1e451]:
+            - button [ref=f1e452]:
+              - generic [ref=f1e453]:
+                - generic "A task or document is needed." [ref=f1e455]: Action required
+                - heading "ASEAN IP Portal for regional IP searches" [level=3] [ref=f1e458]
+                - paragraph [ref=f1e459]: Your objective involves establish a presence in indonesia, run a pilot with private hospitals in jakarta, and hire local ml engineers, which touches intellectual property in this market.
+        - paragraph [ref=f1e462]: No GEMINI_API_KEY set; deterministic demo output.
+        - paragraph [ref=f1e463]: Guidance only, not legal, tax or immigration advice. Confirm requirements with the responsible authority or a qualified local professional.

@@ -1,0 +1,163 @@
+- generic [ref=f2e3]:
+  - complementary [ref=f2e4]:
+    - link "ASEAN Mission Control" [ref=f2e5] [cursor=pointer]:
+      - /url: /
+    - navigation "App" [ref=f2e10]:
+      - generic [ref=f2e11]:
+        - paragraph [ref=f2e12]: Understand
+        - link "Founder DNA" [ref=f2e13] [cursor=pointer]:
+          - /url: /app/onboard
+        - link "Mission" [ref=f2e16] [cursor=pointer]:
+          - /url: /app/mission
+      - generic [ref=f2e19]:
+        - paragraph [ref=f2e20]: Borderless Launchpad
+        - link "Launch Passport" [ref=f2e21] [cursor=pointer]:
+          - /url: /app/passport
+        - link "Gap check" [ref=f2e24] [cursor=pointer]:
+          - /url: /app/gaps
+        - link "Roadmap" [ref=f2e27] [cursor=pointer]:
+          - /url: /app/roadmap
+        - link "Compare markets" [ref=f2e30] [cursor=pointer]:
+          - /url: /app/compare
+      - generic [ref=f2e33]:
+        - paragraph [ref=f2e34]: Ecosystem
+        - link "Discover" [ref=f2e35] [cursor=pointer]:
+          - /url: /app/discover
+        - link "Market Access Desk" [ref=f2e38] [cursor=pointer]:
+          - /url: /app/desk
+        - link "Regulatory Radar" [ref=f2e41] [cursor=pointer]:
+          - /url: /app/radar
+        - link "Ecosystem Twin" [ref=f2e44] [cursor=pointer]:
+          - /url: /app/twin
+    - generic [ref=f2e47]: Demo mode, no API key
+  - generic [ref=f2e49]:
+    - banner [ref=f2e50]:
+      - link "Malaysia to Indonesia establish a presence in Indonesia, run a pilot with private hospitals in Jakarta, and hire local ML engineers" [ref=f2e73] [cursor=pointer]:
+        - /url: /app/mission
+        - generic [ref=f2e76]: Malaysia to Indonesia
+        - generic [ref=f2e77]: establish a presence in Indonesia, run a pilot with private hospitals in Jakarta, and hire local ML engineers
+      - generic [ref=f2e52]:
+        - button "Ask" [ref=f2e53]
+        - button "Switch to dark mode" [ref=f2e56]
+    - main [ref=f2e59]:
+      - generic [ref=f2e78]:
+        - generic [ref=f2e80]:
+          - heading "Market-entry roadmap" [level=1] [ref=f2e81]
+          - paragraph [ref=f2e82]: Steps ordered by their dependencies in the official sources. Steps in the same column can run at the same time.
+        - list [ref=f2e83]:
+          - listitem [ref=f2e84]:
+            - generic [ref=f2e85]:
+              - generic [ref=f2e86]: "1"
+              - generic [ref=f2e87]:
+                - paragraph [ref=f2e88]: Start here
+                - paragraph [ref=f2e89]: 3 steps
+            - generic [ref=f2e90]:
+              - generic "A qualified local expert should confirm this." [ref=f2e91]: Professional review
+              - paragraph [ref=f2e94]: Business field classification and foreign ownership limits
+              - paragraph [ref=f2e95]: Map each planned activity to a business classification code and check the ownership limit.
+              - paragraph [ref=f2e96]: Ministry of Investment / BKPM
+            - generic [ref=f2e97]:
+              - generic "A task or document is needed." [ref=f2e98]: Action required
+              - paragraph [ref=f2e101]: Trademark and patent protection in Indonesia
+              - paragraph [ref=f2e102]: Search and file your trademark in the target market before launch.
+              - paragraph [ref=f2e103]: Directorate General of Intellectual Property (DJKI)
+            - generic [ref=f2e104]:
+              - generic "A qualified local expert should confirm this." [ref=f2e105]: Professional review
+              - paragraph [ref=f2e108]: Personal Data Protection Law (UU PDP)
+              - paragraph [ref=f2e109]: Map what personal data you collect, where it is stored and whether it leaves the country.
+              - paragraph [ref=f2e110]: Ministry of Communication and Digital Affairs (Komdigi)
+          - listitem [ref=f2e111]:
+            - generic [ref=f2e112]:
+              - generic [ref=f2e113]: "2"
+              - generic [ref=f2e114]:
+                - paragraph [ref=f2e115]: Then, in parallel
+                - paragraph [ref=f2e116]: 2 steps
+            - generic [ref=f2e117]:
+              - generic "Add details so this can be assessed." [ref=f2e118]: Information missing
+              - paragraph [ref=f2e121]: Foreign-owned limited liability company (PT PMA) via OSS
+              - paragraph [ref=f2e122]: Decide the intended local operating structure and confirm it with a corporate lawyer.
+              - paragraph [ref=f2e123]: Ministry of Investment / BKPM
+              - paragraph [ref=f2e125]: "Waits for: Business field classification and foreign ownership limits"
+            - generic [ref=f2e126]:
+              - generic "A task or document is needed." [ref=f2e127]: Action required
+              - paragraph [ref=f2e130]: "Investment incentives: tax holiday, tax allowance and R&D super deduction"
+              - paragraph [ref=f2e131]: Shortlist incentives that match your activity and confirm eligibility with the provider.
+              - paragraph [ref=f2e132]: Ministry of Investment / BKPM and Ministry of Finance
+              - paragraph [ref=f2e134]: "Waits for: Business field classification and foreign ownership limits"
+          - listitem [ref=f2e135]:
+            - generic [ref=f2e136]:
+              - generic [ref=f2e137]: "3"
+              - generic [ref=f2e138]:
+                - paragraph [ref=f2e139]: Then, in parallel
+                - paragraph [ref=f2e140]: 4 steps
+            - generic [ref=f2e141]:
+              - generic "A qualified local expert should confirm this." [ref=f2e142]: Professional review
+              - paragraph [ref=f2e145]: Medical device and health software marketing authorisation
+              - paragraph [ref=f2e146]: Describe the product's intended use and ask a health regulatory consultant whether it is a medical device.
+              - paragraph [ref=f2e147]: Ministry of Health (Kemenkes)
+              - generic [ref=f2e148]:
+                - paragraph [ref=f2e149]: "Waits for: Foreign-owned limited liability company (PT PMA) via OSS"
+                - paragraph [ref=f2e150]: Depends on your final operating structure
+            - generic [ref=f2e153]:
+              - generic "A task or document is needed." [ref=f2e154]: Action required
+              - paragraph [ref=f2e157]: Electronic System Operator (PSE) registration
+              - paragraph [ref=f2e158]: Check whether the platform must register as an electronic system operator.
+              - paragraph [ref=f2e159]: Ministry of Communication and Digital Affairs (Komdigi)
+              - generic [ref=f2e160]:
+                - paragraph [ref=f2e161]: "Waits for: Foreign-owned limited liability company (PT PMA) via OSS"
+                - paragraph [ref=f2e162]: Depends on your final operating structure
+            - generic [ref=f2e165]:
+              - generic "A task or document is needed." [ref=f2e166]: Action required
+              - paragraph [ref=f2e169]: Tax registration, corporate income tax and VAT
+              - paragraph [ref=f2e170]: Book a session with a local tax adviser on registration, VAT and cross-border fees.
+              - paragraph [ref=f2e171]: Directorate General of Taxes (DJP)
+              - generic [ref=f2e172]:
+                - paragraph [ref=f2e173]: "Waits for: Foreign-owned limited liability company (PT PMA) via OSS"
+                - paragraph [ref=f2e174]: Depends on your final operating structure
+            - generic [ref=f2e177]:
+              - generic "A task or document is needed." [ref=f2e178]: Action required
+              - paragraph [ref=f2e181]: Foreign worker utilisation plan (RPTKA)
+              - paragraph [ref=f2e182]: Decide which roles will be local hires and which will be transfers, then check permit needs.
+              - paragraph [ref=f2e183]: Ministry of Manpower (Kemnaker)
+              - generic [ref=f2e184]:
+                - paragraph [ref=f2e185]: "Waits for: Foreign-owned limited liability company (PT PMA) via OSS"
+                - paragraph [ref=f2e186]: Depends on your final operating structure
+          - listitem [ref=f2e189]:
+            - generic [ref=f2e190]:
+              - generic [ref=f2e191]: "4"
+              - generic [ref=f2e192]:
+                - paragraph [ref=f2e193]: Then, in parallel
+                - paragraph [ref=f2e194]: 4 steps
+            - generic [ref=f2e195]:
+              - generic "A qualified local expert should confirm this." [ref=f2e196]: Professional review
+              - paragraph [ref=f2e199]: Health data platform integration for healthcare facilities
+              - paragraph [ref=f2e200]: Describe the product's intended use and ask a health regulatory consultant whether it is a medical device.
+              - paragraph [ref=f2e201]: Ministry of Health (Kemenkes)
+              - generic [ref=f2e202]:
+                - paragraph [ref=f2e203]: "Waits for: Medical device and health software marketing authorisation"
+                - paragraph [ref=f2e204]: Depends on your final operating structure
+            - generic [ref=f2e207]:
+              - generic "A task or document is needed." [ref=f2e208]: Action required
+              - paragraph [ref=f2e211]: Work and stay permits (KITAS) and business visit visas
+              - paragraph [ref=f2e212]: List who needs to travel or relocate and match each person to a visa category.
+              - paragraph [ref=f2e213]: Directorate General of Immigration
+              - generic [ref=f2e214]:
+                - paragraph [ref=f2e215]: "Waits for: Foreign worker utilisation plan (RPTKA)"
+                - paragraph [ref=f2e216]: Depends on your final operating structure
+            - generic [ref=f2e219]:
+              - generic "A task or document is needed." [ref=f2e220]: Action required
+              - paragraph [ref=f2e223]: Local employment and social security registration
+              - paragraph [ref=f2e224]: Decide which roles will be local hires and which will be transfers, then check permit needs.
+              - paragraph [ref=f2e225]: Ministry of Manpower (Kemnaker)
+              - generic [ref=f2e226]:
+                - paragraph [ref=f2e227]: "Waits for: Foreign-owned limited liability company (PT PMA) via OSS; Tax registration, corporate income tax and VAT"
+                - paragraph [ref=f2e228]: Depends on your final operating structure
+            - generic [ref=f2e231]:
+              - generic "A task or document is needed." [ref=f2e232]: Action required
+              - paragraph [ref=f2e235]: Hospital procurement and pilot agreements
+              - paragraph [ref=f2e236]: Confirm the contracting entity and data sharing terms for pilots.
+              - paragraph [ref=f2e237]: National Public Procurement Agency (LKPP)
+              - generic [ref=f2e238]:
+                - paragraph [ref=f2e239]: "Waits for: Foreign-owned limited liability company (PT PMA) via OSS; Medical device and health software marketing authorisation; Personal Data Protection Law (UU PDP)"
+                - paragraph [ref=f2e240]: Depends on your final operating structure
+        - paragraph [ref=f2e243]: Guidance only, not legal, tax or immigration advice. Confirm requirements with the responsible authority or a qualified local professional.

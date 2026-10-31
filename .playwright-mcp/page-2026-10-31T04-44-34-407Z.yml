@@ -1,0 +1,90 @@
+- generic [ref=f1e3]:
+  - complementary [ref=f1e4]:
+    - link "ASEAN Mission Control" [ref=f1e5] [cursor=pointer]:
+      - /url: /
+    - navigation "App" [ref=f1e10]:
+      - generic [ref=f1e11]:
+        - paragraph [ref=f1e12]: Understand
+        - link "Founder DNA" [ref=f1e13] [cursor=pointer]:
+          - /url: /app/onboard
+        - link "Mission" [ref=f1e16] [cursor=pointer]:
+          - /url: /app/mission
+      - generic [ref=f1e19]:
+        - paragraph [ref=f1e20]: Borderless Launchpad
+        - link "Launch Passport" [ref=f1e21] [cursor=pointer]:
+          - /url: /app/passport
+        - link "Gap check" [ref=f1e24] [cursor=pointer]:
+          - /url: /app/gaps
+        - link "Roadmap" [ref=f1e27] [cursor=pointer]:
+          - /url: /app/roadmap
+        - link "Compare markets" [ref=f1e30] [cursor=pointer]:
+          - /url: /app/compare
+      - generic [ref=f1e33]:
+        - paragraph [ref=f1e34]: Ecosystem
+        - link "Discover" [ref=f1e35] [cursor=pointer]:
+          - /url: /app/discover
+        - link "Market Access Desk" [ref=f1e38] [cursor=pointer]:
+          - /url: /app/desk
+        - link "Regulatory Radar" [ref=f1e41] [cursor=pointer]:
+          - /url: /app/radar
+        - link "Ecosystem Twin" [ref=f1e44] [cursor=pointer]:
+          - /url: /app/twin
+    - generic [ref=f1e47]: Demo mode, no API key
+  - generic [ref=f1e49]:
+    - banner [ref=f1e50]:
+      - generic [ref=f1e51]: No active mission
+      - generic [ref=f1e52]:
+        - button "Ask" [ref=f1e53]
+        - button "Switch to dark mode" [ref=f1e56]
+    - main [ref=f1e150]:
+      - generic [ref=f1e151]:
+        - generic [ref=f1e153]:
+          - heading "Mission" [level=1] [ref=f1e154]
+          - paragraph [ref=f1e155]: Pick a target market and describe what you want to do there. The Launch Passport, roadmap and matches are built from this.
+        - generic [ref=f1e156]:
+          - group "Target market (from Malaysia)" [ref=f1e157]:
+            - generic [ref=f1e158]:
+              - text: Target market
+              - generic [ref=f1e159]: (from Malaysia)
+            - generic [ref=f1e160]:
+              - generic [ref=f1e161] [cursor=pointer]:
+                - radio "Indonesia Sources available" [checked] [ref=f1e162]
+                - generic [ref=f1e163]: Indonesia
+                - generic [ref=f1e164]: Sources available
+              - generic [ref=f1e165] [cursor=pointer]:
+                - radio "Singapore Sources available" [ref=f1e166]
+                - generic [ref=f1e167]: Singapore
+                - generic [ref=f1e168]: Sources available
+              - generic [ref=f1e169] [cursor=pointer]:
+                - radio "Thailand Coming soon" [disabled] [ref=f1e170]
+                - generic [ref=f1e171]: Thailand
+                - generic [ref=f1e172]: Coming soon
+              - generic [ref=f1e173] [cursor=pointer]:
+                - radio "Vietnam Coming soon" [disabled] [ref=f1e174]
+                - generic [ref=f1e175]: Vietnam
+                - generic [ref=f1e176]: Coming soon
+              - generic [ref=f1e177] [cursor=pointer]:
+                - radio "Philippines Coming soon" [disabled] [ref=f1e178]
+                - generic [ref=f1e179]: Philippines
+                - generic [ref=f1e180]: Coming soon
+              - generic [ref=f1e181] [cursor=pointer]:
+                - radio "Cambodia Coming soon" [disabled] [ref=f1e182]
+                - generic [ref=f1e183]: Cambodia
+                - generic [ref=f1e184]: Coming soon
+              - generic [ref=f1e185] [cursor=pointer]:
+                - radio "Lao PDR Coming soon" [disabled] [ref=f1e186]
+                - generic [ref=f1e187]: Lao PDR
+                - generic [ref=f1e188]: Coming soon
+              - generic [ref=f1e189] [cursor=pointer]:
+                - radio "Myanmar Coming soon" [disabled] [ref=f1e190]
+                - generic [ref=f1e191]: Myanmar
+                - generic [ref=f1e192]: Coming soon
+              - generic [ref=f1e193] [cursor=pointer]:
+                - radio "Brunei Darussalam Coming soon" [disabled] [ref=f1e194]
+                - generic [ref=f1e195]: Brunei Darussalam
+                - generic [ref=f1e196]: Coming soon
+          - generic [ref=f1e197]:
+            - generic [ref=f1e198]: What do you want to achieve there?
+            - textbox "What do you want to achieve there?" [ref=f1e199]: establish a presence in Indonesia, run a pilot with private hospitals in Jakarta, and hire local ML engineers
+            - paragraph [ref=f1e200]: Include the activities, partners and hires you have in mind, plus anything from the open questions.
+          - button "Generate Launch Passport" [ref=f1e202]
