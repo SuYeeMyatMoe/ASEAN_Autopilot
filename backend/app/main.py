@@ -15,6 +15,10 @@ logging.basicConfig(level=logging.INFO)
 settings = get_settings()
 
 
+if settings.database_url_error:
+    logging.getLogger(__name__).error(settings.database_url_error)
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     init_db()
@@ -50,6 +54,8 @@ def health():
         # Gemini scans uploads into text; Gemma 4 does the reasoning.
         "scan_model": (settings.gemini_scan_model or None) if gemma.live else None,
         "database": "postgres" if settings.resolved_database_url.startswith("postgresql") else "sqlite",
+        # Set when DATABASE_URL is present but unusable (e.g. the Supabase https:// URL).
+        "database_error": settings.database_url_error,
         # False on Vercel without DATABASE_URL: SQLite in /tmp is per instance and wiped on deploy.
         "persistent": not (settings.resolved_database_url.startswith("sqlite") and bool(os.environ.get("VERCEL"))),
         # Which commit is live, so a deploy can be confirmed from the browser.

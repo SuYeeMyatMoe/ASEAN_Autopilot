@@ -136,7 +136,7 @@ Set these in `backend/.env` locally, or in the Vercel project settings when depl
 | `GEMMA_BUDGET_MS` | No | Time budget for one Gemma answer, all attempts included. Default `40000`, well under the function's 300 s ceiling, so a slow model returns the rule-based result instead of a 504. |
 | `GEMINI_SCAN_MODEL` | No | Gemini model that scans uploaded files. Default `gemini-2.5-flash`, with `gemini-flash-latest` as backup. Set it to blank to skip scanning and let Gemma 4 read the files directly. |
 | `DEMO_MODE` | No | `true` forces demo responses even when a key is set. |
-| `DATABASE_URL` | No | Supabase Postgres transaction pooler URL (port 6543). Blank uses a local SQLite file. Create the tables with [`backend/sql/schema.sql`](backend/sql/schema.sql) in the Supabase SQL Editor. |
+| `DATABASE_URL` | No | Supabase Postgres transaction pooler URL (port 6543), starting with `postgresql://`. Not the `https://…supabase.co` project/REST URL: that is ignored and `/api/health` reports it in `database_error`. Blank uses a local SQLite file. Create the tables with [`backend/sql/schema.sql`](backend/sql/schema.sql) in the Supabase SQL Editor. |
 | `CORS_ORIGINS` | No | Comma-separated allowed origins. Default `*`. |
 
 ---

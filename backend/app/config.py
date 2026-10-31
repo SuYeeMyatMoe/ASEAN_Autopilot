@@ -41,8 +41,22 @@ class Settings(BaseSettings):
     cors_origins: str = "*"
 
     @property
+    def database_url_error(self) -> str | None:
+        """Why DATABASE_URL can't be used, or None. A wrong value must not take the API down."""
+        url = self.database_url.strip()
+        if not url or url.startswith(("postgres://", "postgresql://", "postgresql+psycopg://", "sqlite:")):
+            return None
+        if url.startswith(("http://", "https://")):
+            return (
+                "DATABASE_URL is a web address (the Supabase REST/project URL). It must be the Postgres "
+                "connection string: Supabase > Connect > Transaction pooler, starting with postgresql:// "
+                "and using port 6543. Using temporary storage until it is fixed."
+            )
+        return "DATABASE_URL is not a postgresql:// connection string. Using temporary storage until it is fixed."
+
+    @property
     def resolved_database_url(self) -> str:
-        url = self.database_url
+        url = "" if self.database_url_error else self.database_url.strip()
         if not url:
             # Vercel functions have a read-only filesystem except /tmp (data won't persist there).
             folder = Path("/tmp") if os.environ.get("VERCEL") else BACKEND_DIR

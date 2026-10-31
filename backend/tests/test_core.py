@@ -344,3 +344,15 @@ def test_restore_header_reseeds_the_instance_serving_the_retry(tmp_path):
         assert c.get(f"/api/mission/{m['id']}", headers={"X-AMC-Restore": bomb}).status_code == 404
     finally:
         app.dependency_overrides.clear()
+
+
+def test_wrong_database_url_falls_back_instead_of_crashing():
+    from app.config import Settings
+
+    rest = Settings(database_url="https://abc.supabase.co/rest/v1/")
+    assert "connection string" in rest.database_url_error
+    assert rest.resolved_database_url.startswith("sqlite:///")
+    pg = Settings(database_url="postgresql://postgres.abc:pw@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres")
+    assert pg.database_url_error is None
+    assert pg.resolved_database_url.startswith("postgresql+psycopg://")
+    assert Settings(database_url="").database_url_error is None
