@@ -131,7 +131,8 @@ Set these in `backend/.env` locally, or in the Vercel project settings when depl
 | Variable | Required | Description |
 |---|---|---|
 | `GEMINI_API_KEY` | No | Google AI Studio key. Without it every feature uses rule-based demo output, labelled "Demo data". |
-| `GEMMA_MODEL` | No | Pin a Gemma 4 model id. Blank auto-selects the largest instruction-tuned Gemma 4 model your key can access. |
+| `GEMMA_MODEL` | No | Gemma 4 model id. Default `gemma-4-26b-a4b-it` (mixture-of-experts, ~4B active parameters: much faster than the dense 31B with close quality). Blank auto-selects, still preferring the MoE model; the other Gemma 4 model is the automatic backup. |
+| `GEMMA_BUDGET_MS` | No | Time budget for one Gemma answer, all attempts included. Default `50000`, under Vercel's 60 s limit, so a slow model returns the rule-based result instead of a 504. |
 | `GEMINI_SCAN_MODEL` | No | Gemini model that scans uploaded files. Default `gemini-2.5-flash`, with `gemini-flash-latest` as backup. Set it to blank to skip scanning and let Gemma 4 read the files directly. |
 | `DEMO_MODE` | No | `true` forces demo responses even when a key is set. |
 | `DATABASE_URL` | No | Supabase Postgres transaction pooler URL (port 6543). Blank uses a local SQLite file. |
@@ -233,7 +234,7 @@ If Gemini is unavailable, or `GEMINI_SCAN_MODEL` is blank, the app falls back to
 | Closed-book regulatory reasoning | `backend/app/services.py`, `backend/app/llm/prompts.py` | Passport, compare, consultation pack and companion prompts contain only retrieved records. Items citing anything else are dropped. |
 | Structured output | `backend/app/llm/gemma.py` | Gemma returns JSON validated with Pydantic, with one repair call on failure. |
 | Mission Companion | `backend/app/routers/companion.py` | Context-aware multilingual co-pilot. Knows the profile, mission, open items, saved items and referrals. Replies with citations and can trigger one validated action (open a page, search opportunities, compare markets, save an item, check progress). Also explains uploaded documents (scanned by Gemini first) and gives proactive nudges. |
-| Resilience | `backend/app/llm/gemma.py` | On error or timeout, fails over to another Gemma 4 model and skips the failing one for 5 minutes. Voice replies use minimal thinking for lower latency. Each answer shows which model replied. |
+| Resilience | `backend/app/llm/gemma.py` | On error or timeout, fails over to another Gemma 4 model and skips the failing one for 5 minutes. Every answer runs inside a time budget that stays under the 60 s function limit. Voice replies use minimal thinking for lower latency. Each answer shows which model replied. |
 
 ### Dependency roadmap
 

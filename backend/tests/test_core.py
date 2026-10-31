@@ -43,7 +43,7 @@ class FakeGemma(Gemma):
     def live(self):
         return True
 
-    def generate(self, prompt, images=None, temperature=0.2, fast=False, json_mode=False):
+    def generate(self, prompt, images=None, temperature=0.2, fast=False, json_mode=False, deadline=None):
         self.last_model = self._model
         return self.replies.pop(0)
 
@@ -53,6 +53,22 @@ def test_json_repair_path():
     dna, meta = g.generate_json("x", FounderDNA, fallback=lambda: FounderDNA())
     assert dna.company_name == "Nadi"
     assert meta.source == "gemma" and "repaired" in meta.notes[0]
+
+
+def test_skips_repair_when_budget_is_spent():
+    import time
+
+    g = FakeGemma(['{"company_name": 5}', '{"company_name": "Nadi"}'])
+    # Request started long ago: no time left for a repair call, so return the rule-based result.
+    dna, meta = g.generate_json("x", FounderDNA, fallback=lambda: FounderDNA(company_name="fallback"), started=time.monotonic() - 600)
+    assert dna.company_name == "fallback" and meta.source == "fallback"
+
+
+def test_mixture_of_experts_model_is_preferred():
+    from app.llm.gemma import _model_rank
+
+    models = ["gemma-4-31b-it", "gemma-4-e4b-it", "gemma-4-26b-a4b-it"]
+    assert sorted(models, key=_model_rank, reverse=True)[0] == "gemma-4-26b-a4b-it"
 
 
 def test_falls_back_when_repair_fails():

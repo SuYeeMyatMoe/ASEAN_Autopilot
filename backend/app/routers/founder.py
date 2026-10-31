@@ -1,3 +1,5 @@
+import time
+
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlmodel import Session, select
 
@@ -20,6 +22,7 @@ async def extract_founder(
     notes: str = Form(default=""),
     session: Session = Depends(get_session),
 ):
+    started = time.monotonic()
     payload = []
     total = 0
     for f in files:
@@ -41,6 +44,7 @@ async def extract_founder(
         FounderDNA,
         fallback=lambda: rules.founder_dna(text),
         images=up.images,
+        started=started,
     )
     if meta.source != "gemma" and not text.strip():
         # Images can only be read by a model; don't invent a profile from nothing.

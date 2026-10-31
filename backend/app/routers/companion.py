@@ -6,6 +6,7 @@ saved items, referrals), retrieves official records, asks Gemma 4 for a short
 spoken reply plus at most one platform action, then validates that action.
 """
 
+import time
 from collections import Counter
 from typing import Literal
 
@@ -318,6 +319,7 @@ async def explain_document(
     mission_id: str | None = Form(default=None),
     session: Session = Depends(get_session),
 ):
+    started = time.monotonic()
     data = await file.read()
     if len(data) > 4 * 1024 * 1024:
         raise HTTPException(413, "Documents are limited to 4 MB.")
@@ -344,6 +346,6 @@ async def explain_document(
             next_step="Read the original document and confirm the details with the issuing authority.",
         )
 
-    out, meta = get_gemma().generate_json(prompt, DocExplainLLM, fallback=fallback, images=up.images)
+    out, meta = get_gemma().generate_json(prompt, DocExplainLLM, fallback=fallback, images=up.images, started=started)
     meta.scan_model = up.scan_model
     return {"explanation": out.model_dump(), "filename": file.filename, "original_excerpt": up.text[:1500], "meta": meta.as_dict()}
