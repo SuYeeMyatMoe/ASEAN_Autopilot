@@ -378,6 +378,7 @@ export const api = {
   },
   milestones: (missionId: string) => request<{ milestones: Milestone[] }>(`/milestones/${missionId}`),
   addMilestone: (body: { mission_id: string; kind: string; label: string; ref_id?: string }) => request<Milestone>('/milestones', json(body)),
+  removeMilestone: (id: string) => request<{ ok: boolean }>(`/milestones/${id}`, { method: 'DELETE' }),
   twin: (missionId?: string | null) => request<TwinGraph>(`/twin/graph${missionId ? `?mission_id=${missionId}` : ''}`),
 }
 

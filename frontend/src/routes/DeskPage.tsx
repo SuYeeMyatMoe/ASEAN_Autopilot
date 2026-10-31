@@ -21,7 +21,7 @@ export default function DeskPage() {
   return <RequireMission>{({ mission }) => <Desk mission={mission} />}</RequireMission>
 }
 
-function Desk({ mission }: { mission: Mission }) {
+export function Desk({ mission, embedded = false }: { mission: Mission; embedded?: boolean }) {
   const [question, setQuestion] = useState(
     `I need to understand whether my product requires local healthcare approval before working with hospitals in ${COUNTRY_NAMES[mission.target]}.`,
   )
@@ -37,10 +37,12 @@ function Desk({ mission }: { mission: Mission }) {
 
   return (
     <div className="grid gap-8">
-      <PageHeader
-        title="Market Access Desk"
-        body="Find the right authority or adviser, and walk in prepared. You review every package before anything is shared."
-      />
+      {!embedded && (
+        <PageHeader
+          title="Market Access Desk"
+          body="Find the right authority or adviser, and walk in prepared. You review every package before anything is shared."
+        />
+      )}
 
       <div className="grid gap-6 lg:grid-cols-[1.25fr_1fr]">
         <div className="grid content-start gap-4">

@@ -140,3 +140,13 @@ def add_milestone(body: MilestoneIn, session: Session = Depends(get_session)):
     session.commit()
     session.refresh(m)
     return m.model_dump()
+
+
+@router.delete("/milestones/{milestone_id}")
+def delete_milestone(milestone_id: str, session: Session = Depends(get_session)):
+    m = session.get(Milestone, milestone_id)
+    if not m:
+        raise HTTPException(404, "Milestone not found.")
+    session.delete(m)
+    session.commit()
+    return {"ok": True}

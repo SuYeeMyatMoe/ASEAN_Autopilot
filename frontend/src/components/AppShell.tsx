@@ -1,8 +1,5 @@
 import {
-  Broadcast,
-  Compass,
   Fingerprint,
-  GitBranch,
   GlobeHemisphereEast,
   Handshake,
   IdentificationBadge,
@@ -37,17 +34,14 @@ const NAV = [
     group: 'Borderless Launchpad',
     items: [
       { to: '/app/passport', label: 'Launch Passport', icon: IdentificationBadge },
-      { to: '/app/gaps', label: 'Gap check', icon: ListChecks },
-      { to: '/app/roadmap', label: 'Roadmap', icon: GitBranch },
+      { to: '/app/plan', label: 'Launch plan', icon: ListChecks },
       { to: '/app/compare', label: 'Compare markets', icon: Scales },
     ],
   },
   {
     group: 'Ecosystem',
     items: [
-      { to: '/app/discover', label: 'Discover', icon: Compass },
-      { to: '/app/desk', label: 'Market Access Desk', icon: Handshake },
-      { to: '/app/radar', label: 'Regulatory Radar', icon: Broadcast },
+      { to: '/app/desk', label: 'Market desk', icon: Handshake },
       { to: '/app/map', label: 'Ecosystem Map', icon: GlobeHemisphereEast },
     ],
   },

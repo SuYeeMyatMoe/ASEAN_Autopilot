@@ -8,13 +8,19 @@ import { useSession } from '../lib/session'
 const STAGES = ['announced', 'enacted', 'effective'] as const
 
 export default function RadarPage() {
+  return <Radar />
+}
+
+export function Radar({ embedded = false }: { embedded?: boolean }) {
   const q = useQuery({ queryKey: ['radar'], queryFn: api.radar })
   return (
     <div className="grid gap-8">
-      <PageHeader
-        title="Regulatory Radar"
-        body="Monitored sources and how they changed. Each change is marked as announced, enacted or in effect, and linked to missions it may affect."
-      />
+      {!embedded && (
+        <PageHeader
+          title="Regulatory Radar"
+          body="Monitored sources and how they changed. Each change is marked as announced, enacted or in effect, and linked to missions it may affect."
+        />
+      )}
       <p className="rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm text-muted">
         Prototype: these are sample version histories for two data protection sources, not live monitoring.
       </p>

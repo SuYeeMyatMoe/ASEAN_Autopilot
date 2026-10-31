@@ -117,8 +117,8 @@ export function CompanionPanel({ open, onClose }: { open: boolean; onClose: () =
           navigate(`/app/${a.params.page}`)
           return a.label || 'Opened the page'
         case 'search_opportunities':
-          navigate(`/app/discover?kinds=${(a.params.kinds ?? []).join(',')}`)
-          return a.label || 'Opened Discover'
+          navigate(`/app/desk?tab=opportunities&kinds=${(a.params.kinds ?? []).join(',')}`)
+          return a.label || 'Opened opportunities'
         case 'compare_markets':
           navigate(`/app/compare?countries=${(a.params.countries ?? []).join(',')}&run=1`)
           return a.label || 'Opened Compare markets'

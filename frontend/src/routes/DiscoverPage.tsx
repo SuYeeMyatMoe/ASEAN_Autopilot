@@ -17,24 +17,39 @@ export default function DiscoverPage() {
   return <RequireMission>{({ mission }) => <Discover mission={mission} />}</RequireMission>
 }
 
-function Discover({ mission }: { mission: Mission }) {
+export function Discover({ mission, embedded = false }: { mission: Mission; embedded?: boolean }) {
   // The filter lives in the URL so Mission Companion can open e.g. ?kinds=funding.
   const [params, setParams] = useSearchParams()
   const kinds = params.has('kinds')
     ? (params.get('kinds') ?? '').split(',').filter((k) => KINDS.some((x) => x.id === k))
     : KINDS.map((k) => k.id)
-  const setKinds = (update: (ks: string[]) => string[]) => setParams({ kinds: update(kinds).join(',') }, { replace: true })
+  const setKinds = (update: (ks: string[]) => string[]) =>
+    setParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        next.set('kinds', update(kinds).join(','))
+        return next
+      },
+      { replace: true },
+    )
   const q = useQuery({ queryKey: ['discover', mission.id, kinds], queryFn: () => api.discover(mission.id, kinds), enabled: kinds.length > 0 })
 
   const toggle = (id: string) => setKinds((ks) => (ks.includes(id) ? ks.filter((k) => k !== id) : [...ks, id]))
 
   return (
     <div className="grid gap-8">
-      <PageHeader
-        title="Discover the ecosystem"
-        body={`Programmes, funding, partners and talent for your ${COUNTRY_NAMES[mission.target]} mission, ranked by Gemma 4 with a reason for each match.`}
-        actions={q.data && <MetaChip meta={q.data.meta} />}
-      />
+      {!embedded && (
+        <PageHeader
+          title="Discover the ecosystem"
+          body={`Programmes, funding, partners and talent for your ${COUNTRY_NAMES[mission.target]} mission, ranked by Gemma 4 with a reason for each match.`}
+          actions={q.data && <MetaChip meta={q.data.meta} />}
+        />
+      )}
+      {embedded && q.data && (
+        <div className="flex justify-end">
+          <MetaChip meta={q.data.meta} />
+        </div>
+      )}
       <div className="flex flex-wrap gap-2" role="group" aria-label="Resource types">
         {KINDS.map(({ id, label, icon: Icon }) => {
           const on = kinds.includes(id)
