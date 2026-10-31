@@ -186,7 +186,7 @@ npm run build
 2. **Vercel:** import the repository with the project root at the repository root. `vercel.json` builds `frontend/` and serves `api/index.py` as the FastAPI function. Set `GEMINI_API_KEY`, `DATABASE_URL`, and optionally `GEMMA_MODEL`, `GEMINI_SCAN_MODEL` and `CORS_ORIGINS`.
 3. Uploads are capped at 4 MB to stay under Vercel's request body limit. The function `maxDuration` is 60 seconds.
 
-Without `DATABASE_URL` on Vercel, the API falls back to SQLite in `/tmp`, which does not persist between invocations.
+Without `DATABASE_URL` on Vercel, the API falls back to SQLite in `/tmp`, which is separate for each function instance and wiped on every deploy. The browser keeps a copy of its founder profile, mission and latest passport and re-creates them through `POST /api/restore` when a request returns 404, so pages keep working, but saved milestones and referral requests are lost. Set `DATABASE_URL` for real persistence; the sidebar shows "Temporary storage" until you do, and `/api/health` reports `persistent`.
 
 ---
 

@@ -253,3 +253,43 @@ def test_passport_runs_batches_in_parallel(monkeypatch):
     assert [i.record_id for i in result.items] == [r["id"] for r in records]
     assert result.missing_information == ["Structure"] and meta.source == "gemma"
     assert "7 requirements" in pp._summary(result.items, "Indonesia")
+
+
+def test_restore_recreates_lost_records(tmp_path, monkeypatch):
+    """A browser can re-seed a server instance that lost its SQLite file."""
+    from fastapi.testclient import TestClient
+    from sqlmodel import Session, SQLModel, create_engine
+
+    from app.db import get_session
+    from app.main import app
+
+    engine = create_engine(f"sqlite:///{tmp_path / 'a.db'}", connect_args={"check_same_thread": False})
+    other = create_engine(f"sqlite:///{tmp_path / 'b.db'}", connect_args={"check_same_thread": False})
+    from app import models  # noqa: F401
+
+    for e in (engine, other):
+        SQLModel.metadata.create_all(e)
+    current = {"engine": engine}
+
+    def session_override():
+        with Session(current["engine"]) as s:
+            yield s
+
+    app.dependency_overrides[get_session] = session_override
+    try:
+        c = TestClient(app)
+        f = c.post("/api/founder/sample").json()
+        m = c.post("/api/mission", json={"founder_id": f["founder_id"], "target": "ID", "objective": "Run a hospital pilot in Jakarta"}).json()
+        p = c.post(f"/api/passport/{m['id']}").json()
+
+        current["engine"] = other  # a fresh instance that has never seen these records
+        assert c.get(f"/api/passport/{m['id']}/roadmap").status_code == 404
+        body = {"founder": f, "mission": m, "passport": p}
+        assert c.post("/api/restore", json=body).json()["restored"] == ["founder", "mission", "passport"]
+        assert c.get(f"/api/passport/{m['id']}/roadmap").status_code == 200
+        assert c.get(f"/api/passport/{m['id']}").json()["passport_id"] == p["passport_id"]
+        # Restoring again is a no-op and never overwrites.
+        assert c.post("/api/restore", json=body).json()["restored"] == []
+        assert c.post("/api/restore", json={"mission": {**m, "id": "../etc"}}).status_code == 422
+    finally:
+        app.dependency_overrides.clear()
