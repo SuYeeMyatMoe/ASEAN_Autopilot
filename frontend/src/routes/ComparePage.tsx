@@ -1,14 +1,26 @@
 import { Fingerprint, Scales } from '@phosphor-icons/react'
 import { useMutation } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { ButtonLink, Button, Disclaimer, EmptyState, ErrorState, MetaChip, PageHeader, SkeletonList, SourceLink, cx } from '../components/ui'
 import { api, COUNTRY_NAMES, COVERED } from '../lib/api'
 import { useSession } from '../lib/session'
 
 export default function ComparePage() {
   const { founderId } = useSession()
-  const [countries, setCountries] = useState<string[]>(['MY', 'ID', 'SG'])
-  const cmp = useMutation({ mutationFn: () => api.compare(founderId!, countries) })
+  // Mission Companion opens this page with ?countries=MY,ID&run=1 to compare straight away.
+  const [params, setParams] = useSearchParams()
+  const urlCountries = (params.get('countries') ?? '').split(',').filter((c) => COVERED.includes(c))
+  const [picked, setCountries] = useState<string[]>(['MY', 'ID', 'SG'])
+  const countries = urlCountries.length >= 2 ? urlCountries : picked
+  const cmp = useMutation({ mutationFn: (cs: string[]) => api.compare(founderId!, cs) })
+  const { mutate } = cmp
+  const autoRun = params.get('run') === '1' && !!founderId && urlCountries.length >= 2 ? urlCountries.join(',') : null
+  useEffect(() => {
+    if (!autoRun) return
+    mutate(autoRun.split(','))
+    setParams({ countries: autoRun }, { replace: true })
+  }, [autoRun, mutate, setParams])
 
   if (!founderId)
     return (
@@ -20,7 +32,11 @@ export default function ComparePage() {
       />
     )
 
-  const toggle = (c: string) => setCountries((cs) => (cs.includes(c) ? cs.filter((x) => x !== c) : [...cs, c]))
+  const toggle = (c: string) => {
+    const next = countries.includes(c) ? countries.filter((x) => x !== c) : [...countries, c]
+    setCountries(next)
+    if (urlCountries.length) setParams({}, { replace: true })
+  }
   const d = cmp.data
 
   return (
@@ -38,7 +54,7 @@ export default function ComparePage() {
             {COUNTRY_NAMES[c]}
           </label>
         ))}
-        <Button className="ml-auto" onClick={() => cmp.mutate()} disabled={countries.length < 2 || cmp.isPending}>
+        <Button className="ml-auto" onClick={() => cmp.mutate(countries)} disabled={countries.length < 2 || cmp.isPending}>
           <Scales size={16} aria-hidden />
           {cmp.isPending ? 'Comparing' : 'Compare'}
         </Button>
@@ -46,7 +62,7 @@ export default function ComparePage() {
       </div>
 
       {cmp.isPending && <SkeletonList rows={3} />}
-      {cmp.isError && <ErrorState error={cmp.error} onRetry={() => cmp.mutate()} />}
+      {cmp.isError && <ErrorState error={cmp.error} onRetry={() => cmp.mutate(countries)} />}
       {!d && !cmp.isPending && !cmp.isError && (
         <EmptyState icon={<Scales size={24} />} title="Choose markets to compare" body="Select two or three covered markets and run the comparison. Each cell links to the source it is based on." />
       )}

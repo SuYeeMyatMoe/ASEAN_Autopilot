@@ -1,6 +1,5 @@
 import {
   Broadcast,
-  ChatCircleDots,
   Compass,
   Fingerprint,
   GitBranch,
@@ -13,15 +12,16 @@ import {
   Scales,
   Sun,
   Target,
+  Waveform,
   X,
 } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { api, COUNTRY_NAMES } from '../lib/api'
 import { useSession, useTheme } from '../lib/session'
-import { AssistantDrawer } from './AssistantDrawer'
+import { CompanionPanel } from './CompanionPanel'
 import { Logo } from './Logo'
 import { cx } from './ui'
 
@@ -86,6 +86,7 @@ export function AppShell() {
   const { missionId } = useSession()
   const [menuOpen, setMenuOpen] = useState(false)
   const [askOpen, setAskOpen] = useState(false)
+  const closeCompanion = useCallback(() => setAskOpen(false), [])
   const reduce = useReducedMotion()
   const location = useLocation()
 
@@ -131,8 +132,8 @@ export function AppShell() {
               onClick={() => setAskOpen(true)}
               className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-sm font-medium text-on-brand transition hover:bg-brand-deep active:scale-[0.98]"
             >
-              <ChatCircleDots size={18} aria-hidden />
-              Ask
+              <Waveform size={18} weight="bold" aria-hidden />
+              Companion
             </button>
             <button onClick={toggle} className="rounded-full p-2 hover:bg-surface-2" aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
@@ -175,7 +176,26 @@ export function AppShell() {
         )}
       </AnimatePresence>
 
-      <AssistantDrawer open={askOpen} onClose={() => setAskOpen(false)} />
+      {/* Floating Mission Companion launcher */}
+      <AnimatePresence>
+        {!askOpen && (
+          <motion.button
+            initial={reduce ? false : { scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            onClick={() => setAskOpen(true)}
+            aria-label="Open Mission Companion"
+            className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-brand py-3 pl-3 pr-5 text-sm font-medium text-on-brand shadow-card ring-4 ring-accent/40 transition hover:bg-brand-deep active:scale-[0.97]"
+          >
+            <span className="grid size-8 place-items-center rounded-full bg-accent text-on-accent">
+              <Waveform size={18} weight="bold" aria-hidden />
+            </span>
+            Ask Companion
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      <CompanionPanel open={askOpen} onClose={closeCompanion} />
     </div>
   )
 }

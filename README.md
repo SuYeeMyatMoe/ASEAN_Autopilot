@@ -2,7 +2,7 @@
 
 AI-powered gateway to the ASEAN startup ecosystem, built for **Category A: Best Use of Gemma 4**.
 
-A founder uploads their pitch deck or product screenshots, Gemma 4 builds a Founder DNA profile, and the platform generates a personalised **Country Launch Passport** (company setup, foreign investment, licences, tax, incentives, hiring, IP, data protection), a gap check, a dependency-aware roadmap, ecosystem matches, a consultation pack for the right authority, market comparison, a regulatory radar and a 3D ASEAN Ecosystem Twin.
+A founder uploads their pitch deck or product screenshots, Gemma 4 builds a Founder DNA profile, and the platform generates a personalised **Country Launch Passport** (company setup, foreign investment, licences, tax, incentives, hiring, IP, data protection), a gap check, a dependency-aware roadmap, ecosystem matches, a consultation pack for the right authority, market comparison, a regulatory radar, an ASEAN Ecosystem Map (3D globe and flat map with pins), and **Mission Companion**, a multilingual voice co-pilot.
 
 Demo corridor: **Malaysia to Indonesia** (healthtech), with Singapore for comparison.
 
@@ -10,8 +10,9 @@ Demo corridor: **Malaysia to Indonesia** (healthtech), with Singapore for compar
 
 | Layer | Tech |
 |---|---|
-| Frontend | React 19, Vite, TypeScript, Tailwind v4, TanStack Query, Motion, react-three-fiber |
-| Backend | FastAPI, SQLModel, BM25 retrieval, pypdf / python-pptx / Pillow ingestion |
+| Frontend | React 19, Vite, TypeScript, Tailwind v4, TanStack Query, Motion, react-globe.gl (three.js), d3-geo |
+| Voice | Browser Web Speech API (speech-to-text) and speechSynthesis (text-to-speech) |
+| Backend | FastAPI, SQLModel, BM25 retrieval; ingests PDF, Word, PowerPoint, Excel, CSV, text and images (incl. HEIC) |
 | AI | Gemma 4 via the Gemini API (`google-genai`) |
 | Database | Supabase Postgres (SQLite locally when `DATABASE_URL` is empty) |
 | Hosting | Vercel (static frontend + FastAPI as a Python function under `/api`) |
@@ -21,6 +22,8 @@ Demo corridor: **Malaysia to Indonesia** (healthtech), with Singapore for compar
 - **Multimodal Founder DNA**: pitch-deck text plus slide and product images go to Gemma in one call (`backend/app/routers/founder.py`).
 - **Closed-book regulatory reasoning**: passport, compare, consultation pack and assistant prompts only contain records retrieved from `backend/app/seed/regulatory.json`. The backend drops any item that cites a record Gemma was not given and restores skipped ones as "source pending" (`backend/app/services.py`).
 - **Structured output**: Gemma returns JSON that is validated with Pydantic; one repair call is made on failure (`backend/app/llm/gemma.py`).
+- **Mission Companion**: context-aware, multilingual co-pilot (`backend/app/routers/companion.py`). It knows the founder's profile, mission, open passport items, saved items and referrals, replies in the founder's language with citations, and can trigger one validated action (open a page, search opportunities, compare markets, save an item, check progress). It also explains uploaded documents and shows proactive nudges.
+- **Resilience**: if the configured model errors or times out, calls fail over to the other Gemma 4 model and skip the failing one for 5 minutes. Voice replies use minimal thinking for lower latency. Each answer's chip shows which model replied.
 - **No key, no problem**: without `GEMINI_API_KEY` every feature falls back to deterministic rule-based output and the UI labels it "Demo data".
 
 ## Run locally
@@ -42,6 +45,10 @@ npm run dev        # http://localhost:5173, proxies /api to :8000
 `GET /api/health` shows whether the app is live or in demo mode, and which Gemma 4 model was auto-selected (`GET /api/models` lists them). Set `GEMMA_MODEL` to pin one.
 
 Tests: `cd backend && .venv/Scripts/python -m pytest`
+
+## Voice support
+
+Speech input uses the browser's Web Speech API (Chrome and Edge; Safari partially). Spoken replies use the voices installed on the device; if none exists for a language the reply is shown as text. Typing works everywhere.
 
 ## Deploy: Supabase + Vercel
 

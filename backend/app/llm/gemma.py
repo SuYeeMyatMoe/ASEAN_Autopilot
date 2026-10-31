@@ -92,15 +92,13 @@ class Gemma:
             from google import genai
             from google.genai import types
 
-            # The hosted Gemma endpoint returns occasional 500/503s; retry those quickly,
-            # and cap each request so the UI (and Vercel's 60 s limit) gets a fallback in time.
+            # No SDK-level retries (they also retry timeouts, doubling the wait): when a model
+            # errors or times out, generate() moves straight to the next Gemma 4 model instead.
             self._client = genai.Client(
                 api_key=self.settings.gemini_api_key,
                 http_options=types.HttpOptions(
                     timeout=self.settings.gemma_timeout_ms,
-                    retry_options=types.HttpRetryOptions(
-                        attempts=2, initial_delay=0.8, max_delay=3.0, http_status_codes=[429, 500, 502, 503, 504]
-                    ),
+                    retry_options=types.HttpRetryOptions(attempts=1),
                 ),
             )
         return self._client
@@ -146,7 +144,14 @@ class Gemma:
         parts: list = [types.Part.from_bytes(data=img.data, mime_type=img.mime_type) for img in images or []]
         parts.append(prompt)
         last_exc: Exception | None = None
-        for model in self._model_order():
+        order = self._model_order()
+        # The hosted endpoint has transient 500s: give the last model in line a second chance.
+        attempts = [(m, 1) for m in order] + [(order[-1], 2)]
+        for model, attempt in attempts:
+            if attempt == 2:
+                if not isinstance(last_exc, errors.ServerError):
+                    break
+                time.sleep(1.0)
             minimal = fast
             while True:
                 config = types.GenerateContentConfig(

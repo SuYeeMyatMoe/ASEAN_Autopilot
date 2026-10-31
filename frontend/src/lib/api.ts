@@ -199,10 +199,40 @@ export interface RadarDiff {
   meta: GenMeta
 }
 
-export interface AssistantAnswer {
-  answer: string
+export interface CompanionAction {
+  type: 'none' | 'open_page' | 'search_opportunities' | 'compare_markets' | 'save_opportunity' | 'check_progress'
+  params: { page?: string; kinds?: string[]; countries?: string[]; id?: string }
+  label: string
+}
+
+export interface CompanionReply {
+  reply: string
+  language: string
+  next_step: string
   citations: Source[]
-  needs_professional_review: boolean
+  action: CompanionAction
+  suggestions: string[]
+  meta: GenMeta
+}
+
+export interface CompanionNudge {
+  kind: 'start' | 'missing' | 'review' | 'next' | 'followup' | 'radar'
+  text: string
+  page: string
+}
+
+export interface DocExplanation {
+  explanation: {
+    summary: string
+    language: string
+    key_requirements: string[]
+    deadlines: string[]
+    documents_needed: string[]
+    authorities: string[]
+    next_step: string
+  }
+  filename: string
+  original_excerpt: string
   meta: GenMeta
 }
 
@@ -322,8 +352,28 @@ export const api = {
   radar: () => request<{ items: RadarItem[] }>('/radar'),
   radarDiff: (radarId: string, founderId?: string | null) =>
     request<RadarDiff>('/radar/diff', json({ radar_id: radarId, founder_id: founderId ?? null })),
-  ask: (question: string, missionId?: string | null) =>
-    request<AssistantAnswer>('/assistant', json({ question, mission_id: missionId ?? null })),
+  companionChat: (body: {
+    message: string
+    language: string
+    mission_id?: string | null
+    founder_id?: string | null
+    page?: string
+    history: { role: 'user' | 'companion'; text: string }[]
+  }) => request<CompanionReply>('/companion/chat', json(body)),
+  companionBrief: (missionId?: string | null, founderId?: string | null) => {
+    const q = new URLSearchParams()
+    if (missionId) q.set('mission_id', missionId)
+    if (founderId) q.set('founder_id', founderId)
+    return request<{ nudges: CompanionNudge[]; has_mission: boolean }>(`/companion/brief?${q}`)
+  },
+  companionDocument: (file: File, question: string, language: string, missionId?: string | null) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('question', question)
+    fd.append('language', language)
+    if (missionId) fd.append('mission_id', missionId)
+    return request<DocExplanation>('/companion/document', { method: 'POST', body: fd })
+  },
   milestones: (missionId: string) => request<{ milestones: Milestone[] }>(`/milestones/${missionId}`),
   addMilestone: (body: { mission_id: string; kind: string; label: string; ref_id?: string }) => request<Milestone>('/milestones', json(body)),
   twin: (missionId?: string | null) => request<TwinGraph>(`/twin/graph${missionId ? `?mission_id=${missionId}` : ''}`),

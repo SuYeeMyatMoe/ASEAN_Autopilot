@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     # Leave blank to auto-select the best available Gemma 4 model for the key.
     gemma_model: str = ""
     # Per-request timeout for Gemma calls; on timeout the rule-based fallback is used.
-    gemma_timeout_ms: int = 40_000
+    gemma_timeout_ms: int = 30_000
     gemma_fast_timeout_ms: int = 20_000
     # Gemma 4 thinks before answering and thinking tokens count against this budget.
     gemma_max_output_tokens: int = 8192

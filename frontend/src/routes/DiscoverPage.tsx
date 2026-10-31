@@ -1,7 +1,7 @@
 import { ArrowSquareOut, BookmarkSimple, Buildings, Check, Coins, Compass, GraduationCap, RocketLaunch } from '@phosphor-icons/react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { motion, useReducedMotion } from 'motion/react'
-import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { RequireMission } from '../components/RequireMission'
 import { EmptyState, ErrorState, MetaChip, PageHeader, SkeletonList, cx } from '../components/ui'
 import { api, COUNTRY_NAMES, type EcoItem, type Mission } from '../lib/api'
@@ -18,7 +18,12 @@ export default function DiscoverPage() {
 }
 
 function Discover({ mission }: { mission: Mission }) {
-  const [kinds, setKinds] = useState<string[]>(KINDS.map((k) => k.id))
+  // The filter lives in the URL so Mission Companion can open e.g. ?kinds=funding.
+  const [params, setParams] = useSearchParams()
+  const kinds = params.has('kinds')
+    ? (params.get('kinds') ?? '').split(',').filter((k) => KINDS.some((x) => x.id === k))
+    : KINDS.map((k) => k.id)
+  const setKinds = (update: (ks: string[]) => string[]) => setParams({ kinds: update(kinds).join(',') }, { replace: true })
   const q = useQuery({ queryKey: ['discover', mission.id, kinds], queryFn: () => api.discover(mission.id, kinds), enabled: kinds.length > 0 })
 
   const toggle = (id: string) => setKinds((ks) => (ks.includes(id) ? ks.filter((k) => k !== id) : [...ks, id]))
