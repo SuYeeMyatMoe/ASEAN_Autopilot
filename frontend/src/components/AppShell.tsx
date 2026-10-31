@@ -14,8 +14,9 @@ import {
 } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
+import { preloadMap, preloadMapWhenIdle } from '../geo/preload'
 import { api, COUNTRY_NAMES } from '../lib/api'
 import { useSession, useTheme } from '../lib/session'
 import { CompanionPanel } from './CompanionPanel'
@@ -48,7 +49,7 @@ const NAV = [
   },
 ]
 
-function Nav({ onNavigate }: { onNavigate?: () => void }) {
+function Nav({ onNavigate, onAsk }: { onNavigate?: () => void; onAsk: () => void }) {
   return (
     <nav aria-label="App" className="grid gap-6">
       {NAV.map((g) => (
@@ -59,6 +60,9 @@ function Nav({ onNavigate }: { onNavigate?: () => void }) {
               key={to}
               to={to}
               onClick={onNavigate}
+              // Start downloading the map as soon as the pointer or focus lands on its link.
+              onPointerEnter={to === '/app/map' ? preloadMap : undefined}
+              onFocus={to === '/app/map' ? preloadMap : undefined}
               className={({ isActive }) =>
                 cx(
                   'flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition',
@@ -72,6 +76,22 @@ function Nav({ onNavigate }: { onNavigate?: () => void }) {
           ))}
         </div>
       ))}
+      <div className="grid gap-1">
+        <p className="px-3 pb-1 text-xs font-medium text-on-brand/60">Assistant</p>
+        <button
+          type="button"
+          onClick={() => {
+            onNavigate?.()
+            onAsk()
+          }}
+          className="flex items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-on-brand/85 ring-1 ring-accent/40 transition hover:bg-white/8 hover:text-on-brand"
+        >
+          <span className="grid size-6 place-items-center rounded-full bg-accent text-on-accent">
+            <Waveform size={14} weight="bold" aria-hidden />
+          </span>
+          Ask Companion
+        </button>
+      </div>
     </nav>
   )
 }
@@ -84,6 +104,7 @@ export function AppShell() {
   const closeCompanion = useCallback(() => setAskOpen(false), [])
   const reduce = useReducedMotion()
   const location = useLocation()
+  useEffect(preloadMapWhenIdle, [])
 
   const health = useQuery({ queryKey: ['health'], queryFn: api.health, staleTime: 60_000 })
   const mission = useQuery({ queryKey: ['mission', missionId], queryFn: () => api.mission(missionId!), enabled: !!missionId })
@@ -96,10 +117,15 @@ export function AppShell() {
         <Link to="/" className="px-3">
           <Logo inverted />
         </Link>
-        <Nav />
+        <Nav onAsk={() => setAskOpen(true)} />
         <div className="mt-auto grid gap-1 px-3 text-xs text-on-brand/70">
           <span className="font-mono">{health.data ? (health.data.mode === 'live' ? `Gemma 4 live` : 'Demo mode, no API key') : 'Connecting'}</span>
           {health.data?.model && <span className="truncate font-mono" title={health.data.model}>{health.data.model}</span>}
+          {health.data?.persistent === false && (
+            <span className="text-on-brand/80" title="The server has no DATABASE_URL, so it keeps data in temporary storage. Your browser keeps a copy and restores it when needed.">
+              Temporary storage: set DATABASE_URL to keep data
+            </span>
+          )}
           {health.data?.scan_model && (
             <span className="truncate font-mono" title="Uploaded files are scanned by this Gemini model">
               Scan: {health.data.scan_model}
@@ -128,6 +154,15 @@ export function AppShell() {
             <span className="hidden text-sm text-muted md:block">No active mission</span>
           )}
           <div className="ml-auto flex items-center gap-2">
+            <button
+              onClick={() => setAskOpen(true)}
+              className="inline-flex items-center gap-2 rounded-full bg-brand py-1.5 pl-1.5 pr-3.5 text-sm font-medium text-on-brand lg:hidden"
+            >
+              <span className="grid size-6 place-items-center rounded-full bg-accent text-on-accent">
+                <Waveform size={14} weight="bold" aria-hidden />
+              </span>
+              Ask Companion
+            </button>
             <button onClick={toggle} className="rounded-full p-2 hover:bg-surface-2" aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
@@ -164,28 +199,9 @@ export function AppShell() {
                   <X size={20} />
                 </button>
               </div>
-              <Nav onNavigate={() => setMenuOpen(false)} />
+              <Nav onNavigate={() => setMenuOpen(false)} onAsk={() => setAskOpen(true)} />
             </motion.aside>
           </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Floating Mission Companion launcher */}
-      <AnimatePresence>
-        {!askOpen && (
-          <motion.button
-            initial={reduce ? false : { scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            onClick={() => setAskOpen(true)}
-            aria-label="Open Mission Companion"
-            className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-brand py-3 pl-3 pr-5 text-sm font-medium text-on-brand shadow-card ring-4 ring-accent/40 transition hover:bg-brand-deep active:scale-[0.97]"
-          >
-            <span className="grid size-8 place-items-center rounded-full bg-accent text-on-accent">
-              <Waveform size={18} weight="bold" aria-hidden />
-            </span>
-            Ask Companion
-          </motion.button>
         )}
       </AnimatePresence>
 

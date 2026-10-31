@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppShell } from './components/AppShell'
+import { loadMapPage } from './geo/preload'
 import { SkeletonList } from './components/ui'
 import ComparePage from './routes/ComparePage'
 import Landing from './routes/Landing'
@@ -10,7 +11,7 @@ import Onboard from './routes/Onboard'
 import PassportPage from './routes/PassportPage'
 import PlanPage from './routes/PlanPage'
 
-const MapPage = lazy(() => import('./routes/MapPage'))
+const MapPage = lazy(loadMapPage)
 
 export default function App() {
   return (

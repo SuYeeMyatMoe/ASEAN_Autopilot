@@ -43,7 +43,7 @@ class FakeGemma(Gemma):
     def live(self):
         return True
 
-    def generate(self, prompt, images=None, temperature=0.2, fast=False, json_mode=False):
+    def generate(self, prompt, images=None, temperature=0.2, fast=False, json_mode=False, deadline=None):
         self.last_model = self._model
         return self.replies.pop(0)
 
@@ -53,6 +53,22 @@ def test_json_repair_path():
     dna, meta = g.generate_json("x", FounderDNA, fallback=lambda: FounderDNA())
     assert dna.company_name == "Nadi"
     assert meta.source == "gemma" and "repaired" in meta.notes[0]
+
+
+def test_skips_repair_when_budget_is_spent():
+    import time
+
+    g = FakeGemma(['{"company_name": 5}', '{"company_name": "Nadi"}'])
+    # Request started long ago: no time left for a repair call, so return the rule-based result.
+    dna, meta = g.generate_json("x", FounderDNA, fallback=lambda: FounderDNA(company_name="fallback"), started=time.monotonic() - 600)
+    assert dna.company_name == "fallback" and meta.source == "fallback"
+
+
+def test_mixture_of_experts_model_is_preferred():
+    from app.llm.gemma import _model_rank
+
+    models = ["gemma-4-31b-it", "gemma-4-e4b-it", "gemma-4-26b-a4b-it"]
+    assert sorted(models, key=_model_rank, reverse=True)[0] == "gemma-4-26b-a4b-it"
 
 
 def test_falls_back_when_repair_fails():
@@ -206,3 +222,74 @@ def test_founder_upload_without_key_still_works():
         r = c.post("/api/founder/extract", files={"files": ("about.txt", b"Nadi Health builds hospital triage software in Malaysia.", "text/plain")})
         assert r.status_code == 200
         assert r.json()["meta"]["scan_model"] is None
+
+
+def test_passport_runs_batches_in_parallel(monkeypatch):
+    """Records are split across parallel Gemma calls and merged back without losing any."""
+    from types import SimpleNamespace
+
+    from app.routers import passport as pp
+    from app.schemas import PassportItemLLM, PassportLLM
+
+    records = [r for r in catalog.regulatory() if r["country"] == "ID"][:7]
+    calls = []
+
+    class Stub:
+        live = False
+
+        def generate_json(self, prompt, schema, fallback, started=None, **kw):
+            batch = [r for r in records if f'"id": "{r["id"]}"' in prompt]
+            calls.append(len(batch))
+            items = [PassportItemLLM(record_id=r["id"], why_it_applies="x", status="action_required", next_action="Do it") for r in batch]
+            return PassportLLM(items=items, missing_information=["Structure"], recommended_next_actions=["Register"]), GenMeta(source="gemma", model="gemma-4-26b-a4b-it")
+
+    from app.llm.gemma import GenMeta
+
+    monkeypatch.setattr(pp, "get_gemma", lambda: Stub())
+    founder = SimpleNamespace(dna={}, meta={})
+    mission = SimpleNamespace(objective="Run a pilot", target="ID")
+    result, meta = pp._assess(founder, mission, records, 0.0)
+    assert sorted(calls) == [1, 3, 3] and sum(calls) == len(records)
+    assert [i.record_id for i in result.items] == [r["id"] for r in records]
+    assert result.missing_information == ["Structure"] and meta.source == "gemma"
+    assert "7 requirements" in pp._summary(result.items, "Indonesia")
+
+
+def test_restore_recreates_lost_records(tmp_path, monkeypatch):
+    """A browser can re-seed a server instance that lost its SQLite file."""
+    from fastapi.testclient import TestClient
+    from sqlmodel import Session, SQLModel, create_engine
+
+    from app.db import get_session
+    from app.main import app
+
+    engine = create_engine(f"sqlite:///{tmp_path / 'a.db'}", connect_args={"check_same_thread": False})
+    other = create_engine(f"sqlite:///{tmp_path / 'b.db'}", connect_args={"check_same_thread": False})
+    from app import models  # noqa: F401
+
+    for e in (engine, other):
+        SQLModel.metadata.create_all(e)
+    current = {"engine": engine}
+
+    def session_override():
+        with Session(current["engine"]) as s:
+            yield s
+
+    app.dependency_overrides[get_session] = session_override
+    try:
+        c = TestClient(app)
+        f = c.post("/api/founder/sample").json()
+        m = c.post("/api/mission", json={"founder_id": f["founder_id"], "target": "ID", "objective": "Run a hospital pilot in Jakarta"}).json()
+        p = c.post(f"/api/passport/{m['id']}").json()
+
+        current["engine"] = other  # a fresh instance that has never seen these records
+        assert c.get(f"/api/passport/{m['id']}/roadmap").status_code == 404
+        body = {"founder": f, "mission": m, "passport": p}
+        assert c.post("/api/restore", json=body).json()["restored"] == ["founder", "mission", "passport"]
+        assert c.get(f"/api/passport/{m['id']}/roadmap").status_code == 200
+        assert c.get(f"/api/passport/{m['id']}").json()["passport_id"] == p["passport_id"]
+        # Restoring again is a no-op and never overwrites.
+        assert c.post("/api/restore", json=body).json()["restored"] == []
+        assert c.post("/api/restore", json={"mission": {**m, "id": "../etc"}}).status_code == 422
+    finally:
+        app.dependency_overrides.clear()

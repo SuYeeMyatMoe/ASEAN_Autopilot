@@ -55,7 +55,8 @@ def passport(dna: dict, objective: str, target: str, records: list[dict], materi
         "- information_missing: the founder must supply details first\n"
         "- source_verification_pending: the record is too general to rely on for this case\n"
         "List evidence_available (facts from the profile) and missing (what is not yet known). "
-        "next_action is one concrete step starting with a verb.\n\n"
+        "next_action is one concrete step starting with a verb. Keep every field short and specific. "
+        "Leave summary empty; missing_information and recommended_next_actions: at most 3 each.\n\n"
         f"FOUNDER DNA:\n{json.dumps(dna, ensure_ascii=False)}{_materials(materials)}\n\nOBJECTIVE:\n{objective}\n\n"
         f"SOURCE RECORDS:\n{_records_block(records)}"
     )

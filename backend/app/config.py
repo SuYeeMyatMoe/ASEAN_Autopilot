@@ -14,13 +14,16 @@ class Settings(BaseSettings):
     )
 
     gemini_api_key: str = ""
-    # Leave blank to auto-select the best available Gemma 4 model for the key.
-    gemma_model: str = ""
-    # Per-request timeout for Gemma calls; on timeout the rule-based fallback is used.
-    # The passport call generates one item per retrieved record (~18), which takes 60-90 s
-    # on a hosted Gemma 4 model, so this must stay above that or every passport silently
-    # degrades to the rule-based fallback. Keep it well under the function maxDuration.
-    gemma_timeout_ms: int = 110_000
+    # Gemma 4 26B A4B is a mixture-of-experts model: ~4B parameters active per token, so it
+    # answers several times faster than the dense 31B with close to the same quality.
+    # Set blank to auto-select (still prefers the MoE model), or pin another Gemma 4 id.
+    gemma_model: str = "gemma-4-26b-a4b-it"
+    # Per-attempt timeout for Gemma calls; on timeout the next Gemma 4 model is tried.
+    gemma_timeout_ms: int = 30_000
+    # Wall-clock budget for one structured answer (all attempts + repair). Well under the
+    # 60 s Vercel function limit, leaving room for a cold start and the database, so a slow
+    # model returns the rule-based result instead of a 504.
+    gemma_budget_ms: int = 40_000
     gemma_fast_timeout_ms: int = 20_000
     # Gemma 4's thinking step roughly triples latency; off (minimal) by default.
     gemma_thinking: bool = False
