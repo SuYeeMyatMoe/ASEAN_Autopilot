@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import time
 from dataclasses import dataclass, field
 from typing import Callable, TypeVar
 
@@ -115,15 +116,24 @@ class Gemma:
 
         parts: list = [types.Part.from_bytes(data=img.data, mime_type=img.mime_type) for img in images or []]
         parts.append(prompt)
-        resp = self.client.models.generate_content(
-            model=self.model,
-            contents=parts,
-            config=types.GenerateContentConfig(temperature=temperature),
-        )
-        text = resp.text or ""
-        if not text.strip():
-            raise GemmaError("Gemma returned an empty response")
-        return text
+        last_exc: Exception | None = None
+        for attempt in range(3):
+            try:
+                resp = self.client.models.generate_content(
+                    model=self.model,
+                    contents=parts,
+                    config=types.GenerateContentConfig(temperature=temperature),
+                )
+                text = resp.text or ""
+                if not text.strip():
+                    raise GemmaError("Gemma returned an empty response")
+                return text
+            except Exception as exc:
+                last_exc = exc
+                log.warning("Gemma generate attempt %d failed: %s", attempt + 1, exc)
+                if attempt < 2:
+                    time.sleep(1.5 * (attempt + 1))
+        raise last_exc or GemmaError("Gemma generation failed")
 
     def generate_json(
         self,
