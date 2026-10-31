@@ -6,6 +6,7 @@ Upload a pitch deck, pick a target market, and get a sourced, step-by-step plan 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+- **Live app:** https://asean-autopilot.vercel.app
 - **Source code:** https://github.com/SuYeeMyatMoe/ASEAN_Autopilot
 - **Licence:** [MIT](LICENSE)
 - **Demo corridor:** Malaysia to Indonesia (healthtech), with Singapore for comparison

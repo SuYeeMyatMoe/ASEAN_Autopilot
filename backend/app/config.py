@@ -17,7 +17,10 @@ class Settings(BaseSettings):
     # Leave blank to auto-select the best available Gemma 4 model for the key.
     gemma_model: str = ""
     # Per-request timeout for Gemma calls; on timeout the rule-based fallback is used.
-    gemma_timeout_ms: int = 45_000
+    # The passport call generates one item per retrieved record (~18), which takes 60-90 s
+    # on a hosted Gemma 4 model, so this must stay above that or every passport silently
+    # degrades to the rule-based fallback. Keep it well under the function maxDuration.
+    gemma_timeout_ms: int = 110_000
     gemma_fast_timeout_ms: int = 20_000
     # Gemma 4's thinking step roughly triples latency; off (minimal) by default.
     gemma_thinking: bool = False
