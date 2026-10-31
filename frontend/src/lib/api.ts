@@ -309,7 +309,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     throw new ApiError(0, 'Could not reach the server. Check that the API is running and try again.')
   }
   if (!res.ok) {
-    let msg = `Request failed (${res.status}).`
+    let msg =
+      res.status === 504
+        ? 'The server took too long to answer. Please try again; Gemma 4 is usually faster on the next try.'
+        : `Request failed (${res.status}).`
     try {
       const body = await res.json()
       if (typeof body.detail === 'string') msg = body.detail

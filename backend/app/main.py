@@ -1,4 +1,5 @@
 import logging
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import APIRouter, FastAPI
@@ -48,6 +49,9 @@ def health():
         # Gemini scans uploads into text; Gemma 4 does the reasoning.
         "scan_model": (settings.gemini_scan_model or None) if gemma.live else None,
         "database": "postgres" if settings.resolved_database_url.startswith("postgresql") else "sqlite",
+        # Which commit is live, so a deploy can be confirmed from the browser.
+        "build": (os.environ.get("VERCEL_GIT_COMMIT_SHA") or "local")[:7],
+        "gemma_budget_ms": settings.gemma_budget_ms,
     }
 
 
