@@ -122,3 +122,87 @@ def test_bare_list_is_wrapped_into_schema():
     picks = [{"id": "OPP-01", "fit": "high", "reason": "r"}]
     assert DiscoverLLM.model_validate(coerce_to_schema(picks, DiscoverLLM)).picks[0].id == "OPP-01"
     assert coerce_to_schema({"a": 1}, PassportLLM) == {"a": 1}
+
+
+class _FakeModels:
+    def __init__(self, outcomes):
+        self.outcomes = list(outcomes)
+        self.calls = []
+
+    def generate_content(self, model, contents, config):
+        self.calls.append((model, contents))
+        out = self.outcomes.pop(0)
+        if isinstance(out, Exception):
+            raise out
+        return type("Resp", (), {"text": out})()
+
+
+def _scanner(outcomes, model="gemini-test"):
+    from app.config import Settings
+    from app.llm.scanner import GeminiScanner
+
+    s = GeminiScanner(Settings(gemini_api_key="k", gemini_scan_model=model))
+    s._client = type("C", (), {"models": _FakeModels(outcomes)})()
+    return s
+
+
+def _png() -> bytes:
+    import io
+
+    from PIL import Image
+
+    buf = io.BytesIO()
+    Image.new("RGB", (8, 8), "white").save(buf, format="PNG")
+    return buf.getvalue()
+
+
+def test_scanner_sends_pdf_image_and_office_text_to_gemini():
+    from app.ingest.documents import ingest
+
+    files = [
+        ("deck.pdf", "application/pdf", b"%PDF-1.4 not really parsed"),
+        ("slide.png", "image/png", _png()),
+        ("notes.txt", "text/plain", b"We sell hospital triage software."),
+        ("old.doc", "application/msword", b"x"),
+    ]
+    s = _scanner(["--- deck.pdf ---\nNadi Health"])
+    result = s.scan(files, ingest(files))
+    assert result.ok and result.model == "gemini-test"
+    assert result.files == ["deck.pdf", "slide.png", "notes.txt"]
+    sent = s.client.models.calls[0][1]
+    assert any("hospital triage" in p for p in sent if isinstance(p, str))
+
+
+def test_scanner_falls_back_to_next_model_then_gives_up():
+    import httpx
+
+    from app.ingest.documents import ingest
+
+    files = [("notes.txt", "text/plain", b"hello")]
+    s = _scanner([httpx.TimeoutException("slow"), "--- notes.txt ---\nhello"])
+    assert s.scan(files, ingest(files)).model == "gemini-flash-latest"
+
+    s = _scanner([httpx.TimeoutException("slow"), httpx.TimeoutException("slow")])
+    result = s.scan(files, ingest(files))
+    assert not result.ok and "read the files directly" in result.notes[0]
+
+
+def test_read_uploads_uses_scan_text_and_drops_images(monkeypatch):
+    from app.llm import scanner
+
+    monkeypatch.setattr(scanner, "_scanner", _scanner(["--- slide.png ---\nNadi Health triage app"]))
+    up = scanner.read_uploads([("slide.png", "image/png", _png())])
+    assert up.scan_model == "gemini-test" and up.images == [] and "Nadi" in up.text
+
+    monkeypatch.setattr(scanner, "_scanner", _scanner([], model=""))  # scanning off
+    up = scanner.read_uploads([("slide.png", "image/png", _png())])
+    assert up.scan_model is None and len(up.images) == 1
+
+
+def test_founder_upload_without_key_still_works():
+    from app.main import app
+
+    with TestClient(app) as c:
+        r = c.post("/api/founder/extract", files={"files": ("about.txt", b"Nadi Health builds hospital triage software in Malaysia.", "text/plain")})
+        assert r.status_code == 200
+        assert r.json()["meta"]["scan_model"] is None
