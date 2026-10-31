@@ -3,11 +3,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRef, useState, type DragEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api, COUNTRY_NAMES, type FounderResponse } from '../lib/api'
+import { formatBytes, prepareUpload, UPLOAD_ACCEPT, UPLOAD_LIMIT_BYTES } from '../lib/files'
 import { useSession } from '../lib/session'
 import { Button, ErrorState, Field, MetaChip, PageHeader, Skeleton, cx, inputClass } from '../components/ui'
-
-const ACCEPT = '.pdf,.pptx,.txt,.md,image/png,image/jpeg,image/webp'
-const MAX_BYTES = 4 * 1024 * 1024
 
 export default function Onboard() {
   const { founderId, setFounderId, setMissionId } = useSession()
@@ -17,6 +15,7 @@ export default function Onboard() {
   const [notes, setNotes] = useState('')
   const [dragging, setDragging] = useState(false)
   const [localError, setLocalError] = useState('')
+  const [preparing, setPreparing] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const existing = useQuery({ queryKey: ['founder', founderId], queryFn: () => api.founder(founderId!), enabled: !!founderId })
@@ -28,14 +27,17 @@ export default function Onboard() {
   }
   const extract = useMutation({ mutationFn: () => api.extractFounder(files, notes), onSuccess: onDone })
   const sample = useMutation({ mutationFn: api.sampleFounder, onSuccess: onDone })
-  const busy = extract.isPending || sample.isPending
+  const busy = extract.isPending || sample.isPending || preparing
 
-  const addFiles = (list: FileList | null) => {
-    if (!list) return
-    const next = [...files, ...Array.from(list)]
+  const addFiles = async (list: FileList | null) => {
+    if (!list?.length) return
+    setPreparing(true)
+    const prepared = await Promise.all(Array.from(list).map(prepareUpload))
+    setPreparing(false)
+    const next = [...files, ...prepared]
     const total = next.reduce((n, f) => n + f.size, 0)
-    if (total > MAX_BYTES) {
-      setLocalError('Files add up to more than 4 MB. Compress images or upload fewer pages.')
+    if (total > UPLOAD_LIMIT_BYTES) {
+      setLocalError(`These files add up to ${formatBytes(total)}, over the 4 MB limit. Remove a file or upload fewer pages.`)
       return
     }
     setLocalError('')
@@ -44,7 +46,7 @@ export default function Onboard() {
   const onDrop = (e: DragEvent) => {
     e.preventDefault()
     setDragging(false)
-    addFiles(e.dataTransfer.files)
+    void addFiles(e.dataTransfer.files)
   }
 
   const result = extract.data ?? sample.data ?? existing.data
@@ -75,21 +77,24 @@ export default function Onboard() {
             <FileArrowUp size={32} className="text-brand dark:text-accent" aria-hidden />
             <div className="grid gap-1">
               <p className="text-sm font-medium">Drop files here</p>
-              <p className="text-xs text-muted">PDF, PPTX, PNG, JPG or text. Up to 4 MB in total.</p>
+              <p className="max-w-[44ch] text-xs text-muted">PDF, Word, PowerPoint, Excel, CSV, text, or images (PNG, JPG, WebP, HEIC). Up to 4 MB in total; large photos are shrunk automatically.</p>
             </div>
             <Button variant="ghost" type="button" onClick={() => inputRef.current?.click()}>
               Choose files
             </Button>
-            <input ref={inputRef} type="file" multiple accept={ACCEPT} className="sr-only" onChange={(e) => addFiles(e.target.files)} aria-label="Choose files to upload" />
+            <input ref={inputRef} type="file" multiple accept={UPLOAD_ACCEPT} className="sr-only" onChange={(e) => {
+                void addFiles(e.target.files)
+                e.target.value = ''
+              }} aria-label="Choose files to upload" />
           </div>
 
           {files.length > 0 && (
             <ul className="grid gap-2">
               {files.map((f, i) => (
                 <li key={i} className="flex items-center gap-3 rounded-xl bg-surface-2 px-3 py-2 text-sm">
-                  {f.type.startsWith('image/') ? <ImageIcon size={18} aria-hidden /> : <FileArrowUp size={18} aria-hidden />}
+                  {f.type.startsWith('image/') || /\.(heic|heif)$/i.test(f.name) ? <ImageIcon size={18} aria-hidden /> : <FileArrowUp size={18} aria-hidden />}
                   <span className="min-w-0 flex-1 truncate">{f.name}</span>
-                  <span className="font-mono text-xs text-muted">{(f.size / 1024).toFixed(0)} KB</span>
+                  <span className="font-mono text-xs text-muted">{formatBytes(f.size)}</span>
                   <button onClick={() => setFiles(files.filter((_, j) => j !== i))} aria-label={`Remove ${f.name}`} className="rounded-full p-1 hover:bg-line">
                     <Trash size={16} />
                   </button>
@@ -108,7 +113,7 @@ export default function Onboard() {
           <div className="flex flex-wrap items-center gap-3">
             <Button onClick={() => extract.mutate()} disabled={busy || (!files.length && !notes.trim())}>
               <Fingerprint size={18} aria-hidden />
-              {extract.isPending ? 'Reading your materials' : 'Build my profile'}
+              {preparing ? 'Preparing files' : extract.isPending ? 'Reading your materials' : 'Build my profile'}
             </Button>
             <Button variant="ghost" onClick={() => sample.mutate()} disabled={busy}>
               <Lightning size={18} aria-hidden />

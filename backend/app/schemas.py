@@ -100,13 +100,6 @@ class RadarDiffLLM(BaseModel):
     recommend_professional: bool = True
 
 
-# ---------- Assistant ----------
-class AssistantLLM(BaseModel):
-    answer: str
-    citations: list[str] = []
-    needs_professional_review: bool = True
-
-
 # ---------- API requests ----------
 class MissionIn(BaseModel):
     founder_id: str
@@ -148,11 +141,6 @@ class ReferralStatusIn(BaseModel):
 class RadarDiffIn(BaseModel):
     radar_id: str
     founder_id: str | None = None
-
-
-class AssistantIn(BaseModel):
-    question: str
-    mission_id: str | None = None
 
 
 class MilestoneIn(BaseModel):

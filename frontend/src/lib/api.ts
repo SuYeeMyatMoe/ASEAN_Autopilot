@@ -224,8 +224,21 @@ export interface TwinNode {
   counts: { records: number; agencies: number; opportunities: number }
 }
 
+export interface MapPin {
+  id: string
+  label: string
+  kind: 'agency' | 'programme' | 'funding' | 'partner' | 'talent'
+  country: string
+  city: string
+  lat: number
+  lon: number
+  sample: boolean
+  url: string | null
+}
+
 export interface TwinGraph {
   nodes: TwinNode[]
+  pins: MapPin[]
   mission: null | {
     origin: string
     target: string
@@ -318,6 +331,6 @@ export const api = {
 
 export const COUNTRY_NAMES: Record<string, string> = {
   ID: 'Indonesia', MY: 'Malaysia', SG: 'Singapore', TH: 'Thailand', VN: 'Vietnam', PH: 'Philippines',
-  KH: 'Cambodia', LA: 'Lao PDR', MM: 'Myanmar', BN: 'Brunei Darussalam', ASEAN: 'ASEAN',
+  KH: 'Cambodia', LA: 'Lao PDR', MM: 'Myanmar', BN: 'Brunei Darussalam', TL: 'Timor-Leste', ASEAN: 'ASEAN',
 }
 export const COVERED = ['ID', 'MY', 'SG']

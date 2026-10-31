@@ -6,7 +6,7 @@ import { api, COUNTRY_NAMES, COVERED } from '../lib/api'
 import { useSession } from '../lib/session'
 import { Button, ButtonLink, EmptyState, ErrorState, Field, PageHeader, SkeletonList, STATUS_ORDER, StatusBadge, cx, inputClass } from '../components/ui'
 
-const TARGETS = ['ID', 'SG', 'MY', 'TH', 'VN', 'PH', 'KH', 'LA', 'MM', 'BN']
+const TARGETS = ['ID', 'SG', 'MY', 'TH', 'VN', 'PH', 'KH', 'LA', 'MM', 'BN', 'TL']
 
 export default function MissionPage() {
   const { founderId, missionId, setMissionId } = useSession()

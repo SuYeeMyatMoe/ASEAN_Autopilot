@@ -8,12 +8,7 @@ export default defineConfig({
     proxy: { '/api': 'http://127.0.0.1:8000' },
   },
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('three') || id.includes('@react-three')) return 'three'
-        },
-      },
-    },
+    // The globe (three.js) and world outlines are lazy chunks loaded only where used.
+    chunkSizeWarningLimit: 2200,
   },
 })

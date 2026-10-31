@@ -4,91 +4,178 @@
       "id": "OPP-01",
       "kind": "programme",
       "country": "MY",
-      "target_countries": ["ID", "SG", "TH", "VN", "PH"],
+      "target_countries": [
+        "ID",
+        "SG",
+        "TH",
+        "VN",
+        "PH"
+      ],
       "name": "MDEC Global Acceleration and Innovation Network (GAIN)",
       "provider": "Malaysia Digital Economy Corporation",
       "summary": "Supports Malaysian tech companies scaling into regional and global markets through market access, partnerships and investor connections.",
-      "industries": ["technology", "healthtech", "fintech", "AI"],
-      "stage": ["seed", "series_a", "growth"],
+      "industries": [
+        "technology",
+        "healthtech",
+        "fintech",
+        "AI"
+      ],
+      "stage": [
+        "seed",
+        "series_a",
+        "growth"
+      ],
       "url": "https://mdec.my",
       "deadline": null,
       "sample": false,
-      "details_verified": false
+      "details_verified": false,
+      "city": "Cyberjaya",
+      "lat": 2.9213,
+      "lon": 101.6559
     },
     {
       "id": "OPP-02",
       "kind": "funding",
       "country": "MY",
-      "target_countries": ["ID", "SG", "TH", "VN", "PH"],
+      "target_countries": [
+        "ID",
+        "SG",
+        "TH",
+        "VN",
+        "PH"
+      ],
       "name": "MATRADE export promotion assistance",
       "provider": "Malaysia External Trade Development Corporation",
       "summary": "Export promotion support for Malaysian companies, including market development assistance and trade missions into ASEAN markets.",
-      "industries": ["all"],
-      "stage": ["seed", "series_a", "growth"],
+      "industries": [
+        "all"
+      ],
+      "stage": [
+        "seed",
+        "series_a",
+        "growth"
+      ],
       "url": "https://www.matrade.gov.my",
       "deadline": null,
       "sample": false,
-      "details_verified": false
+      "details_verified": false,
+      "city": "Kuala Lumpur",
+      "lat": 3.139,
+      "lon": 101.6869
     },
     {
       "id": "OPP-03",
       "kind": "programme",
       "country": "SG",
-      "target_countries": ["SG"],
+      "target_countries": [
+        "SG"
+      ],
       "name": "Startup SG",
       "provider": "Enterprise Singapore",
       "summary": "Umbrella of Singapore government schemes for founders, including co-investment through Startup SG Equity and accelerator support.",
-      "industries": ["technology", "healthtech", "deep tech"],
-      "stage": ["pre_seed", "seed", "series_a"],
+      "industries": [
+        "technology",
+        "healthtech",
+        "deep tech"
+      ],
+      "stage": [
+        "pre_seed",
+        "seed",
+        "series_a"
+      ],
       "url": "https://www.startupsg.gov.sg",
       "deadline": null,
       "sample": false,
-      "details_verified": false
+      "details_verified": false,
+      "city": "Singapore",
+      "lat": 1.2903,
+      "lon": 103.8519
     },
     {
       "id": "OPP-04",
       "kind": "programme",
       "country": "ID",
-      "target_countries": ["ID"],
+      "target_countries": [
+        "ID"
+      ],
       "name": "Jakarta health innovation pilot call",
       "provider": "Sample hospital network (illustrative)",
       "summary": "Illustrative call for AI triage and clinical workflow pilots in private hospitals in Greater Jakarta, with a 6-month pilot and data sharing agreement.",
-      "industries": ["healthtech", "AI"],
-      "stage": ["seed", "series_a"],
+      "industries": [
+        "healthtech",
+        "AI"
+      ],
+      "stage": [
+        "seed",
+        "series_a"
+      ],
       "url": null,
       "deadline": null,
       "sample": true,
-      "details_verified": false
+      "details_verified": false,
+      "city": "Jakarta",
+      "lat": -6.2088,
+      "lon": 106.8456
     },
     {
       "id": "OPP-05",
       "kind": "funding",
       "country": "ID",
-      "target_countries": ["ID"],
+      "target_countries": [
+        "ID"
+      ],
       "name": "Healthtech seed co-investment round",
       "provider": "Sample Indonesian venture fund (illustrative)",
       "summary": "Illustrative seed co-investment for health startups with a credible Indonesian go-to-market and at least one hospital or clinic partner.",
-      "industries": ["healthtech"],
-      "stage": ["seed"],
+      "industries": [
+        "healthtech"
+      ],
+      "stage": [
+        "seed"
+      ],
       "url": null,
       "deadline": null,
       "sample": true,
-      "details_verified": false
+      "details_verified": false,
+      "city": "Jakarta",
+      "lat": -6.2088,
+      "lon": 106.8456
     },
     {
       "id": "OPP-06",
       "kind": "programme",
       "country": "ASEAN",
-      "target_countries": ["ID", "MY", "SG", "TH", "VN", "PH", "KH", "LA", "MM", "BN"],
+      "target_countries": [
+        "ID",
+        "MY",
+        "SG",
+        "TH",
+        "VN",
+        "PH",
+        "KH",
+        "LA",
+        "MM",
+        "BN"
+      ],
       "name": "Startup ASEAN ecosystem directory",
       "provider": "ASEAN",
       "summary": "Regional gateway for discovering ASEAN startup ecosystem programmes, support organisations and events across member states.",
-      "industries": ["all"],
-      "stage": ["pre_seed", "seed", "series_a", "growth"],
+      "industries": [
+        "all"
+      ],
+      "stage": [
+        "pre_seed",
+        "seed",
+        "series_a",
+        "growth"
+      ],
       "url": "https://asean.org",
       "deadline": null,
       "sample": false,
-      "details_verified": false
+      "details_verified": false,
+      "city": "Jakarta",
+      "lat": -6.2383,
+      "lon": 106.7995
     }
   ],
   "partners": [
@@ -98,9 +185,18 @@
       "country": "ID",
       "name": "Rumah Sehat Nusantara Group",
       "summary": "Illustrative private hospital group with 14 facilities in Java, running a digital transformation office open to AI pilots.",
-      "industries": ["healthtech"],
-      "capabilities": ["clinical pilot site", "EMR integration", "SATUSEHAT onboarding"],
-      "sample": true
+      "industries": [
+        "healthtech"
+      ],
+      "capabilities": [
+        "clinical pilot site",
+        "EMR integration",
+        "SATUSEHAT onboarding"
+      ],
+      "sample": true,
+      "city": "Jakarta",
+      "lat": -6.2088,
+      "lon": 106.8456
     },
     {
       "id": "PRT-02",
@@ -108,9 +204,18 @@
       "country": "ID",
       "name": "Kirana Data Cloud",
       "summary": "Illustrative Indonesian cloud and data hosting provider with in-country data centres in Jakarta and Batam.",
-      "industries": ["technology"],
-      "capabilities": ["local data hosting", "security certification", "managed Kubernetes"],
-      "sample": true
+      "industries": [
+        "technology"
+      ],
+      "capabilities": [
+        "local data hosting",
+        "security certification",
+        "managed Kubernetes"
+      ],
+      "sample": true,
+      "city": "Batam",
+      "lat": 1.0456,
+      "lon": 104.0305
     },
     {
       "id": "PRT-03",
@@ -118,9 +223,18 @@
       "country": "ID",
       "name": "Arunika Medika Distribusi",
       "summary": "Illustrative licensed medical device distributor able to act as local permit holder for imported devices and software.",
-      "industries": ["healthtech"],
-      "capabilities": ["distribution permit holder", "hospital sales", "regulatory submissions"],
-      "sample": true
+      "industries": [
+        "healthtech"
+      ],
+      "capabilities": [
+        "distribution permit holder",
+        "hospital sales",
+        "regulatory submissions"
+      ],
+      "sample": true,
+      "city": "Surabaya",
+      "lat": -7.2575,
+      "lon": 112.7521
     },
     {
       "id": "PRT-04",
@@ -128,9 +242,19 @@
       "country": "SG",
       "name": "Straits Clinical AI Lab",
       "summary": "Illustrative university-affiliated lab validating clinical AI models on de-identified regional datasets.",
-      "industries": ["healthtech", "AI"],
-      "capabilities": ["clinical validation", "research collaboration", "grant co-applicant"],
-      "sample": true
+      "industries": [
+        "healthtech",
+        "AI"
+      ],
+      "capabilities": [
+        "clinical validation",
+        "research collaboration",
+        "grant co-applicant"
+      ],
+      "sample": true,
+      "city": "Singapore",
+      "lat": 1.2903,
+      "lon": 103.8519
     }
   ],
   "talent": [
@@ -140,9 +264,19 @@
       "country": "ID",
       "name": "Bandung ML engineering cohort",
       "summary": "Illustrative pool of 30 machine learning graduates from Bandung universities seeking applied health AI roles.",
-      "industries": ["AI", "healthtech"],
-      "capabilities": ["Python", "computer vision", "Bahasa Indonesia NLP"],
-      "sample": true
+      "industries": [
+        "AI",
+        "healthtech"
+      ],
+      "capabilities": [
+        "Python",
+        "computer vision",
+        "Bahasa Indonesia NLP"
+      ],
+      "sample": true,
+      "city": "Bandung",
+      "lat": -6.9175,
+      "lon": 107.6191
     },
     {
       "id": "TAL-02",
@@ -150,28 +284,300 @@
       "country": "ID",
       "name": "Clinical informatics specialists, Surabaya",
       "summary": "Illustrative network of nurses and doctors with health informatics training, available for product and implementation roles.",
-      "industries": ["healthtech"],
-      "capabilities": ["clinical workflow", "EMR implementation", "user research"],
-      "sample": true
+      "industries": [
+        "healthtech"
+      ],
+      "capabilities": [
+        "clinical workflow",
+        "EMR implementation",
+        "user research"
+      ],
+      "sample": true,
+      "city": "Surabaya",
+      "lat": -7.2575,
+      "lon": 112.7521
     }
   ],
   "referrals": [
-    {"id": "REF-ID-01", "country": "ID", "type": "government", "name": "Ministry of Investment / BKPM", "areas": ["A", "B", "E"], "url": "https://www.bkpm.go.id", "channel": "Official website and OSS help desk", "services": ["Business field classification", "PT PMA establishment", "Investment incentives"]},
-    {"id": "REF-ID-02", "country": "ID", "type": "government", "name": "Ministry of Health (Kemenkes)", "areas": ["C", "I"], "url": "https://www.kemkes.go.id", "channel": "Official website; medical device permits via regalkes.kemkes.go.id", "services": ["Medical device permits", "Health data platform onboarding"]},
-    {"id": "REF-ID-03", "country": "ID", "type": "government", "name": "Directorate General of Taxes (DJP)", "areas": ["D"], "url": "https://www.pajak.go.id", "channel": "Kring Pajak contact centre and website", "services": ["Tax registration", "Tax guidance"]},
-    {"id": "REF-ID-04", "country": "ID", "type": "government", "name": "Directorate General of Intellectual Property (DJKI)", "areas": ["G"], "url": "https://www.dgip.go.id", "channel": "Official website", "services": ["Trademark filing", "Patent filing", "IP searches"]},
-    {"id": "REF-ID-05", "country": "ID", "type": "government", "name": "Ministry of Manpower (Kemnaker)", "areas": ["F"], "url": "https://kemnaker.go.id", "channel": "TKA Online portal", "services": ["RPTKA approval", "Employment regulations"]},
-    {"id": "REF-ID-06", "country": "ID", "type": "government", "name": "Ministry of Communication and Digital Affairs (Komdigi)", "areas": ["C", "H"], "url": "https://www.komdigi.go.id", "channel": "Official website", "services": ["Electronic system operator registration", "Personal data protection guidance"]},
-    {"id": "REF-ID-P1", "country": "ID", "type": "professional", "name": "Indonesian corporate lawyer or notary", "areas": ["A", "B"], "url": null, "channel": "Verified partner listing pending", "services": ["PT PMA deed of establishment", "Shareholder structuring"]},
-    {"id": "REF-ID-P2", "country": "ID", "type": "professional", "name": "Health regulatory consultant (Indonesia)", "areas": ["C"], "url": null, "channel": "Verified partner listing pending", "services": ["Product classification", "Distribution permit submissions"]},
-    {"id": "REF-ID-P3", "country": "ID", "type": "professional", "name": "Registered IP consultant (Indonesia)", "areas": ["G"], "url": null, "channel": "Verified partner listing pending", "services": ["Trademark and patent filing for foreign applicants"]},
-    {"id": "REF-ID-P4", "country": "ID", "type": "professional", "name": "Tax adviser (Indonesia)", "areas": ["D", "E"], "url": null, "channel": "Verified partner listing pending", "services": ["Tax registration", "Transfer pricing", "Incentive applications"]},
-    {"id": "REF-ID-P5", "country": "ID", "type": "professional", "name": "Data protection counsel (Indonesia)", "areas": ["H"], "url": null, "channel": "Verified partner listing pending", "services": ["PDP Law gap assessment", "Cross-border transfer review"]},
-    {"id": "REF-MY-01", "country": "MY", "type": "government", "name": "MIDA", "areas": ["B", "E"], "url": "https://www.mida.gov.my", "channel": "Official website", "services": ["Investment facilitation"]},
-    {"id": "REF-MY-02", "country": "MY", "type": "government", "name": "MATRADE", "areas": ["E"], "url": "https://www.matrade.gov.my", "channel": "Official website and overseas offices", "services": ["Export promotion", "Market intelligence"]},
-    {"id": "REF-SG-01", "country": "SG", "type": "government", "name": "Enterprise Singapore", "areas": ["E"], "url": "https://www.enterprisesg.gov.sg", "channel": "Official website", "services": ["Grants", "Startup support"]},
-    {"id": "REF-SG-02", "country": "SG", "type": "government", "name": "Health Sciences Authority", "areas": ["C"], "url": "https://www.hsa.gov.sg", "channel": "Official website", "services": ["Medical device registration guidance"]},
-    {"id": "REF-SG-03", "country": "SG", "type": "government", "name": "PDPC", "areas": ["H"], "url": "https://www.pdpc.gov.sg", "channel": "Official website", "services": ["PDPA guidance"]}
+    {
+      "id": "REF-ID-01",
+      "country": "ID",
+      "type": "government",
+      "name": "Ministry of Investment / BKPM",
+      "areas": [
+        "A",
+        "B",
+        "E"
+      ],
+      "url": "https://www.bkpm.go.id",
+      "channel": "Official website and OSS help desk",
+      "services": [
+        "Business field classification",
+        "PT PMA establishment",
+        "Investment incentives"
+      ],
+      "city": "Jakarta",
+      "lat": -6.2088,
+      "lon": 106.8456
+    },
+    {
+      "id": "REF-ID-02",
+      "country": "ID",
+      "type": "government",
+      "name": "Ministry of Health (Kemenkes)",
+      "areas": [
+        "C",
+        "I"
+      ],
+      "url": "https://www.kemkes.go.id",
+      "channel": "Official website; medical device permits via regalkes.kemkes.go.id",
+      "services": [
+        "Medical device permits",
+        "Health data platform onboarding"
+      ],
+      "city": "Jakarta",
+      "lat": -6.2088,
+      "lon": 106.8456
+    },
+    {
+      "id": "REF-ID-03",
+      "country": "ID",
+      "type": "government",
+      "name": "Directorate General of Taxes (DJP)",
+      "areas": [
+        "D"
+      ],
+      "url": "https://www.pajak.go.id",
+      "channel": "Kring Pajak contact centre and website",
+      "services": [
+        "Tax registration",
+        "Tax guidance"
+      ],
+      "city": "Jakarta",
+      "lat": -6.2088,
+      "lon": 106.8456
+    },
+    {
+      "id": "REF-ID-04",
+      "country": "ID",
+      "type": "government",
+      "name": "Directorate General of Intellectual Property (DJKI)",
+      "areas": [
+        "G"
+      ],
+      "url": "https://www.dgip.go.id",
+      "channel": "Official website",
+      "services": [
+        "Trademark filing",
+        "Patent filing",
+        "IP searches"
+      ],
+      "city": "Jakarta",
+      "lat": -6.2088,
+      "lon": 106.8456
+    },
+    {
+      "id": "REF-ID-05",
+      "country": "ID",
+      "type": "government",
+      "name": "Ministry of Manpower (Kemnaker)",
+      "areas": [
+        "F"
+      ],
+      "url": "https://kemnaker.go.id",
+      "channel": "TKA Online portal",
+      "services": [
+        "RPTKA approval",
+        "Employment regulations"
+      ],
+      "city": "Jakarta",
+      "lat": -6.2088,
+      "lon": 106.8456
+    },
+    {
+      "id": "REF-ID-06",
+      "country": "ID",
+      "type": "government",
+      "name": "Ministry of Communication and Digital Affairs (Komdigi)",
+      "areas": [
+        "C",
+        "H"
+      ],
+      "url": "https://www.komdigi.go.id",
+      "channel": "Official website",
+      "services": [
+        "Electronic system operator registration",
+        "Personal data protection guidance"
+      ],
+      "city": "Jakarta",
+      "lat": -6.2088,
+      "lon": 106.8456
+    },
+    {
+      "id": "REF-ID-P1",
+      "country": "ID",
+      "type": "professional",
+      "name": "Indonesian corporate lawyer or notary",
+      "areas": [
+        "A",
+        "B"
+      ],
+      "url": null,
+      "channel": "Verified partner listing pending",
+      "services": [
+        "PT PMA deed of establishment",
+        "Shareholder structuring"
+      ]
+    },
+    {
+      "id": "REF-ID-P2",
+      "country": "ID",
+      "type": "professional",
+      "name": "Health regulatory consultant (Indonesia)",
+      "areas": [
+        "C"
+      ],
+      "url": null,
+      "channel": "Verified partner listing pending",
+      "services": [
+        "Product classification",
+        "Distribution permit submissions"
+      ]
+    },
+    {
+      "id": "REF-ID-P3",
+      "country": "ID",
+      "type": "professional",
+      "name": "Registered IP consultant (Indonesia)",
+      "areas": [
+        "G"
+      ],
+      "url": null,
+      "channel": "Verified partner listing pending",
+      "services": [
+        "Trademark and patent filing for foreign applicants"
+      ]
+    },
+    {
+      "id": "REF-ID-P4",
+      "country": "ID",
+      "type": "professional",
+      "name": "Tax adviser (Indonesia)",
+      "areas": [
+        "D",
+        "E"
+      ],
+      "url": null,
+      "channel": "Verified partner listing pending",
+      "services": [
+        "Tax registration",
+        "Transfer pricing",
+        "Incentive applications"
+      ]
+    },
+    {
+      "id": "REF-ID-P5",
+      "country": "ID",
+      "type": "professional",
+      "name": "Data protection counsel (Indonesia)",
+      "areas": [
+        "H"
+      ],
+      "url": null,
+      "channel": "Verified partner listing pending",
+      "services": [
+        "PDP Law gap assessment",
+        "Cross-border transfer review"
+      ]
+    },
+    {
+      "id": "REF-MY-01",
+      "country": "MY",
+      "type": "government",
+      "name": "MIDA",
+      "areas": [
+        "B",
+        "E"
+      ],
+      "url": "https://www.mida.gov.my",
+      "channel": "Official website",
+      "services": [
+        "Investment facilitation"
+      ],
+      "city": "Kuala Lumpur",
+      "lat": 3.139,
+      "lon": 101.6869
+    },
+    {
+      "id": "REF-MY-02",
+      "country": "MY",
+      "type": "government",
+      "name": "MATRADE",
+      "areas": [
+        "E"
+      ],
+      "url": "https://www.matrade.gov.my",
+      "channel": "Official website and overseas offices",
+      "services": [
+        "Export promotion",
+        "Market intelligence"
+      ],
+      "city": "Kuala Lumpur",
+      "lat": 3.139,
+      "lon": 101.6869
+    },
+    {
+      "id": "REF-SG-01",
+      "country": "SG",
+      "type": "government",
+      "name": "Enterprise Singapore",
+      "areas": [
+        "E"
+      ],
+      "url": "https://www.enterprisesg.gov.sg",
+      "channel": "Official website",
+      "services": [
+        "Grants",
+        "Startup support"
+      ],
+      "city": "Singapore",
+      "lat": 1.2903,
+      "lon": 103.8519
+    },
+    {
+      "id": "REF-SG-02",
+      "country": "SG",
+      "type": "government",
+      "name": "Health Sciences Authority",
+      "areas": [
+        "C"
+      ],
+      "url": "https://www.hsa.gov.sg",
+      "channel": "Official website",
+      "services": [
+        "Medical device registration guidance"
+      ],
+      "city": "Singapore",
+      "lat": 1.2903,
+      "lon": 103.8519
+    },
+    {
+      "id": "REF-SG-03",
+      "country": "SG",
+      "type": "government",
+      "name": "PDPC",
+      "areas": [
+        "H"
+      ],
+      "url": "https://www.pdpc.gov.sg",
+      "channel": "Official website",
+      "services": [
+        "PDPA guidance"
+      ],
+      "city": "Singapore",
+      "lat": 1.2903,
+      "lon": 103.8519
+    }
   ],
   "radar": [
     {

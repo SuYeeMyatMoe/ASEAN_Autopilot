@@ -8,7 +8,7 @@ from app import catalog
 from app.config import get_settings
 from app.db import init_db
 from app.llm.gemma import get_gemma
-from app.routers import desk, discover, founder, passport, twin
+from app.routers import companion, desk, discover, founder, passport, twin
 
 logging.basicConfig(level=logging.INFO)
 settings = get_settings()
@@ -62,6 +62,6 @@ def list_models():
     return {"models": gemma.discover_models(), "selected": gemma.model}
 
 
-for r in (founder.router, passport.router, discover.router, desk.router, twin.router):
+for r in (founder.router, passport.router, discover.router, desk.router, twin.router, companion.router):
     api.include_router(r)
 app.include_router(api)

@@ -1,6 +1,6 @@
 import type { TwinNode } from '../lib/api'
 
-/** Country hubs for the landing hero, so it renders without the API. */
+/** Country pins for the landing hero globe, so it renders without the API. */
 export const STATIC_NODES: TwinNode[] = [
   ['ID', 'Indonesia', -6.2, 106.8, true],
   ['MY', 'Malaysia', 3.14, 101.69, true],
@@ -12,6 +12,7 @@ export const STATIC_NODES: TwinNode[] = [
   ['LA', 'Lao PDR', 17.97, 102.6, false],
   ['MM', 'Myanmar', 19.76, 96.08, false],
   ['BN', 'Brunei Darussalam', 4.94, 114.95, false],
+  ['TL', 'Timor-Leste', -8.56, 125.56, false],
 ].map(([id, label, lat, lon, covered]) => ({
   id: id as string,
   kind: 'country' as const,

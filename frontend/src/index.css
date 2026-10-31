@@ -27,6 +27,8 @@
   --st-missing-bg: #f7e0dd;
   --st-pending: #5b6460;
   --st-pending-bg: #e7eae8;
+  --pin-partner: #1d6a86;
+  --route: #0f3d2e;
 
   --shadow: 0 1px 2px rgb(15 61 46 / 0.06), 0 8px 24px -12px rgb(15 61 46 / 0.18);
   color-scheme: light;
@@ -56,6 +58,8 @@
   --st-missing-bg: #431b17;
   --st-pending: #b3bcb7;
   --st-pending-bg: #252d29;
+  --pin-partner: #7cc4dc;
+  --route: #c6f05a;
 
   --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
   color-scheme: dark;
@@ -120,3 +124,55 @@ body {
   .skeleton { animation: none; }
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
+
+/* Globe pins (DOM elements positioned by globe.gl, which sets transform inline).
+   Each country pin is a zero-size anchor at the coordinate; the label sits to one side. */
+@layer components {
+  .amc-pin { font-family: var(--font-sans); cursor: pointer; }
+  .amc-pin--country { width: 0; height: 0; padding: 0; border: 0; background: none; }
+  .amc-pin__dot {
+    position: absolute;
+    left: -5px;
+    top: -5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: #a9c9b3;
+    border: 2px solid #0a2a20;
+  }
+  .amc-pin__label {
+    position: absolute;
+    top: -11px;
+    left: 9px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgb(10 42 32 / 0.85);
+    border: 1px solid rgb(255 255 255 / 0.14);
+    color: #e6ede5;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    white-space: nowrap;
+  }
+  .amc-pin--country.dir-left .amc-pin__label { left: auto; right: 9px; }
+  .amc-pin--country.dir-below .amc-pin__label { left: 0; top: 9px; transform: translateX(-50%); }
+  .amc-pin--country.dir-above .amc-pin__label { left: 0; top: -33px; transform: translateX(-50%); }
+  .amc-pin--country.is-covered .amc-pin__dot { background: #c6f05a; box-shadow: 0 0 0 4px rgb(198 240 90 / 0.25); }
+  .amc-pin--country.is-selected .amc-pin__label { background: #c6f05a; color: #13201b; border-color: transparent; font-weight: 600; }
+  .amc-pin--country:hover .amc-pin__label { border-color: rgb(198 240 90 / 0.7); }
+  .amc-pin--cluster {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: #f4f6f1;
+    border: 2px solid var(--pin, #c6f05a);
+    color: #13201b;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+}
+
+@keyframes amc-dash { to { stroke-dashoffset: var(--dash, -28); } }
+.amc-dash { animation: amc-dash 1.2s linear infinite; }

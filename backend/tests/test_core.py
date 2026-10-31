@@ -43,7 +43,8 @@ class FakeGemma(Gemma):
     def live(self):
         return True
 
-    def generate(self, prompt, images=None, temperature=0.2):
+    def generate(self, prompt, images=None, temperature=0.2, fast=False):
+        self.last_model = self._model
         return self.replies.pop(0)
 
 

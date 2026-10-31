@@ -27,6 +27,25 @@ def twin_graph(mission_id: str | None = None, session: Session = Depends(get_ses
     for n in nodes:
         n["counts"] = counts[n["id"]]
 
+    # Located ecosystem entries, drawn as pins on the globe and map.
+    located = [(o, o["kind"]) for o in eco["opportunities"] + eco["partners"] + eco["talent"]]
+    located += [(r, "agency") for r in eco["referrals"] if r["type"] == "government"]
+    pins = [
+        {
+            "id": o["id"],
+            "label": o["name"],
+            "kind": kind,
+            "country": o["country"] if o["country"] != "ASEAN" else "ID",
+            "city": o["city"],
+            "lat": o["lat"],
+            "lon": o["lon"],
+            "sample": o.get("sample", False),
+            "url": o.get("url"),
+        }
+        for o, kind in located
+        if "lat" in o
+    ]
+
     mission_path = None
     if mission_id:
         m = get_mission(session, mission_id)
@@ -57,4 +76,4 @@ def twin_graph(mission_id: str | None = None, session: Session = Depends(get_ses
                 {"stage": "Partners and funding", "items": local},
             ],
         }
-    return {"nodes": nodes, "mission": mission_path}
+    return {"nodes": nodes, "pins": pins, "mission": mission_path}

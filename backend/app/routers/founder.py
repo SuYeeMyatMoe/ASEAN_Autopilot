@@ -33,12 +33,21 @@ async def extract_founder(
 
     doc = ingest(payload)
     text = "\n\n".join(filter(None, [notes.strip(), doc.combined_text]))
+    if not text.strip() and not doc.images:
+        raise HTTPException(422, " ".join(doc.warnings) or "None of the files could be read. Try PDF, Word, PowerPoint or an image.")
     dna, meta = get_gemma().generate_json(
         prompts.founder_dna(text, len(doc.images)),
         FounderDNA,
         fallback=lambda: rules.founder_dna(text),
         images=doc.images,
     )
+    if meta.source != "gemma" and not text.strip():
+        # Images can only be read by Gemma; don't invent a profile from nothing.
+        raise HTTPException(
+            503,
+            "Gemma 4 couldn't read your images just now (the model is busy). Try again in a minute, "
+            "or add a short description of your startup in the text box.",
+        )
     meta.notes.extend(doc.warnings)
     founder = Founder(company_name=dna.company_name, dna=dna.model_dump(), meta={**meta.as_dict(), "files": doc.filenames})
     session.add(founder)

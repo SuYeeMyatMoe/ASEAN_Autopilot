@@ -9,7 +9,6 @@ import re
 from app import catalog
 from app.retrieval import matched_terms
 from app.schemas import (
-    AssistantLLM,
     CompareCellLLM,
     CompareLLM,
     ConsultPackLLM,
@@ -37,7 +36,7 @@ _SECTOR_WORDS = [
 
 
 def founder_dna(text: str) -> FounderDNA:
-    t = text or catalog.ecosystem()["sample_founder_text"]
+    t = text or ""
     low = t.lower()
     sector = next((s for s, words in _SECTOR_WORDS if any(w in low for w in words)), "all")
     countries = [code for word, code in _COUNTRY_WORDS.items() if word in low]
@@ -226,10 +225,3 @@ def radar_diff(old: dict, new: dict) -> RadarDiffLLM:
         stage_change=f"{old['stage']} to {new['stage']}",
         review_tasks=["Re-check data protection items in your passport", "Confirm obligations with data protection counsel"],
     )
-
-
-def assistant(records: list[dict]) -> AssistantLLM:
-    if not records:
-        return AssistantLLM(answer="I could not find a source record that covers this. Ask the relevant national authority.", citations=[])
-    lines = [f"{r['title']} ({r['authority']}): {r['summary'].split('. ')[0]}." for r in records[:3]]
-    return AssistantLLM(answer=" ".join(lines), citations=[r["id"] for r in records[:3]])

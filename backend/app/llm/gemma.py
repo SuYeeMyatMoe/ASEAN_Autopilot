@@ -13,9 +13,11 @@ from __future__ import annotations
 import json
 import logging
 import re
+import time
 from dataclasses import dataclass, field
 from typing import Callable, TypeVar
 
+import httpx
 from pydantic import BaseModel, ValidationError
 
 from app.config import Settings, get_settings
@@ -77,6 +79,8 @@ class Gemma:
         self._client = None
         self._model: str | None = self.settings.gemma_model or None
         self.available_models: list[str] = []
+        self.last_model: str | None = None
+        self._unhealthy_until: dict[str, float] = {}
 
     @property
     def live(self) -> bool:
@@ -86,8 +90,19 @@ class Gemma:
     def client(self):
         if self._client is None:
             from google import genai
+            from google.genai import types
 
-            self._client = genai.Client(api_key=self.settings.gemini_api_key)
+            # The hosted Gemma endpoint returns occasional 500/503s; retry those quickly,
+            # and cap each request so the UI (and Vercel's 60 s limit) gets a fallback in time.
+            self._client = genai.Client(
+                api_key=self.settings.gemini_api_key,
+                http_options=types.HttpOptions(
+                    timeout=self.settings.gemma_timeout_ms,
+                    retry_options=types.HttpRetryOptions(
+                        attempts=2, initial_delay=0.8, max_delay=3.0, http_status_codes=[429, 500, 502, 503, 504]
+                    ),
+                ),
+            )
         return self._client
 
     def discover_models(self) -> list[str]:
@@ -110,20 +125,56 @@ class Gemma:
         log.info("Auto-selected Gemma model %s", self._model)
         return self._model
 
-    def generate(self, prompt: str, images: list[ImageInput] | None = None, temperature: float = 0.2) -> str:
-        from google.genai import types
+    def _model_order(self) -> list[str]:
+        """Primary model first, then one fallback; models that just failed go last for a few minutes."""
+        primary = self.model
+        if not self.available_models:
+            try:
+                self.discover_models()
+            except Exception:
+                pass
+        order = [primary] + [m for m in self.available_models if m != primary][:1]
+        now = time.monotonic()
+        return sorted(order, key=lambda m: self._unhealthy_until.get(m, 0) > now)
+
+    def generate(
+        self, prompt: str, images: list[ImageInput] | None = None, temperature: float = 0.2, fast: bool = False
+    ) -> str:
+        """fast=True asks for minimal thinking: much lower latency, used for voice replies."""
+        from google.genai import errors, types
 
         parts: list = [types.Part.from_bytes(data=img.data, mime_type=img.mime_type) for img in images or []]
         parts.append(prompt)
-        resp = self.client.models.generate_content(
-            model=self.model,
-            contents=parts,
-            config=types.GenerateContentConfig(temperature=temperature),
-        )
-        text = resp.text or ""
-        if not text.strip():
-            raise GemmaError("Gemma returned an empty response")
-        return text
+        last_exc: Exception | None = None
+        for model in self._model_order():
+            minimal = fast
+            while True:
+                config = types.GenerateContentConfig(
+                    temperature=temperature,
+                    max_output_tokens=self.settings.gemma_max_output_tokens,
+                    automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+                    thinking_config=types.ThinkingConfig(thinking_level="MINIMAL") if minimal else None,
+                    # Voice replies must come back quickly; let them fail over sooner.
+                    http_options=types.HttpOptions(timeout=self.settings.gemma_fast_timeout_ms) if fast else None,
+                )
+                try:
+                    resp = self.client.models.generate_content(model=model, contents=parts, config=config)
+                except errors.ClientError as exc:
+                    if minimal and "not supported" in str(exc).lower():
+                        minimal = False  # this model can't switch thinking off; ask normally
+                        continue
+                    raise
+                except (errors.ServerError, httpx.TimeoutException) as exc:
+                    log.warning("Gemma model %s failed: %s", model, str(exc)[:160])
+                    self._unhealthy_until[model] = time.monotonic() + 300
+                    last_exc = exc
+                    break  # try the next model
+                text = resp.text or ""
+                if not text.strip():
+                    raise GemmaError("Gemma returned an empty response")
+                self.last_model = model
+                return text
+        raise last_exc or GemmaError("No Gemma model responded")
 
     def generate_json(
         self,
@@ -131,6 +182,7 @@ class Gemma:
         schema: type[T],
         fallback: Callable[[], T],
         images: list[ImageInput] | None = None,
+        fast: bool = False,
     ) -> tuple[T, GenMeta]:
         if not self.live:
             return fallback(), GenMeta(source="demo", notes=["No GEMINI_API_KEY set; deterministic demo output."])
@@ -140,27 +192,27 @@ class Gemma:
             f"{json.dumps(schema.model_json_schema())}"
         )
         try:
-            raw = self.generate(full_prompt, images)
+            raw = self.generate(full_prompt, images, fast=fast)
         except Exception as exc:  # network, quota, safety block
             log.warning("Gemma call failed: %s", exc)
             return fallback(), GenMeta(source="fallback", notes=[f"Gemma call failed: {exc}"[:300]])
 
         try:
-            return schema.model_validate(extract_json(raw)), GenMeta(source="gemma", model=self.model)
+            return schema.model_validate(extract_json(raw)), GenMeta(source="gemma", model=self.last_model)
         except (ValueError, ValidationError) as first_err:
             repair = (
                 "The JSON below does not match the schema. Fix it and return ONLY the corrected JSON.\n"
                 f"Error: {str(first_err)[:800]}\n\nSchema:\n{json.dumps(schema.model_json_schema())}\n\nJSON:\n{raw[:6000]}"
             )
             try:
-                fixed = self.generate(repair, temperature=0.0)
+                fixed = self.generate(repair, temperature=0.0, fast=True)
                 return schema.model_validate(extract_json(fixed)), GenMeta(
-                    source="gemma", model=self.model, notes=["Output repaired once."]
+                    source="gemma", model=self.last_model, notes=["Output repaired once."]
                 )
             except Exception as exc:
                 log.warning("Gemma repair failed: %s", exc)
                 return fallback(), GenMeta(
-                    source="fallback", model=self.model, notes=["Gemma output could not be validated; showing rule-based result."]
+                    source="fallback", model=self.last_model, notes=["Gemma output could not be validated; showing rule-based result."]
                 )
 
 

@@ -13,7 +13,7 @@ import PassportPage from './routes/PassportPage'
 import RadarPage from './routes/RadarPage'
 import RoadmapPage from './routes/RoadmapPage'
 
-const TwinPage = lazy(() => import('./routes/TwinPage'))
+const MapPage = lazy(() => import('./routes/MapPage'))
 
 export default function App() {
   return (
@@ -32,13 +32,14 @@ export default function App() {
           <Route path="desk" element={<DeskPage />} />
           <Route path="radar" element={<RadarPage />} />
           <Route
-            path="twin"
+            path="map"
             element={
               <Suspense fallback={<SkeletonList rows={2} />}>
-                <TwinPage />
+                <MapPage />
               </Suspense>
             }
           />
+          <Route path="twin" element={<Navigate to="/app/map" replace />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

@@ -4,7 +4,7 @@ import {
   Compass,
   Fingerprint,
   GitBranch,
-  Globe,
+  GlobeHemisphereEast,
   Handshake,
   IdentificationBadge,
   List,
@@ -48,7 +48,7 @@ const NAV = [
       { to: '/app/discover', label: 'Discover', icon: Compass },
       { to: '/app/desk', label: 'Market Access Desk', icon: Handshake },
       { to: '/app/radar', label: 'Regulatory Radar', icon: Broadcast },
-      { to: '/app/twin', label: 'Ecosystem Twin', icon: Globe },
+      { to: '/app/map', label: 'Ecosystem Map', icon: GlobeHemisphereEast },
     ],
   },
 ]

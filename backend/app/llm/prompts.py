@@ -92,13 +92,3 @@ def radar_diff(record: dict, old: dict, new: dict) -> str:
         f"RECORD:\n{json.dumps({'id': record['id'], 'title': record['title'], 'country': record['country']})}\n\n"
         f"OLD VERSION ({old['stage']}, {old['date']}):\n{old['text']}\n\nNEW VERSION ({new['stage']}, {new['date']}):\n{new['text']}"
     )
-
-
-def assistant(question: str, dna: dict | None, records: list[dict]) -> str:
-    return (
-        f"{GUARDRAIL}\n\n"
-        "Answer the founder's question in under 160 words using only the source records. "
-        "Put the ids of records you relied on in citations. If the records do not cover the question, say so plainly "
-        "and suggest which authority to ask.\n\n"
-        f"QUESTION:\n{question}\n\nFOUNDER DNA:\n{json.dumps(dna or {}, ensure_ascii=False)}\n\nSOURCE RECORDS:\n{_records_block(records)}"
-    )

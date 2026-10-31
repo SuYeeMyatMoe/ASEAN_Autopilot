@@ -1,4 +1,4 @@
-"""Market Access Desk (referrals + consultation packs), Radar, Assistant, Impact Tracker."""
+"""Market Access Desk (referrals + consultation packs), Radar, Impact Tracker."""
 
 from datetime import datetime, timezone
 
@@ -12,8 +12,6 @@ from app.llm.gemma import get_gemma
 from app.models import Milestone, Mission, ReferralRequest
 from app.retrieval import rank
 from app.schemas import (
-    AssistantIn,
-    AssistantLLM,
     ConsultIn,
     ConsultPackLLM,
     MilestoneIn,
@@ -125,32 +123,6 @@ def radar_diff(body: RadarDiffIn, session: Session = Depends(get_session)):
         if p and any(i["record_id"] == item["record_id"] for i in p.payload["items"]):
             affected.append({"mission_id": m.id, "objective": m.objective, "target": m.target})
     return {"diff": diff.model_dump(), "old": old, "new": new, "record": cite([record["id"]])[0], "affected_missions": affected, "meta": meta.as_dict()}
-
-
-# ---------- Assistant ----------
-@router.post("/assistant")
-def assistant(body: AssistantIn, session: Session = Depends(get_session)):
-    if not body.question.strip():
-        raise HTTPException(422, "Ask a question first.")
-    dna, pool = None, catalog.regulatory()
-    if body.mission_id:
-        mission = get_mission(session, body.mission_id)
-        dna = get_founder(session, mission.founder_id).dna
-        pool = [r for r in pool if r["country"] in (mission.target, mission.origin, "ASEAN")]
-    q = body.question.lower()
-    mentioned = [code for code, c in catalog.COUNTRIES.items() if c["name"].lower() in q]
-    if mentioned:
-        pool = [r for r in catalog.regulatory() if r["country"] in mentioned + ["ASEAN"]]
-    records = [r for r, s in rank(body.question, pool, 6) if s > 0]
-
-    ans, meta = get_gemma().generate_json(prompts.assistant(body.question, dna, records), AssistantLLM, fallback=lambda: rules.assistant(records))
-    allowed = {r["id"] for r in records}
-    return {
-        "answer": ans.answer,
-        "citations": cite([c for c in ans.citations if c in allowed]),
-        "needs_professional_review": ans.needs_professional_review,
-        "meta": meta.as_dict(),
-    }
 
 
 # ---------- Impact Tracker ----------

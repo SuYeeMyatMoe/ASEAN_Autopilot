@@ -18,10 +18,11 @@ import { Link } from 'react-router-dom'
 import { Logo } from '../components/Logo'
 import { ButtonLink, StatusBadge, cx } from '../components/ui'
 import { useTheme } from '../lib/session'
-import { STATIC_NODES } from '../twin/nodes'
-import { hasWebGL } from '../twin/webgl'
+import { useCountries } from '../geo/asean'
+import { STATIC_NODES } from '../geo/nodes'
+import { hasWebGL } from '../geo/webgl'
 
-const TwinScene = lazy(() => import('../twin/TwinScene'))
+const GlobeView = lazy(() => import('../geo/GlobeView'))
 const EASE = [0.16, 1, 0.3, 1] as const
 
 function Reveal({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) {
@@ -56,6 +57,7 @@ export default function Landing() {
   const { theme, toggle } = useTheme()
   const reduce = useReducedMotion()
   const webgl = useMemo(() => hasWebGL(), [])
+  const geo = useCountries()
 
   return (
     <div className="min-h-[100dvh] bg-bg text-ink">
@@ -108,8 +110,8 @@ export default function Landing() {
               Start your passport
               <ArrowRight size={18} aria-hidden />
             </ButtonLink>
-            <ButtonLink to="/app/twin" variant="ghost" className="px-6 py-3 text-base">
-              Explore the Twin
+            <ButtonLink to="/app/map" variant="ghost" className="px-6 py-3 text-base">
+              Explore the map
             </ButtonLink>
           </motion.div>
         </div>
@@ -120,18 +122,20 @@ export default function Landing() {
           transition={{ duration: 1, delay: 0.15, ease: EASE }}
           className="relative h-[380px] overflow-hidden rounded-[28px] bg-brand md:h-[520px]"
         >
-          {webgl ? (
+          {webgl && geo.features ? (
             <Suspense fallback={<div className="skeleton absolute inset-0 rounded-none opacity-30" />}>
-              <TwinScene
-                graph={{ nodes: STATIC_NODES, mission: null }}
-                labels={false}
+              <GlobeView
+                graph={{ nodes: STATIC_NODES, mission: { origin: 'MY', target: 'ID', objective: '', legs: [] } }}
+                features={geo.features}
                 interactive={false}
-                animate={!reduce}
+                autoRotate
+                showClusters={false}
+                reduceMotion={!!reduce}
               />
             </Suspense>
           ) : null}
           {/* Real component preview, not a mock screenshot */}
-          <div className="absolute bottom-4 left-4 right-4 grid gap-3 rounded-2xl border border-white/10 bg-brand-deep/90 p-4 text-on-brand backdrop-blur md:bottom-auto md:left-auto md:right-6 md:top-6 md:w-[320px]">
+          <div className="absolute bottom-4 left-4 right-4 z-20 grid gap-3 rounded-2xl border border-white/10 bg-brand-deep/90 p-4 text-on-brand backdrop-blur md:bottom-6 md:left-6 md:right-auto md:w-[300px]">
             <p className="text-xs text-on-brand/70">Malaysia to Indonesia, healthtech</p>
             <p className="font-medium leading-snug">Medical device and health software marketing authorisation</p>
             <div className="flex flex-wrap gap-2">
@@ -200,8 +204,8 @@ export default function Landing() {
           <Bento className="md:col-span-2" icon={<Broadcast size={22} />} title="Regulatory Radar">
             <p>Source changes tracked from announced to enacted to effective, flagged against your missions.</p>
           </Bento>
-          <Bento className="md:col-span-2 bg-brand-deep text-on-brand" icon={<Globe size={22} />} title="Ecosystem Twin" dark>
-            <p className="text-on-brand/80">A 3D map of ASEAN hubs. Mission Mode traces your route through authorities and partners.</p>
+          <Bento className="md:col-span-2 bg-brand-deep text-on-brand" icon={<Globe size={22} />} title="Ecosystem Map" dark>
+            <p className="text-on-brand/80">A globe and map of ASEAN with pins for agencies, programmes, partners and talent. Mission Mode draws your route.</p>
           </Bento>
         </div>
       </section>

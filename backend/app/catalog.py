@@ -17,6 +17,7 @@ COUNTRIES = {
     "LA": {"name": "Lao PDR", "lat": 17.97, "lon": 102.6, "covered": False},
     "MM": {"name": "Myanmar", "lat": 19.76, "lon": 96.08, "covered": False},
     "BN": {"name": "Brunei Darussalam", "lat": 4.94, "lon": 114.95, "covered": False},
+    "TL": {"name": "Timor-Leste", "lat": -8.56, "lon": 125.56, "covered": False},
 }
 
 AREAS = {
