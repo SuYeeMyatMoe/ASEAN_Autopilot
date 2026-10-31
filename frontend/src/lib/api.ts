@@ -335,6 +335,15 @@ function remember(patch: Snapshot) {
   }
 }
 
+/** Drop the saved copy, e.g. when the founder starts over. */
+export function forgetSnapshot() {
+  try {
+    localStorage.removeItem(SNAPSHOT_KEY)
+  } catch {
+    /* storage unavailable */
+  }
+}
+
 const keep =
   <T,>(pick: (v: T) => Snapshot) =>
   (v: T) => {
@@ -345,30 +354,111 @@ const keep =
 let restoring: Promise<boolean> | null = null
 
 /**
- * Re-seed the server from the snapshot. Resolves true when the server accepted it, even if it
- * already had everything: a request that was in flight while another one restored the data
- * still got a 404 and should be retried (once).
+ * The snapshot without display-only fields, so it fits in a request header. `lean` also drops
+ * the founder's extracted file text (the passport then leans on the profile alone).
  */
-function restoreFromSnapshot(): Promise<boolean> {
-  const snap = readSnapshot()
-  if (!snap.founder && !snap.mission) return Promise.resolve(false)
-  restoring ??= fetch(`${BASE}/api/restore`, json({ founder: snap.founder ?? null, mission: snap.mission ?? null, passport: snap.passport ?? null }))
+function compactSnapshot(snap: Snapshot, lean = false) {
+  const p = snap.passport
+  const meta: Partial<FounderResponse['meta']> = snap.founder?.meta ?? {}
+  return {
+    founder: snap.founder
+      ? { founder_id: snap.founder.founder_id, dna: snap.founder.dna, meta: lean ? { source: meta.source, model: meta.model, notes: [] } : meta }
+      : null,
+    mission: snap.mission ?? null,
+    passport: p
+      ? {
+          passport_id: p.passport_id,
+          mission_id: p.mission_id,
+          summary: p.summary,
+          items: p.items.map(({ record_id, applies, why_it_applies, status, evidence_available, missing, next_action }) => ({
+            record_id, applies, why_it_applies, status, evidence_available, missing, next_action,
+          })),
+          missing_information: p.missing_information,
+          recommended_next_actions: p.recommended_next_actions,
+          meta: p.meta,
+          created_at: p.created_at,
+        }
+      : null,
+  }
+}
+
+function base64url(bytes: Uint8Array): string {
+  let bin = ''
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000))
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+
+/** Header value carrying the snapshot (gzip when the browser supports it), or null if too big. */
+const MAX_HEADER = 12_000
+async function snapshotHeader(snap: Snapshot): Promise<string | null> {
+  for (const lean of [false, true]) {
+    const value = await encodeHeader(compactSnapshot(snap, lean))
+    if (value.length <= MAX_HEADER) return value
+  }
+  return null
+}
+
+async function encodeHeader(payload: unknown): Promise<string> {
+  const bytes = new TextEncoder().encode(JSON.stringify(payload))
+  let value: string
+  try {
+    const gz = new Blob([bytes]).stream().pipeThrough(new CompressionStream('gzip'))
+    value = 'gz.' + base64url(new Uint8Array(await new Response(gz).arrayBuffer()))
+  } catch {
+    value = 'b64.' + base64url(bytes)
+  }
+  return value
+}
+
+/**
+ * Re-seed the server from the snapshot through POST /api/restore. Only used when the snapshot
+ * is too large for a header; the retry may then still land on another instance.
+ */
+function restoreFromSnapshot(snap: Snapshot): Promise<boolean> {
+  restoring ??= fetch(`${BASE}/api/restore`, json(compactSnapshot(snap)))
     .then((r) => r.ok)
     .catch(() => false)
     .finally(() => setTimeout(() => (restoring = null), 0))
   return restoring
 }
 
-async function request<T>(path: string, init?: RequestInit, retried = false): Promise<T> {
+/**
+ * Retry a request that got 404 because the server lost this browser's records. The snapshot
+ * travels with the retry, so whichever instance serves it restores them first.
+ */
+async function retryWithSnapshot(path: string, init?: RequestInit): Promise<Response | null> {
+  const snap = readSnapshot()
+  if (!snap.founder && !snap.mission) return null
+  const header = await snapshotHeader(snap)
+  const headers = new Headers(init?.headers)
+  if (header) headers.set('X-AMC-Restore', header)
+  else if (!(await restoreFromSnapshot(snap))) return null
+  try {
+    return await fetch(`${BASE}/api${path}`, { ...init, headers })
+  } catch {
+    return null
+  }
+}
+
+const LOST: Record<string, string> = {
+  'Mission not found.': 'This mission is no longer stored on the server. Use Start over to set it up again.',
+  'Founder profile not found. Start from the upload step.':
+    'Your founder profile is no longer stored on the server. Use Start over to upload your materials again.',
+}
+
+/** True when the server no longer has this browser's founder or mission and it could not be restored. */
+export function isLostRecord(error: unknown): boolean {
+  return error instanceof ApiError && error.status === 404 && Object.values(LOST).includes(error.message)
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response
   try {
     res = await fetch(`${BASE}/api${path}`, init)
   } catch {
     throw new ApiError(0, 'Could not reach the server. Check that the API is running and try again.')
   }
-  if (res.status === 404 && !retried && (await restoreFromSnapshot())) {
-    return request<T>(path, init, true)
-  }
+  if (res.status === 404) res = (await retryWithSnapshot(path, init)) ?? res
   if (!res.ok) {
     let msg =
       res.status === 504
@@ -376,8 +466,7 @@ async function request<T>(path: string, init?: RequestInit, retried = false): Pr
         : `Request failed (${res.status}).`
     try {
       const body = await res.json()
-      if (typeof body.detail === 'string') msg = body.detail
-      if (msg === 'Mission not found.') msg = 'This mission is no longer stored on the server. Open Mission and set it up again.'
+      if (typeof body.detail === 'string') msg = LOST[body.detail] ?? body.detail
     } catch {
       /* keep default */
     }

@@ -5,11 +5,21 @@ per instance and wiped on every deploy, so a request can land on an instance tha
 never seen the mission ("Mission not found."). The browser keeps a copy of its own
 records and posts them here; anything missing is inserted under the same ids, and
 records that already exist are never overwritten.
+
+Posting to /api/restore and then retrying can still miss: the retry may land on yet
+another instance. So the browser can also attach the same snapshot to the retried
+request itself (X-AMC-Restore header); it is restored in that request's own database
+session before the route runs, on whichever instance serves it.
 """
 
+import base64
+import binascii
+import json
+import logging
+import zlib
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field, ValidationError
 from sqlmodel import Session
 
@@ -19,7 +29,11 @@ from app.models import Founder, Mission, Passport
 from app.schemas import FounderDNA, PassportItemLLM, PassportLLM
 from app.services import latest_passport
 
+log = logging.getLogger(__name__)
 router = APIRouter(tags=["restore"])
+
+RESTORE_HEADER = "x-amc-restore"
+MAX_SNAPSHOT_BYTES = 256_000
 
 ID = Field(pattern=r"^[a-f0-9]{6,32}$")
 
@@ -56,8 +70,8 @@ class RestoreIn(BaseModel):
     passport: PassportIn | None = None
 
 
-@router.post("/restore")
-def restore(body: RestoreIn, session: Session = Depends(get_session)):
+def apply_restore(session: Session, body: RestoreIn) -> list[str]:
+    """Insert whichever of the snapshot's records this database is missing."""
     restored: list[str] = []
 
     f = body.founder
@@ -109,4 +123,44 @@ def restore(body: RestoreIn, session: Session = Depends(get_session)):
             restored.append("passport")
 
     session.commit()
-    return {"restored": restored}
+    return restored
+
+
+def decode_snapshot(value: str) -> RestoreIn | None:
+    """Parse an X-AMC-Restore header: "gz.<base64url gzip JSON>" or "b64.<base64url JSON>"."""
+    kind, _, data = value.partition(".")
+    if kind not in ("gz", "b64") or not data:
+        return None
+    try:
+        raw = base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))
+        if kind == "gz":
+            d = zlib.decompressobj(wbits=31)  # gzip container
+            raw = d.decompress(raw, MAX_SNAPSHOT_BYTES)
+            if d.unconsumed_tail:
+                return None  # larger than we accept
+        if len(raw) > MAX_SNAPSHOT_BYTES:
+            return None
+        return RestoreIn.model_validate(json.loads(raw))
+    except (binascii.Error, zlib.error, ValueError, ValidationError):
+        return None
+
+
+def restore_from_header(request: Request, session: Session = Depends(get_session)) -> None:
+    """Router-wide dependency: re-seed this instance from the header before the route runs.
+
+    FastAPI caches dependencies per request, so the route then uses this same session."""
+    value = request.headers.get(RESTORE_HEADER)
+    if not value:
+        return
+    body = decode_snapshot(value)
+    if body is None:
+        log.warning("Ignored an unreadable %s header", RESTORE_HEADER)
+        return
+    restored = apply_restore(session, body)
+    if restored:
+        log.info("Restored %s from the request header", ", ".join(restored))
+
+
+@router.post("/restore")
+def restore(body: RestoreIn, session: Session = Depends(get_session)):
+    return {"restored": apply_restore(session, body)}

@@ -293,3 +293,54 @@ def test_restore_recreates_lost_records(tmp_path, monkeypatch):
         assert c.post("/api/restore", json={"mission": {**m, "id": "../etc"}}).status_code == 422
     finally:
         app.dependency_overrides.clear()
+
+
+def test_restore_header_reseeds_the_instance_serving_the_retry(tmp_path):
+    """A retry that lands on yet another fresh instance restores from its own header."""
+    import base64
+    import gzip
+    import json
+
+    from fastapi.testclient import TestClient
+    from sqlmodel import Session, SQLModel, create_engine
+
+    from app.db import get_session
+    from app.main import app
+    from app import models  # noqa: F401
+
+    engines = [create_engine(f"sqlite:///{tmp_path / f'{n}.db'}", connect_args={"check_same_thread": False}) for n in "abc"]
+    for e in engines:
+        SQLModel.metadata.create_all(e)
+    current = {"engine": engines[0]}
+
+    def session_override():
+        with Session(current["engine"]) as s:
+            yield s
+
+    app.dependency_overrides[get_session] = session_override
+    try:
+        c = TestClient(app)
+        f = c.post("/api/founder/sample").json()
+        m = c.post("/api/mission", json={"founder_id": f["founder_id"], "target": "ID", "objective": "Run a hospital pilot in Jakarta"}).json()
+        p = c.post(f"/api/passport/{m['id']}").json()
+        snap = {"founder": {"founder_id": f["founder_id"], "dna": f["dna"], "meta": f["meta"]}, "mission": m, "passport": p}
+
+        def enc(kind: str, raw: bytes) -> str:
+            return f"{kind}." + base64.urlsafe_b64encode(raw).decode().rstrip("=")
+
+        current["engine"] = engines[1]
+        assert c.get(f"/api/passport/{m['id']}/roadmap").status_code == 404
+        gz = enc("gz", gzip.compress(json.dumps(snap).encode()))
+        r = c.get(f"/api/passport/{m['id']}/roadmap", headers={"X-AMC-Restore": gz})
+        assert r.status_code == 200 and r.json()["stages"]
+
+        current["engine"] = engines[2]
+        plain = enc("b64", json.dumps({"founder": snap["founder"]}).encode())
+        assert c.get(f"/api/founder/{f['founder_id']}", headers={"X-AMC-Restore": plain}).status_code == 200
+
+        # An unreadable header is ignored, not an error.
+        assert c.get(f"/api/mission/{m['id']}", headers={"X-AMC-Restore": "gz.not-base64!"}).status_code == 404
+        bomb = enc("gz", gzip.compress(b" " * 2_000_000))
+        assert c.get(f"/api/mission/{m['id']}", headers={"X-AMC-Restore": bomb}).status_code == 404
+    finally:
+        app.dependency_overrides.clear()

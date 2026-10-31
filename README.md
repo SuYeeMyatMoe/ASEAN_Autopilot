@@ -132,7 +132,7 @@ Set these in `backend/.env` locally, or in the Vercel project settings when depl
 |---|---|---|
 | `GEMINI_API_KEY` | No | Google AI Studio key. Without it every feature uses rule-based demo output, labelled "Demo data". |
 | `GEMMA_MODEL` | No | Gemma 4 model id. Default `gemma-4-26b-a4b-it` (mixture-of-experts, ~4B active parameters: much faster than the dense 31B with close quality). Blank auto-selects, still preferring the MoE model; the other Gemma 4 model is the automatic backup. |
-| `GEMMA_BUDGET_MS` | No | Time budget for one Gemma answer, all attempts included. Default `40000`, well under Vercel's 60 s limit, so a slow model returns the rule-based result instead of a 504. |
+| `GEMMA_BUDGET_MS` | No | Time budget for one Gemma answer, all attempts included. Default `40000`, well under the 300 s function limit, so a slow model returns the rule-based result instead of a 504. |
 | `GEMINI_SCAN_MODEL` | No | Gemini model that scans uploaded files. Default `gemini-2.5-flash`, with `gemini-flash-latest` as backup. Set it to blank to skip scanning and let Gemma 4 read the files directly. |
 | `DEMO_MODE` | No | `true` forces demo responses even when a key is set. |
 | `DATABASE_URL` | No | Supabase Postgres transaction pooler URL (port 6543). Blank uses a local SQLite file. |
@@ -184,9 +184,9 @@ npm run build
 
 1. **Supabase:** create a project and copy the **Transaction pooler** connection string (Project Settings > Database, port 6543). Tables are created automatically on the first request.
 2. **Vercel:** import the repository with the project root at the repository root. `vercel.json` builds `frontend/` and serves `api/index.py` as the FastAPI function. Set `GEMINI_API_KEY`, `DATABASE_URL`, and optionally `GEMMA_MODEL`, `GEMINI_SCAN_MODEL` and `CORS_ORIGINS`.
-3. Uploads are capped at 4 MB to stay under Vercel's request body limit. The function `maxDuration` is 60 seconds.
+3. Uploads are capped at 4 MB to stay under Vercel's request body limit. `vercel.json` turns on Fluid compute and sets the function `maxDuration` to 300 seconds (the Hobby maximum with Fluid compute), so passport generation is not cut off with a 504.
 
-Without `DATABASE_URL` on Vercel, the API falls back to SQLite in `/tmp`, which is separate for each function instance and wiped on every deploy. The browser keeps a copy of its founder profile, mission and latest passport and re-creates them through `POST /api/restore` when a request returns 404, so pages keep working, but saved milestones and referral requests are lost. Set `DATABASE_URL` for real persistence; the sidebar shows "Temporary storage" until you do, and `/api/health` reports `persistent`.
+Without `DATABASE_URL` on Vercel, the API falls back to SQLite in `/tmp`, which is separate for each function instance and wiped on every deploy. The browser keeps a copy of its founder profile, mission and latest passport and re-sends them with the retried request (`X-AMC-Restore` header, gzip) when a request returns 404, so whichever instance serves the retry restores them first and pages keep working. If the browser has no copy either, the page offers Start over. `POST /api/restore` does the same as a separate call; but saved milestones and referral requests are lost. Set `DATABASE_URL` for real persistence; the sidebar shows "Temporary storage" until you do, and `/api/health` reports `persistent`.
 
 ---
 
@@ -234,7 +234,7 @@ If Gemini is unavailable, or `GEMINI_SCAN_MODEL` is blank, the app falls back to
 | Closed-book regulatory reasoning | `backend/app/services.py`, `backend/app/llm/prompts.py` | Passport, compare, consultation pack and companion prompts contain only retrieved records. Items citing anything else are dropped. |
 | Structured output | `backend/app/llm/gemma.py` | Gemma returns JSON validated with Pydantic, with one repair call on failure. The Launch Passport is assessed in three parallel Gemma 4 calls and merged. |
 | Mission Companion | `backend/app/routers/companion.py` | Context-aware multilingual co-pilot. Knows the profile, mission, open items, saved items and referrals. Replies with citations and can trigger one validated action (open a page, search opportunities, compare markets, save an item, check progress). Also explains uploaded documents (scanned by Gemini first) and gives proactive nudges. |
-| Resilience | `backend/app/llm/gemma.py` | On error or timeout, fails over to another Gemma 4 model and skips the failing one for 5 minutes. Every answer runs inside a time budget that stays under the 60 s function limit. Voice replies use minimal thinking for lower latency. Each answer shows which model replied. |
+| Resilience | `backend/app/llm/gemma.py` | On error or timeout, fails over to another Gemma 4 model and skips the failing one for 5 minutes. Every answer runs inside a time budget that stays well under the function limit. Voice replies use minimal thinking for lower latency. Each answer shows which model replied. |
 
 ### Dependency roadmap
 

@@ -2,7 +2,7 @@ import logging
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import catalog
@@ -29,7 +29,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-api = APIRouter(prefix="/api")
+# Every API route first restores records the browser attached to a retried request.
+api = APIRouter(prefix="/api", dependencies=[Depends(restore.restore_from_header)])
 
 
 @api.get("/health")

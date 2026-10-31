@@ -11,8 +11,10 @@ import {
   Wrench,
 } from '@phosphor-icons/react'
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
-import { Link } from 'react-router-dom'
-import type { GenMeta, Source, Status } from '../lib/api'
+import { useQueryClient } from '@tanstack/react-query'
+import { Link, useNavigate } from 'react-router-dom'
+import { forgetSnapshot, isLostRecord, type GenMeta, type Source, type Status } from '../lib/api'
+import { useSession } from '../lib/session'
 
 export function cx(...c: (string | false | null | undefined)[]) {
   return c.filter(Boolean).join(' ')
@@ -194,12 +196,34 @@ export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () =>
     <div role="alert" className="flex flex-wrap items-start gap-3 rounded-2xl border p-4 text-sm" style={{ borderColor: 'var(--st-missing)', background: 'var(--st-missing-bg)', color: 'var(--st-missing)' }}>
       <WarningCircle size={18} weight="bold" className="mt-0.5 shrink-0" aria-hidden />
       <p className="flex-1">{msg}</p>
-      {onRetry && (
+      {isLostRecord(error) ? (
+        <StartOver />
+      ) : onRetry && (
         <button onClick={onRetry} className="font-medium underline underline-offset-4">
           Try again
         </button>
       )}
     </div>
+  )
+}
+
+/** The server lost this browser's founder or mission and it could not be restored: begin again. */
+function StartOver() {
+  const { reset } = useSession()
+  const navigate = useNavigate()
+  const client = useQueryClient()
+  return (
+    <button
+      onClick={() => {
+        forgetSnapshot()
+        reset()
+        client.clear()
+        navigate('/app/onboard')
+      }}
+      className="font-medium underline underline-offset-4"
+    >
+      Start over
+    </button>
   )
 }
 
