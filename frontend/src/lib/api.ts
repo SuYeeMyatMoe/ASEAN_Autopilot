@@ -9,6 +9,8 @@ export interface GenMeta {
   source: 'gemma' | 'demo' | 'fallback'
   model: string | null
   notes: string[]
+  /** Gemini model that scanned the uploaded files into text, if any. */
+  scan_model?: string | null
 }
 
 export interface FounderDNA {
@@ -285,6 +287,7 @@ export interface Health {
   mode: 'live' | 'demo'
   model: string | null
   model_error: string | null
+  scan_model: string | null
   database: string
 }
 

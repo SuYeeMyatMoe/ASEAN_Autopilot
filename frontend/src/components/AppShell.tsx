@@ -106,6 +106,11 @@ export function AppShell() {
         <div className="mt-auto grid gap-1 px-3 text-xs text-on-brand/70">
           <span className="font-mono">{health.data ? (health.data.mode === 'live' ? `Gemma 4 live` : 'Demo mode, no API key') : 'Connecting'}</span>
           {health.data?.model && <span className="truncate font-mono" title={health.data.model}>{health.data.model}</span>}
+          {health.data?.scan_model && (
+            <span className="truncate font-mono" title="Uploaded files are scanned by this Gemini model">
+              Scan: {health.data.scan_model}
+            </span>
+          )}
         </div>
       </aside>
 

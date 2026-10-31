@@ -39,9 +39,10 @@ class GenMeta:
     source: str  # "gemma" | "demo" | "fallback"
     model: str | None = None
     notes: list[str] = field(default_factory=list)
+    scan_model: str | None = None  # Gemini model that scanned the uploads, if any
 
     def as_dict(self) -> dict:
-        return {"source": self.source, "model": self.model, "notes": self.notes}
+        return {"source": self.source, "model": self.model, "notes": self.notes, "scan_model": self.scan_model}
 
 
 class GemmaError(RuntimeError):

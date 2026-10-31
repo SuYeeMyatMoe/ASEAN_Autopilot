@@ -4,6 +4,7 @@ import {
   ClockCountdown,
   Gavel,
   Question,
+  Scan,
   ShieldWarning,
   Sparkle,
   WarningCircle,
@@ -119,7 +120,7 @@ export function MetaChip({ meta, onDark }: { meta?: GenMeta; onDark?: boolean })
   if (!meta) return null
   const live = meta.source === 'gemma'
   const label = live ? `Gemma 4${meta.model ? ` · ${meta.model}` : ''}` : meta.source === 'demo' ? 'Demo data' : 'Rule-based fallback'
-  return (
+  const chip = (
     <span
       className={cx(
         'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[11px]',
@@ -135,6 +136,22 @@ export function MetaChip({ meta, onDark }: { meta?: GenMeta; onDark?: boolean })
     >
       <Sparkle size={12} weight={live ? 'fill' : 'regular'} aria-hidden />
       {label}
+    </span>
+  )
+  if (!meta.scan_model) return chip
+  return (
+    <span className="inline-flex flex-wrap items-center gap-1.5">
+      <span
+        className={cx(
+          'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[11px]',
+          onDark ? 'border-white/30 text-on-brand/85' : 'border-line text-muted',
+        )}
+        title="Gemini scanned the uploaded files into text; Gemma 4 analysed it."
+      >
+        <Scan size={12} aria-hidden />
+        Scanned · {meta.scan_model}
+      </span>
+      {chip}
     </span>
   )
 }

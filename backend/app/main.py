@@ -45,6 +45,8 @@ def health():
         "mode": "live" if gemma.live else "demo",
         "model": model,
         "model_error": error,
+        # Gemini scans uploads into text; Gemma 4 does the reasoning.
+        "scan_model": (settings.gemini_scan_model or None) if gemma.live else None,
         "database": "postgres" if settings.resolved_database_url.startswith("postgresql") else "sqlite",
     }
 
