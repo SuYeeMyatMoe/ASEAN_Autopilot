@@ -146,6 +146,16 @@ export function CompanionPanel({ open, onClose }: { open: boolean; onClose: () =
     [voiceOut, speak],
   )
 
+  // Following a Next step closes the panel so the page is visible; the conversation is kept.
+  const goTo = useCallback(
+    (page: string) => {
+      stopSpeaking()
+      navigate(`/app/${page}`)
+      onClose()
+    },
+    [navigate, onClose, stopSpeaking],
+  )
+
   const chat = useMutation({
     mutationFn: (message: string) =>
       api.companionChat({
@@ -315,7 +325,7 @@ export function CompanionPanel({ open, onClose }: { open: boolean; onClose: () =
                     <span>{m.text}</span>
                   </div>
                 ) : m.role === 'companion' ? (
-                  <CompanionMessage key={m.id} m={m} speaking={speakingId === m.id} onReplay={() => say(m.id, m.reply)} onStop={stopSpeaking} onAsk={send} />
+                  <CompanionMessage key={m.id} m={m} speaking={speakingId === m.id} onReplay={() => say(m.id, m.reply)} onStop={stopSpeaking} onAsk={send} onGo={goTo} />
                 ) : m.role === 'doc' ? (
                   <DocMessage key={m.id} d={m.doc} />
                 ) : (
@@ -426,33 +436,63 @@ export function CompanionPanel({ open, onClose }: { open: boolean; onClose: () =
   )
 }
 
+const PAGE_LABELS: Record<string, string> = {
+  onboard: 'Founder DNA',
+  mission: 'Mission',
+  passport: 'Launch Passport',
+  gaps: 'Gap check',
+  roadmap: 'Roadmap',
+  compare: 'Compare markets',
+  discover: 'Discover',
+  desk: 'Market Access Desk',
+  radar: 'Regulatory Radar',
+  map: 'Ecosystem Map',
+}
+
 function CompanionMessage({
   m,
   speaking,
   onReplay,
   onStop,
   onAsk,
+  onGo,
 }: {
   m: { reply: CompanionReply; done?: string; noVoice?: boolean }
   speaking: boolean
   onReplay: () => void
   onStop: () => void
   onAsk: (q: string) => void
+  onGo: (page: string) => void
 }) {
   const r = m.reply
   return (
     <div className="grid gap-3">
       <div className="card grid gap-3 p-4">
         <p className="text-[15px] leading-relaxed">{r.reply}</p>
-        {r.next_step && (
-          <div className="flex items-start gap-2 rounded-xl bg-brand-soft px-3 py-2 text-sm">
-            <ArrowRight size={14} className="mt-1 shrink-0" aria-hidden />
-            <span>
-              <span className="font-medium">Next step: </span>
-              {r.next_step}
-            </span>
-          </div>
-        )}
+        {r.next_step &&
+          (r.next_page ? (
+            <button
+              onClick={() => onGo(r.next_page)}
+              className="group flex items-start gap-2 rounded-xl bg-brand-soft px-3 py-2 text-left text-sm transition hover:ring-2 hover:ring-brand/30 active:scale-[0.99]"
+            >
+              <span className="flex-1">
+                <span className="font-medium">Next step: </span>
+                {r.next_step}
+                <span className="mt-0.5 block text-xs text-muted">Open {PAGE_LABELS[r.next_page] ?? r.next_page}</span>
+              </span>
+              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-brand text-on-brand transition group-hover:translate-x-0.5">
+                <ArrowRight size={14} weight="bold" aria-hidden />
+              </span>
+            </button>
+          ) : (
+            <div className="flex items-start gap-2 rounded-xl bg-brand-soft px-3 py-2 text-sm">
+              <ArrowRight size={14} className="mt-1 shrink-0" aria-hidden />
+              <span>
+                <span className="font-medium">Next step: </span>
+                {r.next_step}
+              </span>
+            </div>
+          ))}
         {m.done && (
           <p className="inline-flex items-center gap-1.5 text-xs font-medium" style={{ color: 'var(--st-available)' }}>
             <CheckCircle size={14} weight="fill" aria-hidden />

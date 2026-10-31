@@ -136,9 +136,18 @@ class Gemma:
         return sorted(order, key=lambda m: self._unhealthy_until.get(m, 0) > now)
 
     def generate(
-        self, prompt: str, images: list[ImageInput] | None = None, temperature: float = 0.2, fast: bool = False
+        self,
+        prompt: str,
+        images: list[ImageInput] | None = None,
+        temperature: float = 0.2,
+        fast: bool = False,
+        json_mode: bool = False,
     ) -> str:
-        """fast=True asks for minimal thinking: much lower latency, used for voice replies."""
+        """
+        Thinking is off (minimal) unless GEMMA_THINKING=true: on Founder DNA it cut a call
+        from ~28 s to ~9 s with the same output. fast=True also applies the shorter timeout
+        used for voice replies. json_mode asks the API for a JSON response.
+        """
         from google.genai import errors, types
 
         parts: list = [types.Part.from_bytes(data=img.data, mime_type=img.mime_type) for img in images or []]
@@ -152,21 +161,28 @@ class Gemma:
                 if not isinstance(last_exc, errors.ServerError):
                     break
                 time.sleep(1.0)
-            minimal = fast
+            minimal = not self.settings.gemma_thinking
+            want_json = json_mode
             while True:
                 config = types.GenerateContentConfig(
                     temperature=temperature,
                     max_output_tokens=self.settings.gemma_max_output_tokens,
                     automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
                     thinking_config=types.ThinkingConfig(thinking_level="MINIMAL") if minimal else None,
+                    response_mime_type="application/json" if want_json else None,
                     # Voice replies must come back quickly; let them fail over sooner.
                     http_options=types.HttpOptions(timeout=self.settings.gemma_fast_timeout_ms) if fast else None,
                 )
                 try:
                     resp = self.client.models.generate_content(model=model, contents=parts, config=config)
                 except errors.ClientError as exc:
-                    if minimal and "not supported" in str(exc).lower():
-                        minimal = False  # this model can't switch thinking off; ask normally
+                    msg = str(exc).lower()
+                    # Drop an option this model doesn't support and ask again.
+                    if minimal and "thinking" in msg and "not supported" in msg:
+                        minimal = False
+                        continue
+                    if want_json and ("mime" in msg or "json" in msg):
+                        want_json = False
                         continue
                     raise
                 except (errors.ServerError, httpx.TimeoutException) as exc:
@@ -197,7 +213,7 @@ class Gemma:
             f"{json.dumps(schema.model_json_schema())}"
         )
         try:
-            raw = self.generate(full_prompt, images, fast=fast)
+            raw = self.generate(full_prompt, images, fast=fast, json_mode=True)
         except Exception as exc:  # network, quota, safety block
             log.warning("Gemma call failed: %s", exc)
             return fallback(), GenMeta(source="fallback", notes=[f"Gemma call failed: {exc}"[:300]])
@@ -210,7 +226,7 @@ class Gemma:
                 f"Error: {str(first_err)[:800]}\n\nSchema:\n{json.dumps(schema.model_json_schema())}\n\nJSON:\n{raw[:6000]}"
             )
             try:
-                fixed = self.generate(repair, temperature=0.0, fast=True)
+                fixed = self.generate(repair, temperature=0.0, fast=True, json_mode=True)
                 return schema.model_validate(extract_json(fixed)), GenMeta(
                     source="gemma", model=self.last_model, notes=["Output repaired once."]
                 )

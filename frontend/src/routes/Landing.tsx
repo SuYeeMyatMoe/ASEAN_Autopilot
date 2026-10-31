@@ -13,16 +13,14 @@ import {
   Sun,
 } from '@phosphor-icons/react'
 import { motion, useReducedMotion } from 'motion/react'
-import { lazy, Suspense, useMemo, type ReactNode } from 'react'
+import { lazy, Suspense, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { Logo } from '../components/Logo'
 import { ButtonLink, StatusBadge, cx } from '../components/ui'
 import { useTheme } from '../lib/session'
-import { useCountries } from '../geo/asean'
-import { STATIC_NODES } from '../geo/nodes'
-import { hasWebGL } from '../geo/webgl'
 
-const GlobeView = lazy(() => import('../geo/GlobeView'))
+// Lazy so d3-geo and the ASEAN outlines stay out of the first paint.
+const HeroNetworkMap = lazy(() => import('../geo/HeroNetworkMap'))
 const EASE = [0.16, 1, 0.3, 1] as const
 
 function Reveal({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) {
@@ -56,96 +54,83 @@ const SOURCES = [
 export default function Landing() {
   const { theme, toggle } = useTheme()
   const reduce = useReducedMotion()
-  const webgl = useMemo(() => hasWebGL(), [])
-  const geo = useCountries()
 
   return (
     <div className="min-h-[100dvh] bg-bg text-ink">
-      {/* Nav */}
-      <header className="sticky top-0 z-30 border-b border-line/70 bg-bg/85 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-[1280px] items-center gap-6 px-4 md:px-8">
-          <Link to="/" aria-label="ASEAN Mission Control home">
-            <Logo />
-          </Link>
-          <nav aria-label="Main" className="ml-6 hidden items-center gap-6 text-sm text-muted md:flex">
-            <a href="#modules" className="hover:text-ink">Modules</a>
-            <a href="#how" className="hover:text-ink">How it works</a>
-            <a href="#sources" className="hover:text-ink">Sources</a>
-          </nav>
-          <div className="ml-auto flex items-center gap-2">
-            <button onClick={toggle} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} className="rounded-full p-2 hover:bg-surface-2">
-              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-            <ButtonLink to="/app/onboard" className="hidden sm:inline-flex">Start your passport</ButtonLink>
-          </div>
-        </div>
-      </header>
-
-      {/* Hero */}
-      <section className="mx-auto grid max-w-[1280px] items-center gap-10 px-4 pb-16 pt-12 md:px-8 md:pt-20 lg:grid-cols-[1fr_1.1fr] lg:pb-24">
-        <div className="grid gap-7">
-          <motion.h1
-            initial={reduce ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE }}
-            className="text-4xl font-semibold leading-[1.05] tracking-tighter md:text-5xl lg:text-6xl"
-          >
-            Your next ASEAN market, mapped step by step.
-          </motion.h1>
-          <motion.p
-            initial={reduce ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: EASE }}
-            className="max-w-[46ch] text-lg leading-relaxed text-muted"
-          >
-            Gemma 4 reads your pitch deck, checks it against official sources, and plans your launch into a new ASEAN market.
-          </motion.p>
-          <motion.div
-            initial={reduce ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: EASE }}
-            className="flex flex-wrap gap-3"
-          >
-            <ButtonLink to="/app/onboard" className="px-6 py-3 text-base">
-              Start your passport
-              <ArrowRight size={18} aria-hidden />
-            </ButtonLink>
-            <ButtonLink to="/app/map" variant="ghost" className="px-6 py-3 text-base">
-              Explore the map
-            </ButtonLink>
-          </motion.div>
-        </div>
-
-        <motion.div
-          initial={reduce ? false : { opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.15, ease: EASE }}
-          className="relative h-[380px] overflow-hidden rounded-[28px] bg-brand md:h-[520px]"
-        >
-          {webgl && geo.features ? (
-            <Suspense fallback={<div className="skeleton absolute inset-0 rounded-none opacity-30" />}>
-              <GlobeView
-                graph={{ nodes: STATIC_NODES, mission: { origin: 'MY', target: 'ID', objective: '', legs: [] } }}
-                features={geo.features}
-                interactive={false}
-                autoRotate
-                showClusters={false}
-                reduceMotion={!!reduce}
-              />
-            </Suspense>
-          ) : null}
-          {/* Real component preview, not a mock screenshot */}
-          <div className="absolute bottom-4 left-4 right-4 z-20 grid gap-3 rounded-2xl border border-white/10 bg-brand-deep/90 p-4 text-on-brand backdrop-blur md:bottom-6 md:left-6 md:right-auto md:w-[300px]">
-            <p className="text-xs text-on-brand/70">Malaysia to Indonesia, healthtech</p>
-            <p className="font-medium leading-snug">Medical device and health software marketing authorisation</p>
-            <div className="flex flex-wrap gap-2">
-              <StatusBadge status="professional_review_required" />
-              <StatusBadge status="information_missing" />
+      {/* Dark hero band: nav + headline + live network map */}
+      <div className="relative overflow-hidden bg-[#08130e] text-[#e6ede5]">
+        <header className="relative z-30">
+          <div className="mx-auto flex h-16 max-w-[1280px] items-center gap-6 px-4 md:px-8">
+            <Link to="/" aria-label="ASEAN Mission Control home">
+              <Logo inverted />
+            </Link>
+            <nav aria-label="Main" className="ml-6 hidden items-center gap-6 text-sm text-[#9cb0a5] md:flex">
+              <a href="#modules" className="hover:text-white">Modules</a>
+              <a href="#how" className="hover:text-white">How it works</a>
+              <a href="#sources" className="hover:text-white">Sources</a>
+            </nav>
+            <div className="ml-auto flex items-center gap-2">
+              <button onClick={toggle} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} className="rounded-full p-2 hover:bg-white/10">
+                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
+              <ButtonLink to="/app/onboard" className="hidden sm:inline-flex">Start your passport</ButtonLink>
             </div>
-            <p className="font-mono text-[11px] text-on-brand/60">Source: Ministry of Health (Kemenkes)</p>
           </div>
-        </motion.div>
-      </section>
+        </header>
+
+        <section className="relative mx-auto grid min-h-[min(760px,calc(100dvh-64px))] max-w-[1280px] items-center gap-6 px-4 pb-12 pt-6 md:px-8 lg:grid-cols-[0.95fr_1.1fr] lg:pb-16">
+          <div className="relative z-10 grid gap-6">
+            <span aria-hidden className="pointer-events-none absolute -top-20 left-0 select-none text-[clamp(4rem,9vw,7.5rem)] font-semibold leading-none tracking-tighter text-white/[0.045] md:-top-24">
+              ASEAN
+            </span>
+            <motion.h1
+              initial={reduce ? false : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: EASE }}
+              className="relative text-4xl font-semibold leading-[1.05] tracking-tighter text-white md:text-5xl lg:text-6xl"
+            >
+              Your next ASEAN market, mapped step by step.
+            </motion.h1>
+            <span aria-hidden className="h-[3px] w-14 rounded-full bg-accent" />
+            <motion.p
+              initial={reduce ? false : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: EASE }}
+              className="max-w-[44ch] text-lg leading-relaxed text-[#9cb0a5]"
+            >
+              Gemma 4 reads your pitch deck, checks it against official sources, and plans your launch into a new ASEAN market.
+            </motion.p>
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: EASE }}
+              className="flex flex-wrap gap-3"
+            >
+              <ButtonLink to="/app/onboard" className="px-6 py-3 text-base">
+                Start your passport
+                <ArrowRight size={18} aria-hidden />
+              </ButtonLink>
+              <Link
+                to="/app/map"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/20 px-6 py-3 text-base font-medium text-white transition hover:bg-white/10 active:scale-[0.98]"
+              >
+                Explore the map
+              </Link>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.2, delay: 0.1, ease: EASE }}
+            className="relative -mx-4 h-[420px] bg-[radial-gradient(closest-side,rgba(198,240,90,0.09),transparent)] sm:mx-0 md:h-[600px]"
+          >
+            <Suspense fallback={null}>
+              <HeroNetworkMap animate={!reduce} />
+            </Suspense>
+          </motion.div>
+        </section>
+      </div>
 
       {/* Problem statement */}
       <section className="border-y border-line bg-surface">

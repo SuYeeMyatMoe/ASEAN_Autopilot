@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { api, COUNTRY_NAMES, type FounderResponse } from '../lib/api'
 import { formatBytes, prepareUpload, UPLOAD_ACCEPT, UPLOAD_LIMIT_BYTES } from '../lib/files'
 import { useSession } from '../lib/session'
+import { DNA_STAGES, WorkingStatus } from '../components/WorkingStatus'
 import { Button, ErrorState, Field, MetaChip, PageHeader, Skeleton, cx, inputClass } from '../components/ui'
 
 export default function Onboard() {
@@ -124,7 +125,8 @@ export default function Onboard() {
 
         <section className="grid content-start gap-4" aria-live="polite">
           {busy ? (
-            <div className="card grid gap-4 p-6" role="status" aria-label="Building profile">
+            <div className="card grid gap-4 p-6">
+              <WorkingStatus active={extract.isPending || sample.isPending} stages={DNA_STAGES} />
               <Skeleton className="h-6 w-1/2" />
               <Skeleton className="h-4 w-1/3" />
               <div className="grid grid-cols-2 gap-3">

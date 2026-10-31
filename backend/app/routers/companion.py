@@ -72,6 +72,10 @@ class CompanionLLM(BaseModel):
     reply: str = Field(description="What the companion says aloud. Plain sentences, no markdown, no lists, under 90 words.")
     language: str = Field("en", description="Language code of the reply, e.g. en, ms, id, th, vi")
     next_step: str = Field("", description="One concrete next step, under 15 words, in the reply language")
+    next_page: str = Field(
+        "",
+        description="App page where the founder does the next step: passport, gaps, roadmap, compare, discover, desk, radar, map, mission, onboard. Empty if none fits.",
+    )
     citations: list[str] = []
     action: CompanionAction = CompanionAction()
     suggestions: list[str] = Field([], description="2 or 3 short follow-up questions the founder might ask, in the reply language")
@@ -147,6 +151,29 @@ def _validate_action(a: CompanionAction, eco_ids: set[str]) -> CompanionAction:
 
 
 # ---------- deterministic fallback (no key / Gemma failure) ----------
+ACTION_PAGES = {"search_opportunities": "discover", "compare_markets": "compare", "check_progress": "mission"}
+STATUS_PAGES = {"information_missing": "gaps", "professional_review_required": "desk", "action_required": "roadmap"}
+
+
+def _next_page(suggested: str, action: CompanionAction, ctx: dict) -> str:
+    """Where the Next step link goes: Gemma's choice if valid, else derived from the action or the founder's progress."""
+    if suggested in PAGES:
+        return suggested
+    if action.type == "open_page":
+        return action.params.get("page", "")
+    if action.type in ACTION_PAGES:
+        return ACTION_PAGES[action.type]
+    if not ctx["founder"]:
+        return "onboard"
+    if not ctx["mission"]:
+        return "mission"
+    if not ctx["status_counts"]:
+        return "passport"
+    if ctx["open_items"]:
+        return STATUS_PAGES.get(ctx["open_items"][0]["status"], "roadmap")
+    return ""
+
+
 def _fallback(message: str, ctx: dict, records: list[dict], eco: list[dict]) -> CompanionLLM:
     q = message.lower()
     action = CompanionAction()
@@ -204,6 +231,7 @@ def _prompt(body: ChatIn, ctx: dict, records: list[dict], eco: list[dict]) -> st
         "- If the founder seems stressed, reassure them briefly, then give the single next step.\n"
         "- If OPEN ITEMS exist and the founder asks what to do, start from the first one.\n"
         "- Choose at most one action when the founder asks you to do something (show, open, compare, save, check progress). Otherwise action.type is none.\n"
+        "- Set next_page to the app page where the founder can act on next_step (for example gaps to add missing details, desk to contact an adviser, roadmap to see the order of tasks).\n"
         f"ACTIONS: {json.dumps(ACTIONS)}\n\n"
         f"CURRENT PAGE: {body.page or 'unknown'}\n"
         f"FOUNDER CONTEXT: {json.dumps(ctx, ensure_ascii=False)}\n"
@@ -243,6 +271,7 @@ def chat(body: ChatIn, session: Session = Depends(get_session)):
         "reply": out.reply,
         "language": out.language if out.language in LANGUAGES else "en",
         "next_step": out.next_step,
+        "next_page": _next_page(out.next_page, action, ctx) if out.next_step else "",
         "citations": cite([c for c in out.citations if c in allowed]),
         "action": action.model_dump(),
         "suggestions": out.suggestions[:3],

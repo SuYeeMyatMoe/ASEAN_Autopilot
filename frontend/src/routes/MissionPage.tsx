@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api, COUNTRY_NAMES, COVERED } from '../lib/api'
 import { useSession } from '../lib/session'
+import { PASSPORT_STAGES, WorkingStatus } from '../components/WorkingStatus'
 import { Button, ButtonLink, EmptyState, ErrorState, Field, PageHeader, SkeletonList, STATUS_ORDER, StatusBadge, cx, inputClass } from '../components/ui'
 
 const TARGETS = ['ID', 'SG', 'MY', 'TH', 'VN', 'PH', 'KH', 'LA', 'MM', 'BN', 'TL']
@@ -128,8 +129,8 @@ function MissionForm({ origin, defaultObjective, defaultTarget, onCreated }: { o
           {create.isPending ? 'Building your passport' : 'Generate Launch Passport'}
           {!create.isPending && <ArrowRight size={16} aria-hidden />}
         </Button>
-        {create.isPending && <span className="text-sm text-muted">Matching your profile against official sources. This can take up to a minute.</span>}
       </div>
+      <WorkingStatus active={create.isPending} stages={PASSPORT_STAGES} />
     </form>
   )
 }

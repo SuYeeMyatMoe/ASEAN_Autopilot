@@ -209,6 +209,8 @@ export interface CompanionReply {
   reply: string
   language: string
   next_step: string
+  /** App page (e.g. 'gaps') where the next step happens; empty when none. */
+  next_page: string
   citations: Source[]
   action: CompanionAction
   suggestions: string[]

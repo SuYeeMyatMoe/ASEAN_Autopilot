@@ -2,6 +2,7 @@ import { ArrowsClockwise, IdentificationBadge } from '@phosphor-icons/react'
 import { useMemo, useState } from 'react'
 import { RequireMission } from '../components/RequireMission'
 import { RequirementCard } from '../components/RequirementCard'
+import { PASSPORT_STAGES, WorkingStatus } from '../components/WorkingStatus'
 import { Button, Disclaimer, EmptyState, ErrorState, MetaChip, PageHeader, SkeletonList, STATUS_ORDER, StatusBadge, cx } from '../components/ui'
 import { COUNTRY_NAMES, type FounderResponse, type Mission, type PassportResponse } from '../lib/api'
 import { usePassport } from '../lib/usePassport'
@@ -30,7 +31,10 @@ function Passport({ mission, founder }: { mission: Mission; founder: FounderResp
       />
       {generate.isError && <ErrorState error={generate.error} onRetry={() => generate.mutate()} />}
       {query.isPending || (generate.isPending && !p) ? (
-        <SkeletonList rows={4} />
+        <div className="grid gap-4">
+          <WorkingStatus active={generate.isPending} stages={PASSPORT_STAGES} />
+          <SkeletonList rows={4} />
+        </div>
       ) : missing && !p ? (
         <EmptyState
           icon={<IdentificationBadge size={24} />}
