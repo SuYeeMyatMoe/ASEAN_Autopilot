@@ -1,16 +1,16 @@
 import { ArrowSquareOut, Globe as GlobeIcon, MapTrifold, Path, X } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import { useReducedMotion } from 'motion/react'
-import { lazy, Suspense, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { ErrorState, PageHeader, Skeleton, StatusBadge, cx } from '../components/ui'
 import { PIN_KINDS, useCountries, type PinKind } from '../geo/asean'
 import type { Cluster } from '../geo/GlobeView'
-import { hasWebGL } from '../geo/webgl'
+import { canUseWebGL, loadGlobeView, loadMapView, preloadMap } from '../geo/preload'
 import { api, COUNTRY_NAMES } from '../lib/api'
 import { useSession } from '../lib/session'
 
-const GlobeView = lazy(() => import('../geo/GlobeView'))
-const MapView = lazy(() => import('../geo/MapView'))
+const GlobeView = lazy(loadGlobeView)
+const MapView = lazy(loadMapView)
 
 type Mode = 'globe' | 'map'
 
@@ -25,12 +25,18 @@ function loadMode(): Mode {
 export default function MapPage() {
   const { missionId } = useSession()
   const reduce = !!useReducedMotion()
-  const webgl = useMemo(() => hasWebGL(), [])
+  const webgl = useMemo(() => canUseWebGL(), [])
   const [mode, setModeState] = useState<Mode>(() => (webgl ? loadMode() : 'map'))
+  // Fetch the renderer and outlines alongside the API call instead of after it.
+  useEffect(() => {
+    preloadMap()
+    void (mode === 'globe' ? loadGlobeView() : loadMapView()).catch(() => {})
+  }, [mode])
   const [missionMode, setMissionMode] = useState(true)
   const [selected, setSelected] = useState<string | null>(null)
   const [cluster, setCluster] = useState<Cluster | null>(null)
-  const q = useQuery({ queryKey: ['twin', missionId], queryFn: () => api.twin(missionId) })
+  // The graph is static catalog data plus the mission route; reuse it for a few minutes.
+  const q = useQuery({ queryKey: ['twin', missionId], queryFn: () => api.twin(missionId), staleTime: 5 * 60_000 })
   const geo = useCountries()
 
   const setMode = (m: Mode) => {

@@ -14,8 +14,9 @@ import {
 } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
+import { preloadMap, preloadMapWhenIdle } from '../geo/preload'
 import { api, COUNTRY_NAMES } from '../lib/api'
 import { useSession, useTheme } from '../lib/session'
 import { CompanionPanel } from './CompanionPanel'
@@ -59,6 +60,9 @@ function Nav({ onNavigate }: { onNavigate?: () => void }) {
               key={to}
               to={to}
               onClick={onNavigate}
+              // Start downloading the map as soon as the pointer or focus lands on its link.
+              onPointerEnter={to === '/app/map' ? preloadMap : undefined}
+              onFocus={to === '/app/map' ? preloadMap : undefined}
               className={({ isActive }) =>
                 cx(
                   'flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition',
@@ -84,6 +88,7 @@ export function AppShell() {
   const closeCompanion = useCallback(() => setAskOpen(false), [])
   const reduce = useReducedMotion()
   const location = useLocation()
+  useEffect(preloadMapWhenIdle, [])
 
   const health = useQuery({ queryKey: ['health'], queryFn: api.health, staleTime: 60_000 })
   const mission = useQuery({ queryKey: ['mission', missionId], queryFn: () => api.mission(missionId!), enabled: !!missionId })
@@ -100,6 +105,16 @@ export function AppShell() {
         <div className="mt-auto grid gap-1 px-3 text-xs text-on-brand/70">
           <span className="font-mono">{health.data ? (health.data.mode === 'live' ? `Gemma 4 live` : 'Demo mode, no API key') : 'Connecting'}</span>
           {health.data?.model && <span className="truncate font-mono" title={health.data.model}>{health.data.model}</span>}
+          {health.data?.persistent === false && (
+            <span className="text-on-brand/80" title="The server has no DATABASE_URL, so it keeps data in temporary storage. Your browser keeps a copy and restores it when needed.">
+              Temporary storage: set DATABASE_URL to keep data
+            </span>
+          )}
+          {health.data?.scan_model && (
+            <span className="truncate font-mono" title="Uploaded files are scanned by this Gemini model">
+              Scan: {health.data.scan_model}
+            </span>
+          )}
         </div>
       </aside>
 

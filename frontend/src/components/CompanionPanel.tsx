@@ -574,7 +574,7 @@ function DocMessage({ d }: { d: DocExplanation }) {
       )}
       {d.original_excerpt && (
         <details className="text-xs">
-          <summary className="cursor-pointer text-muted">Original text (unchanged)</summary>
+          <summary className="cursor-pointer text-muted">{d.meta.scan_model ? 'Scanned text' : 'Original text (unchanged)'}</summary>
           <p className="mt-2 whitespace-pre-wrap rounded-lg bg-surface-2 p-3 font-mono leading-relaxed">{d.original_excerpt}</p>
         </details>
       )}

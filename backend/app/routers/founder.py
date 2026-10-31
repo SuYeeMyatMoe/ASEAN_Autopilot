@@ -1,10 +1,12 @@
+import time
+
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlmodel import Session, select
 
 from app.db import get_session
-from app.ingest.documents import ingest
 from app.llm import prompts, rules
 from app.llm.gemma import get_gemma
+from app.llm.scanner import read_uploads
 from app.models import Founder, Mission
 from app.schemas import FounderDNA, MissionIn
 from app.services import get_founder
@@ -20,6 +22,7 @@ async def extract_founder(
     notes: str = Form(default=""),
     session: Session = Depends(get_session),
 ):
+    started = time.monotonic()
     payload = []
     total = 0
     for f in files:
@@ -31,29 +34,32 @@ async def extract_founder(
     if not payload and not notes.strip():
         raise HTTPException(422, "Add at least one file or a short description of your startup.")
 
-    doc = ingest(payload)
-    text = "\n\n".join(filter(None, [notes.strip(), doc.combined_text]))
-    if not text.strip() and not doc.images:
-        raise HTTPException(422, " ".join(doc.warnings) or "None of the files could be read. Try PDF, Word, PowerPoint or an image.")
+    # Gemini scans the files into text; Gemma 4 builds the profile from it.
+    up = read_uploads(payload)
+    text = "\n\n".join(filter(None, [notes.strip(), up.text]))
+    if not text.strip() and not up.images:
+        raise HTTPException(422, " ".join(up.warnings) or "None of the files could be read. Try PDF, Word, PowerPoint or an image.")
     dna, meta = get_gemma().generate_json(
-        prompts.founder_dna(text, len(doc.images)),
+        prompts.founder_dna(text, len(up.images), scanned=bool(up.scan_model)),
         FounderDNA,
         fallback=lambda: rules.founder_dna(text),
-        images=doc.images,
+        images=up.images,
+        started=started,
     )
     if meta.source != "gemma" and not text.strip():
-        # Images can only be read by Gemma; don't invent a profile from nothing.
+        # Images can only be read by a model; don't invent a profile from nothing.
         raise HTTPException(
             503,
             "Gemma 4 couldn't read your images just now (the model is busy). Try again in a minute, "
             "or add a short description of your startup in the text box.",
         )
-    meta.notes.extend(doc.warnings)
+    meta.scan_model = up.scan_model
+    meta.notes.extend(up.warnings)
     founder = Founder(
         company_name=dna.company_name,
         dna=dna.model_dump(),
         # Keep what the files actually said so later steps (passport, discover, companion) can use it.
-        meta={**meta.as_dict(), "files": doc.filenames, "image_count": len(doc.images), "source_excerpt": text[:6000]},
+        meta={**meta.as_dict(), "files": up.filenames, "image_count": len(up.images), "source_excerpt": text[:6000]},
     )
     session.add(founder)
     session.commit()

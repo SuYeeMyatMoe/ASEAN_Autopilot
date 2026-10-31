@@ -9,6 +9,8 @@ export interface GenMeta {
   source: 'gemma' | 'demo' | 'fallback'
   model: string | null
   notes: string[]
+  /** Gemini model that scanned the uploaded files into text, if any. */
+  scan_model?: string | null
 }
 
 export interface FounderDNA {
@@ -285,7 +287,11 @@ export interface Health {
   mode: 'live' | 'demo'
   model: string | null
   model_error: string | null
+  scan_model: string | null
   database: string
+  /** false when the server keeps data in temporary storage (no DATABASE_URL on Vercel) */
+  persistent?: boolean
+  build?: string
 }
 
 export class ApiError extends Error {
@@ -298,18 +304,80 @@ export class ApiError extends Error {
 
 const BASE = import.meta.env.VITE_API_BASE ?? ''
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+/**
+ * A copy of this browser's founder, mission and latest passport. If the server answers 404
+ * because it lost them (temporary storage on a serverless instance), they are restored
+ * under the same ids and the request is retried once.
+ */
+type Snapshot = { founder?: FounderResponse; mission?: Mission; passport?: PassportResponse }
+const SNAPSHOT_KEY = 'amc-snapshot'
+
+function readSnapshot(): Snapshot {
+  try {
+    return JSON.parse(localStorage.getItem(SNAPSHOT_KEY) ?? '{}') as Snapshot
+  } catch {
+    return {}
+  }
+}
+
+function remember(patch: Snapshot) {
+  try {
+    const next = { ...readSnapshot(), ...patch }
+    // A new mission makes the old passport irrelevant.
+    if (patch.mission && next.passport && next.passport.mission_id !== patch.mission.id) delete next.passport
+    if (patch.founder && next.mission && next.mission.founder_id !== patch.founder.founder_id) {
+      delete next.mission
+      delete next.passport
+    }
+    localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(next))
+  } catch {
+    /* storage full or unavailable: restore just won't be possible */
+  }
+}
+
+const keep =
+  <T,>(pick: (v: T) => Snapshot) =>
+  (v: T) => {
+    remember(pick(v))
+    return v
+  }
+
+let restoring: Promise<boolean> | null = null
+
+/**
+ * Re-seed the server from the snapshot. Resolves true when the server accepted it, even if it
+ * already had everything: a request that was in flight while another one restored the data
+ * still got a 404 and should be retried (once).
+ */
+function restoreFromSnapshot(): Promise<boolean> {
+  const snap = readSnapshot()
+  if (!snap.founder && !snap.mission) return Promise.resolve(false)
+  restoring ??= fetch(`${BASE}/api/restore`, json({ founder: snap.founder ?? null, mission: snap.mission ?? null, passport: snap.passport ?? null }))
+    .then((r) => r.ok)
+    .catch(() => false)
+    .finally(() => setTimeout(() => (restoring = null), 0))
+  return restoring
+}
+
+async function request<T>(path: string, init?: RequestInit, retried = false): Promise<T> {
   let res: Response
   try {
     res = await fetch(`${BASE}/api${path}`, init)
   } catch {
     throw new ApiError(0, 'Could not reach the server. Check that the API is running and try again.')
   }
+  if (res.status === 404 && !retried && (await restoreFromSnapshot())) {
+    return request<T>(path, init, true)
+  }
   if (!res.ok) {
-    let msg = `Request failed (${res.status}).`
+    let msg =
+      res.status === 504
+        ? 'The server took too long to answer. Please try again; Gemma 4 is usually faster on the next try.'
+        : `Request failed (${res.status}).`
     try {
       const body = await res.json()
       if (typeof body.detail === 'string') msg = body.detail
+      if (msg === 'Mission not found.') msg = 'This mission is no longer stored on the server. Open Mission and set it up again.'
     } catch {
       /* keep default */
     }
@@ -330,15 +398,19 @@ export const api = {
     const fd = new FormData()
     files.forEach((f) => fd.append('files', f))
     fd.append('notes', notes)
-    return request<FounderResponse>('/founder/extract', { method: 'POST', body: fd })
+    return request<FounderResponse>('/founder/extract', { method: 'POST', body: fd }).then(keep((f) => ({ founder: f })))
   },
-  sampleFounder: () => request<FounderResponse>('/founder/sample', { method: 'POST' }),
-  founder: (id: string) => request<FounderResponse>(`/founder/${id}`),
-  updateFounder: (id: string, dna: FounderDNA) => request<FounderResponse>(`/founder/${id}`, json(dna, 'PATCH')),
-  createMission: (body: { founder_id: string; target: string; objective: string }) => request<Mission>('/mission', json(body)),
-  mission: (id: string) => request<{ mission: Mission; founder: FounderResponse }>(`/mission/${id}`),
-  generatePassport: (missionId: string) => request<PassportResponse>(`/passport/${missionId}`, { method: 'POST' }),
-  passport: (missionId: string) => request<PassportResponse>(`/passport/${missionId}`),
+  sampleFounder: () => request<FounderResponse>('/founder/sample', { method: 'POST' }).then(keep((f) => ({ founder: f }))),
+  founder: (id: string) => request<FounderResponse>(`/founder/${id}`).then(keep((f) => ({ founder: f }))),
+  updateFounder: (id: string, dna: FounderDNA) =>
+    request<FounderResponse>(`/founder/${id}`, json(dna, 'PATCH')).then(keep((f) => ({ founder: f }))),
+  createMission: (body: { founder_id: string; target: string; objective: string }) =>
+    request<Mission>('/mission', json(body)).then(keep((m) => ({ mission: m }))),
+  mission: (id: string) =>
+    request<{ mission: Mission; founder: FounderResponse }>(`/mission/${id}`).then(keep((r) => ({ founder: r.founder, mission: r.mission }))),
+  generatePassport: (missionId: string) =>
+    request<PassportResponse>(`/passport/${missionId}`, { method: 'POST' }).then(keep((p) => ({ passport: p }))),
+  passport: (missionId: string) => request<PassportResponse>(`/passport/${missionId}`).then(keep((p) => ({ passport: p }))),
   roadmap: (missionId: string) => request<{ stages: RoadmapStage[] }>(`/passport/${missionId}/roadmap`),
   discover: (missionId: string, kinds: string[]) =>
     request<{ results: EcoItem[]; meta: GenMeta }>('/discover', json({ mission_id: missionId, kinds })),

@@ -6,6 +6,7 @@ saved items, referrals), retrieves official records, asks Gemma 4 for a short
 spoken reply plus at most one platform action, then validates that action.
 """
 
+import time
 from collections import Counter
 from typing import Literal
 
@@ -15,7 +16,7 @@ from sqlmodel import Session, select
 
 from app import catalog
 from app.db import get_session
-from app.ingest.documents import ingest
+from app.llm.scanner import read_uploads
 from app.llm.gemma import get_gemma
 from app.models import Milestone, ReferralRequest
 from app.retrieval import rank
@@ -318,12 +319,14 @@ async def explain_document(
     mission_id: str | None = Form(default=None),
     session: Session = Depends(get_session),
 ):
+    started = time.monotonic()
     data = await file.read()
     if len(data) > 4 * 1024 * 1024:
         raise HTTPException(413, "Documents are limited to 4 MB.")
-    doc = ingest([(file.filename or "document", file.content_type or "", data)])
-    if not doc.text_blocks and not doc.images:
-        raise HTTPException(422, " ".join(doc.warnings) or "I couldn't read that file. Try a PDF, image or text file.")
+    # Gemini scans the file into text; Gemma 4 explains it.
+    up = read_uploads([(file.filename or "document", file.content_type or "", data)])
+    if not up.text.strip() and not up.images:
+        raise HTTPException(422, " ".join(up.warnings) or "I couldn't read that file. Try a PDF, image or text file.")
     ctx = _context(session, mission_id, None)
     lang = LANGUAGES.get(language, "the language of the document")
     prompt = (
@@ -332,16 +335,17 @@ async def explain_document(
         "exactly as stated; do not invent any. Say what it means for the founder's mission. "
         f"Write in {lang}. You give guidance, not legal advice.\n\n"
         f"FOUNDER QUESTION: {question or 'What does this document mean for me?'}\n"
-        f"FOUNDER CONTEXT: {ctx}\n\nDOCUMENT TEXT:\n{doc.combined_text or '(see image)'}"
+        f"FOUNDER CONTEXT: {ctx}\n\nDOCUMENT TEXT:\n{up.text or '(see image)'}"
     )
 
     def fallback() -> DocExplainLLM:
-        text = doc.combined_text
+        text = up.text
         first = " ".join(text.split()[:60]) if text else "This looks like an image of a document."
         return DocExplainLLM(
             summary=f"Here's the start of the document: {first}... Connect Gemma 4 for a full plain-language explanation.",
             next_step="Read the original document and confirm the details with the issuing authority.",
         )
 
-    out, meta = get_gemma().generate_json(prompt, DocExplainLLM, fallback=fallback, images=doc.images)
-    return {"explanation": out.model_dump(), "filename": file.filename, "original_excerpt": doc.combined_text[:1500], "meta": meta.as_dict()}
+    out, meta = get_gemma().generate_json(prompt, DocExplainLLM, fallback=fallback, images=up.images, started=started)
+    meta.scan_model = up.scan_model
+    return {"explanation": out.model_dump(), "filename": file.filename, "original_excerpt": up.text[:1500], "meta": meta.as_dict()}

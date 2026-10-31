@@ -1,4 +1,5 @@
 import logging
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import APIRouter, FastAPI
@@ -8,7 +9,7 @@ from app import catalog
 from app.config import get_settings
 from app.db import init_db
 from app.llm.gemma import get_gemma
-from app.routers import companion, desk, discover, founder, passport, twin
+from app.routers import companion, desk, discover, founder, passport, restore, twin
 
 logging.basicConfig(level=logging.INFO)
 settings = get_settings()
@@ -45,7 +46,14 @@ def health():
         "mode": "live" if gemma.live else "demo",
         "model": model,
         "model_error": error,
+        # Gemini scans uploads into text; Gemma 4 does the reasoning.
+        "scan_model": (settings.gemini_scan_model or None) if gemma.live else None,
         "database": "postgres" if settings.resolved_database_url.startswith("postgresql") else "sqlite",
+        # False on Vercel without DATABASE_URL: SQLite in /tmp is per instance and wiped on deploy.
+        "persistent": not (settings.resolved_database_url.startswith("sqlite") and bool(os.environ.get("VERCEL"))),
+        # Which commit is live, so a deploy can be confirmed from the browser.
+        "build": (os.environ.get("VERCEL_GIT_COMMIT_SHA") or "local")[:7],
+        "gemma_budget_ms": settings.gemma_budget_ms,
     }
 
 
@@ -62,6 +70,6 @@ def list_models():
     return {"models": gemma.discover_models(), "selected": gemma.model}
 
 
-for r in (founder.router, passport.router, discover.router, desk.router, twin.router, companion.router):
+for r in (founder.router, passport.router, discover.router, desk.router, twin.router, companion.router, restore.router):
     api.include_router(r)
 app.include_router(api)

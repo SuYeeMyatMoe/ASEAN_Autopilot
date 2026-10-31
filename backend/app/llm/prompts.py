@@ -19,10 +19,16 @@ def _records_block(records: list[dict]) -> str:
     return json.dumps(slim, ensure_ascii=False)
 
 
-def founder_dna(text: str, n_images: int) -> str:
+def founder_dna(text: str, n_images: int, scanned: bool = False) -> str:
+    source = (
+        "The document text below was transcribed from the founder's uploaded files (including slide images, "
+        "screenshots and scanned pages) by a document scanner.\n"
+        if scanned
+        else f"You have {n_images} image(s) (pitch slides, product screenshots or posters) plus extracted document text below.\n"
+    )
     return (
         "Analyse this startup's materials and build a Founder DNA profile.\n"
-        f"You have {n_images} image(s) (pitch slides, product screenshots or posters) plus extracted document text below.\n"
+        f"{source}"
         "Only state what the materials support. Leave fields empty rather than guessing. "
         "origin_country and target_countries are ISO alpha-2 codes. "
         "sector must be one of: healthcare, fintech, education, logistics, agritech, commerce, all. "
@@ -49,7 +55,8 @@ def passport(dna: dict, objective: str, target: str, records: list[dict], materi
         "- information_missing: the founder must supply details first\n"
         "- source_verification_pending: the record is too general to rely on for this case\n"
         "List evidence_available (facts from the profile) and missing (what is not yet known). "
-        "next_action is one concrete step starting with a verb.\n\n"
+        "next_action is one concrete step starting with a verb. Keep every field short and specific. "
+        "Leave summary empty; missing_information and recommended_next_actions: at most 3 each.\n\n"
         f"FOUNDER DNA:\n{json.dumps(dna, ensure_ascii=False)}{_materials(materials)}\n\nOBJECTIVE:\n{objective}\n\n"
         f"SOURCE RECORDS:\n{_records_block(records)}"
     )
